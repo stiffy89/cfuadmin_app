@@ -32,6 +32,7 @@ import darkThemeColors from './assets/themes/dark.json';
 //contexts
 import { useAppContext } from './helper/AppContext';
 import { useSecurityContext } from './helper/SecurityContext';
+import { useDataContext } from './helper/DataContext';
 
 //theme context
 import { useThemeContext } from './assets/ThemeContext';
@@ -43,8 +44,7 @@ import { RootStackScreenKeys } from './types/AppTypes';
 //helpers
 import { authModule } from './helper/AuthModule';
 import { screenFlowModule } from './helper/ScreenFlowModule';
-
-import Constants from "expo-constants";
+import { DummyData } from './data/DummyData';
 
 //set up custom themes
 const customLightTheme = {
@@ -117,6 +117,8 @@ export default function MainApp() {
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
 	const { showDialog, setShowDialog, showBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
+	const { setUser } = useDataContext();
+
 	const lastAppState = useRef<AppStateStatus | null>(null)
 
 	const onAppWake = async () => {
@@ -172,6 +174,11 @@ export default function MainApp() {
 	}
 
 	useEffect(() => {
+
+		//get user information - dummy for now
+		const DummyObj = new DummyData();
+		const UserInfo = DummyObj.getUserInformation();
+		setUser(UserInfo);
 
 		if (authenticationMode == 'bypass') {
 			return;

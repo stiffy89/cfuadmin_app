@@ -7,7 +7,6 @@ export type AuthType = 'okta' | 'local' | 'pin';
 
 export type AuthenticationMode = 'authenticate' | 'bypass';
 
-// define what values will live in this context
 export type AppContextType = {
   showDialog: boolean;
   setShowDialog: (val: boolean) => void;
@@ -31,6 +30,23 @@ export type SecurityContextType = {
     authErrorMessage : string;
     setAuthErrorMessage : (val : string) => void;
 };
+
+export type UserData = {
+    firstname : string;
+    lastname : string;
+    pernr : string;
+}
+
+export type ServiceData= {
+    title : string;
+}
+
+export type DataContextType = {
+    user : UserData;
+    setUser : (val : UserData) => void;
+    services : ServiceData[];
+    setServices : (val : ServiceData[]) => void;
+}
 
 export type OktaLoginResult = {
     response : AuthSession.TokenResponse

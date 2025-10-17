@@ -1,4 +1,5 @@
 import { Button, TextInput, Surface, Text } from 'react-native-paper';
+import { ScrollView } from 'react-native';
 import CustomText from '../assets/CustomText';
 import { View } from 'react-native';
 import GlobalStyles from '../style/GlobalStyles';
@@ -7,53 +8,40 @@ import { useSecurityContext } from '../helper/SecurityContext';
 import { useAppContext } from '../helper/AppContext';
 import { authModule } from '../helper/AuthModule';
 import { screenFlowModule } from '../helper/ScreenFlowModule';
+import { useTheme, Card } from 'react-native-paper';
+import { useDataContext } from '../helper/DataContext';
+
+const NameBanner = () => {
+    const theme = useTheme();
+    const {user} = useDataContext();
+
+    return (
+        <View style={{paddingHorizontal: 20, paddingVertical: 10, backgroundColor: theme.colors.secondary}}>
+            <CustomText variant='titleMedium' style={{color: '#fff'}}>Hi</CustomText>
+            <CustomText variant='displaySmallBold' style={{color: '#fff'}}>{user.firstname} {user.lastname}</CustomText>
+        </View>
+    )
+}
+
+const Services = () => {
+
+}
+
 
 const HomePage = () => {
-
+    const theme = useTheme();
     const { setShowBusyIndicator, setDialogMessage, setShowDialog } = useAppContext();
     const {setAuthType} = useSecurityContext();
+
+
+
     return (
-        <View style={GlobalStyles.pageContainer}>
-            <CustomText variant='bodyMediumItalic'>Open up App.tsx to start working on your app!</CustomText>
-            <Button
-                mode='contained'
-                onPress={() => {
-                    setShowBusyIndicator(true);
-                    setDialogMessage('Please wait');
-                    setShowDialog(true);
-                }}
-            >
-                Show Busy
-            </Button>
-            <Button
-                mode='contained'
-                onPress={() => {
-                    setShowBusyIndicator(false);
-                    setDialogMessage('Generic dialog message here')
-                    setShowDialog(true);
-                }}
-            >
-                Show Message
-            </Button>
-            <Button
-                mode='contained'
-                onPress={async () => {
-                    authModule.onLogOut()
-                        .then(() => {
-                            setAuthType('okta');
-                            if (screenFlowModule.getScreenState()?.name !== 'LoginScreen'){
-                                screenFlowModule.onNavigateToScreen('LoginScreen');
-                            }
-                        })
-                        .catch((error) => {
-                            //handle the error
-                            console.log('error in logging out from pin page : ', error)
-                        })
-                }}
-            >
-                Log out
-            </Button>
-        </View>
+        <ScrollView>
+            <NameBanner/>
+            <View style={[GlobalStyles.pageContainer, {backgroundColor: theme.colors.background, borderTopRightRadius: 15, borderTopLeftRadius: 15}]}>
+                
+            </View>
+        </ScrollView>
     )
 }
 
