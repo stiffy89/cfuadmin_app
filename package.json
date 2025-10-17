@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "expo": "~54.0.13",
+    "expo-dev-client": "~6.0.15",
     "expo-status-bar": "~3.0.8",
     "lucide-react-native": "^0.546.0",
     "react": "19.1.0",
