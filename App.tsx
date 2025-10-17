@@ -1,22 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import * as LucideIcons from 'lucide-react-native';
+import React from 'react';
+import { ThemeProvider } from './assets/ThemeContext';
+import { AppProvider} from './helper/AppContext';
+import { SecurityProvider } from './helper/SecurityContext';
+import MainApp from './MainApp';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your application!</Text>
-      <LucideIcons.Home/>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider>
+      <AppProvider>
+        <SecurityProvider>
+          <MainApp />
+        </SecurityProvider>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
