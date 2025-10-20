@@ -1,24 +1,164 @@
-import { NavType, RootStackParamList } from '../types/AppTypes';
+import { NavType, RootStackScreenKeys, RootStackParamList } from '../types/AppTypes';
+import {NavigationContainerRefWithCurrent} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import { useSecurityContext } from './SecurityContext';
-import { ScreenState } from '../types/AppTypes';
-import { RootStackScreenKeys } from '../types/AppTypes';
 
 import { useAppContext } from './AppContext';
 
 export class ScreenFlowModule {
     
-    private navigator: NavType | null = null;
+    private navigator: NavigationContainerRefWithCurrent<RootStackParamList> | null = null;
 
-    //on init
-    onInit(navigator: NavType) {
+    onInitRootNavigator(navigator: NavigationContainerRefWithCurrent<RootStackParamList>) {
         this.navigator = navigator;
     }
 
-    onNavigateToScreen (screen : RootStackScreenKeys) {
+    onNavigateToScreen (screen : any) {
         if (this.navigator?.isReady()){
-            this.navigator?.navigate(screen);
+            switch (screen) {
+                case 'LoginScreen' :
+                    this.navigator?.navigate('LoginScreen');
+                    break;
+
+                case 'HomeScreen' :
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'HomeScreen'
+                        }
+                    );
+                    break;
+
+                case 'ContactScreen' :
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'ContactsScreen'
+                        }
+                    );
+                    break;
+
+                case 'ProfileScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'ProfileScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'ProfileScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'ProfileScreen'
+                            }
+                        }
+                    );
+                    break;
+                
+                case 'MyDetailsScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'MyDetailsScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'ContactDetailsScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'ContactDetailsScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'EmergencyContactsScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'EmergencyContactsScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'MyUnitDetailsScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'MyUnitDetailsScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'TrainingHistoryScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'TrainingHistoryScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'TrainingDetailScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'TrainingDetailsScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'MembershipDetailsScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'MembershipDetailsScreen'
+                            }
+                        }
+                    );
+                    break;
+
+                case 'UniformDetailsScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'UniformDetailsScreen'
+                            }
+                        }
+                    );
+                    break;
+            }
         }
     }
 
@@ -70,7 +210,7 @@ export class ScreenFlowModule {
     onNavigateToHome() {
         if (this.navigator?.isReady()){
             if (this.navigator?.getCurrentRoute()?.name !== 'HomeScreen'){
-                this.navigator?.navigate('HomeScreen');
+                this.navigator?.navigate('MainTabs', {screen: 'HomeScreen'});
             }
         }
     }

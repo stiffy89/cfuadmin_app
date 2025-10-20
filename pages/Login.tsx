@@ -96,7 +96,7 @@ const PinLogin = ({hasSetPinValue, setAuthType} : PinLoginProps) => {
         </View>
         <Animated.View style={shakeStyle}>
             {
-                Grid(PinBoxes, 350)
+                Grid(PinBoxes, 4, 350)
             }
         </Animated.View>
         <TextInput

@@ -21,7 +21,7 @@ import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 
 //navigation modules
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 
@@ -39,7 +39,6 @@ import { useThemeContext } from './assets/ThemeContext';
 
 //types
 import { RootStackParamList } from './types/AppTypes';
-import { RootStackScreenKeys } from './types/AppTypes';
 
 //helpers
 import { authModule } from './helper/AuthModule';
@@ -78,6 +77,7 @@ const TabNavigator = () => {
 		<Tab.Navigator
 			screenOptions={({ route }) => ({
 				headerShown: false,
+				animation: 'fade',
 				tabBarButton: (props) => (
 					<PlatformPressable
 						{...props}
@@ -85,29 +85,44 @@ const TabNavigator = () => {
 					/>
 				),
 				tabBarLabel: ({ focused }) => {
+
+					let formattedRouteName;
+
+					switch (route.name){
+						case 'HomeScreen':
+							formattedRouteName = 'Home';
+							break;
+						case 'ContactsScreen':
+							formattedRouteName = 'Contacts';
+							break;
+						case 'MyProfileScreen':
+							formattedRouteName = 'Profile';
+							break;
+					}
+
 					let iconColor = focused ? theme.colors.primary : theme.colors.outline;
-					return <CustomText variant='labelSmall' style={{ color: iconColor }}>{route.name}</CustomText>
+					return <CustomText variant='labelSmall' style={{ color: iconColor }}>{formattedRouteName}</CustomText>
 				},
 				tabBarIcon: ({ focused, color, size }) => {
 
 					let iconColor = focused ? theme.colors.primary : theme.colors.outline;
 
 					switch (route.name) {
-						case "Home":
+						case "HomeScreen":
 							return <LucideIcons.House size={24} color={iconColor} />
 
-						case "Contacts":
+						case "ContactsScreen":
 							return <LucideIcons.NotebookTabs size={24} color={iconColor} />;
 
-						case "My Profile":
+						case "MyProfileScreen":
 							return <LucideIcons.CircleUser size={24} color={iconColor} />;
 					}
 				}
 			})}
 		>
-			<Tab.Screen name="Home" component={HomePage} />
-			<Tab.Screen name="Contacts" component={ContactsPage} />
-			<Tab.Screen name="My Profile" component={ProfilePage} />
+			<Tab.Screen name="HomeScreen" component={HomePage}/>
+			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
+			<Tab.Screen name="MyProfileScreen" component={ProfilePage}/>
 		</Tab.Navigator>
 	)
 }
@@ -117,7 +132,7 @@ export default function MainApp() {
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
 	const { showDialog, setShowDialog, showBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
-	const { setUser } = useDataContext();
+	const { setUser, setServices } = useDataContext();
 
 	const lastAppState = useRef<AppStateStatus | null>(null)
 
@@ -173,12 +188,18 @@ export default function MainApp() {
 		AsyncStorage.setItem('last_active', currentTimeStamp);
 	}
 
-	useEffect(() => {
-
+	const onGetInitialLoad = () => {
 		//get user information - dummy for now
 		const DummyObj = new DummyData();
 		const UserInfo = DummyObj.getUserInformation();
+		const ServiceInfo = DummyObj.getServices();
 		setUser(UserInfo);
+		setServices(ServiceInfo);
+	}
+
+	useEffect(() => {
+
+		onGetInitialLoad();
 
 		if (authenticationMode == 'bypass') {
 			return;
@@ -256,11 +277,11 @@ export default function MainApp() {
 						ref={navigatorRef}
 						onReady={() => {
 							//initialise the Screen flow module
-							screenFlowModule.onInit(navigatorRef)
+							screenFlowModule.onInitRootNavigator(navigatorRef)
 						}}
 					>
-						<Stack.Navigator initialRouteName='HomeScreen' screenOptions={{ headerShown: false }}>
-							<Stack.Screen name='HomeScreen' component={TabNavigator} />
+						<Stack.Navigator initialRouteName='MainTabs' screenOptions={{ headerShown: false }}>
+							<Stack.Screen name='MainTabs' component={TabNavigator} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 						</Stack.Navigator>
 					</NavigationContainer>

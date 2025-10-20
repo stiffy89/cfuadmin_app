@@ -24,6 +24,9 @@ const GlobalStyles = StyleSheet.create({
     },
     pinAsterisk : {
         fontSize: 25
+    },
+    globalBorderRadius: {
+        borderRadius: 10
     }
 });
 

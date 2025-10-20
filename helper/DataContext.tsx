@@ -10,7 +10,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<UserData>({
         firstname : '',
         lastname : '',
-        pernr : ''
+        pernr : '',
+        position: '',
+        unitid: ''
     });
 
     const [services, setServices] = useState<ServiceData[]>([])

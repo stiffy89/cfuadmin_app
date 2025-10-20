@@ -4,7 +4,9 @@ export class DummyData {
         return {
             'firstname' : 'John',
             'lastname' : 'Smith',
-            'pernr' : 'SMI900100'
+            'pernr' : 'SMI900100',
+            'position': 'CFU Team Coordinator',
+            'unitid': 'MHP-100'
         }
     }
 
