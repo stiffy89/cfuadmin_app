@@ -14,11 +14,25 @@ export class ScreenFlowModule {
         this.navigator = navigator;
     }
 
-    onNavigateToScreen (screen : any) {
+    onGoBack () {
+        if (this.navigator?.canGoBack()){
+            this.navigator?.goBack();
+        }
+    }
+
+    onNavigateToScreen (screen : any, data? : any) {
+       
         if (this.navigator?.isReady()){
             switch (screen) {
                 case 'LoginScreen' :
                     this.navigator?.navigate('LoginScreen');
+                    break;
+
+                case 'EditScreen' :
+                    this.navigator?.navigate(
+                        'EditScreen',
+                        data
+                    );
                     break;
 
                 case 'HomeScreen' :
@@ -50,18 +64,6 @@ export class ScreenFlowModule {
                         }
                     );
                     break;
-
-                case 'ProfileScreen':
-                    this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'ProfileScreen'
-                            }
-                        }
-                    );
-                    break;
                 
                 case 'MyDetailsScreen':
                     this.navigator?.navigate(
@@ -69,7 +71,8 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'MyDetailsScreen'
+                                screen: 'MyDetailsScreen',
+                                params: data
                             }
                         }
                     );
@@ -81,7 +84,8 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'ContactDetailsScreen'
+                                screen: 'ContactDetailsScreen',
+                                params: data
                             }
                         }
                     );
@@ -93,7 +97,8 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'EmergencyContactsScreen'
+                                screen: 'EmergencyContactsScreen',
+                                params: data
                             }
                         }
                     );
@@ -105,7 +110,8 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'MyUnitDetailsScreen'
+                                screen: 'MyUnitDetailsScreen',
+                                params: data
                             }
                         }
                     );

@@ -19,6 +19,7 @@ import LoginPage from './pages/Login';
 import HomePage from './pages/Home';
 import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
+import EditScreen from './pages/EditScreen';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -43,6 +44,7 @@ import { RootStackParamList } from './types/AppTypes';
 //helpers
 import { authModule } from './helper/AuthModule';
 import { screenFlowModule } from './helper/ScreenFlowModule';
+import { dataHandlerModule } from './helper/DataHandlerModule';
 import { DummyData } from './data/DummyData';
 
 //set up custom themes
@@ -189,6 +191,9 @@ export default function MainApp() {
 	}
 
 	const onGetInitialLoad = () => {
+		//set up the data handler module
+		dataHandlerModule.init();
+		
 		//get user information - dummy for now
 		const DummyObj = new DummyData();
 		const UserInfo = DummyObj.getUserInformation();
@@ -250,11 +255,14 @@ export default function MainApp() {
 							>
 								{
 									showBusyIndicator && (
-										<ActivityIndicator style={{ marginTop: 20 }} animating={true} size='large' />
+										<View>
+											<ActivityIndicator style={{ marginTop: 20 }} animating={true} size='large'/>
+											<CustomText style={{ marginTop: 50, marginBottom: 40 }} variant='bodyLarge'>Please wait...</CustomText>
+										</View>
 									)
 								}
 								{
-									(dialogMessage !== '') && (
+									(dialogMessage !== '' && !showBusyIndicator) && (
 										<CustomText style={{ marginTop: 50, marginBottom: 40 }} variant='bodyLarge'>{dialogMessage}</CustomText>
 									)
 								}
@@ -283,6 +291,7 @@ export default function MainApp() {
 						<Stack.Navigator initialRouteName='MainTabs' screenOptions={{ headerShown: false }}>
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
+							<Stack.Screen name='EditScreen' component={EditScreen} options={{presentation: 'modal'}}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>

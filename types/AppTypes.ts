@@ -68,6 +68,7 @@ export type ScreenState = 'auth' | 'home';
 export type RootStackParamList = {
     MainTabs: NavigatorScreenParams<TabParamList>;
     LoginScreen: undefined;
+    EditScreen: Record<string, string> | undefined;
 }
 
 export type TabParamList = {
@@ -78,9 +79,9 @@ export type TabParamList = {
 
 export type ProfileStackParamList = {
     ProfileScreen: undefined;
-    MyDetailsScreen: undefined;
-    ContactDetailsScreen: undefined;
-    EmergencyContactsScreen: undefined;
+    MyDetailsScreen: Record<string, string> | undefined;
+    ContactDetailsScreen: Record<string, string> | undefined;
+    EmergencyContactsScreen: Record<string, string>[] | undefined;
     MyUnitDetailsScreen: undefined;
     TrainingHistoryScreen: undefined;
     TrainingDetailsScreen: undefined;
@@ -90,6 +91,5 @@ export type ProfileStackParamList = {
 
 export type RootStackScreenKeys = keyof RootStackParamList;
 export type ProfileStackScreenKeys = keyof ProfileStackParamList;
-export type AllStackScreenKeys = RootStackScreenKeys | ProfileStackScreenKeys;
 
 export type NavType = NavigationContainerRefWithCurrent<RootStackParamList>;

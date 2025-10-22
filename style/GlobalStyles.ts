@@ -27,6 +27,22 @@ const GlobalStyles = StyleSheet.create({
     },
     globalBorderRadius: {
         borderRadius: 10
+    },
+    page: {
+        backgroundColor: '#fff',
+        flex: 1
+    },
+    textInput: {
+        paddingHorizontal: 20
+    },
+    disabledTextInput : {
+        backgroundColor: '#efefef'
+    },
+    floatingButtonBottom: {
+        position: 'absolute',
+        bottom: 100,
+        left: 20,
+        width: '100%'
     }
 });
 
