@@ -20,9 +20,8 @@ const NameBanner = () => {
     const {user} = useDataContext();
 
     return (
-        <View style={{paddingHorizontal: 20, paddingVertical: 10, backgroundColor: theme.colors.secondary}}>
-            <CustomText variant='titleMedium' style={{color: '#fff'}}>Hi</CustomText>
-            <CustomText variant='displaySmallBold' style={{color: '#fff'}}>{user.firstname} {user.lastname}</CustomText>
+        <View style={{paddingHorizontal: 20, paddingVertical: 20, backgroundColor: theme.colors.secondary}}>
+            <CustomText variant='displaySmallBold' style={{color: '#fff'}}>Hi {user.firstname}</CustomText>
         </View>
     )
 }
@@ -43,7 +42,7 @@ const Services = () => {
 
     return (
         <View style={{marginVertical: 20}}>
-            <CustomText style={{marginVertical: 15, color: theme.colors.primary}} variant='titleLargeBold'>Services</CustomText>
+            <CustomText style={{marginVertical: 15, color: theme.colors.primary, paddingHorizontal: 15}} variant='titleLargeBold'>Services</CustomText>
             {
                 Grid(Tiles, 3, undefined, '#fff', true)
             }
@@ -86,7 +85,7 @@ const HomePage = () => {
     return (
         <ScrollView>
             <NameBanner/>
-            <View style={[GlobalStyles.pageContainer, {backgroundColor: theme.colors.background, borderTopRightRadius: 15, borderTopLeftRadius: 15}]}>
+            <View style={[GlobalStyles.pageContainer, {backgroundColor: theme.colors.background}]}>
                 <Services/>
                 <ContactUs/>
             </View>

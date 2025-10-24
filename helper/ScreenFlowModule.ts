@@ -123,7 +123,8 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'TrainingHistoryScreen'
+                                screen: 'TrainingHistoryScreen',
+                                params: data
                             }
                         }
                     );
@@ -135,7 +136,8 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'TrainingDetailsScreen'
+                                screen: 'TrainingDetailsScreen',
+                                params: data
                             }
                         }
                     );
@@ -147,7 +149,8 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'MembershipDetailsScreen'
+                                screen: 'MembershipDetailsScreen',
+                                params: data
                             }
                         }
                     );

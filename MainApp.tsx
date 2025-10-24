@@ -78,6 +78,7 @@ const TabNavigator = () => {
 	return (
 		<Tab.Navigator
 			screenOptions={({ route }) => ({
+				sceneStyle: GlobalStyles.AppBackground,
 				headerShown: false,
 				animation: 'fade',
 				tabBarButton: (props) => (
@@ -288,7 +289,7 @@ export default function MainApp() {
 							screenFlowModule.onInitRootNavigator(navigatorRef)
 						}}
 					>
-						<Stack.Navigator initialRouteName='MainTabs' screenOptions={{ headerShown: false }}>
+						<Stack.Navigator initialRouteName='MainTabs' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='EditScreen' component={EditScreen} options={{presentation: 'modal'}}/>

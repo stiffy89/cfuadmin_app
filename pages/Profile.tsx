@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Easing } from 'react-native';
+import { View, ScrollView, Easing, Dimensions } from 'react-native';
 import { useTheme, Button, List, Divider } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
 import CustomText from '../assets/CustomText';
@@ -24,7 +24,8 @@ import TrainingHistory from './TrainingHistory';
 import TrainingDetails from './TrainingDetails';
 import MembershipDetails from './MembershipDetails';
 import UniformDetails from './UniformDetails';
-
+import { openBrowserAsync } from 'expo-web-browser';
+import { WebView } from 'react-native-webview';
 
 const ProfileHeader = () => {
     const theme = useTheme();
@@ -33,7 +34,7 @@ const ProfileHeader = () => {
     return (
         <View style={{ margin: 20 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <Button mode='outlined'>ID Card</Button>
+                <Button mode='outlined' onPress={() => {}}>ID Card</Button>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                 <View style={{ padding: 20, backgroundColor: '#d3d3d3ff', borderRadius: 50 }}>
@@ -49,6 +50,7 @@ const ProfileHeader = () => {
 
 const ProfilePage = () => {
     const { setShowDialog, setShowBusyIndicator } = useAppContext();
+    const theme = useTheme()
 
     const onNavigateTopage = (PageName: any) => {
         //show busy dialog and do a read
@@ -73,8 +75,22 @@ const ProfilePage = () => {
                 data = dummyData.getEmergencyContacts();
                 break;
 
-            case "MyUnitDetailScreen":
+            case "MyUnitDetailsScreen":
                 data = dummyData.getMyUnit();
+                break;
+
+            case "TrainingHistoryScreen":
+                data = dummyData.getTrainingHistoryData();
+                break;
+
+            case "MembershipDetailsScreen":
+                const membershipDetail = dummyData.getMembershipDetailsData();
+                const objectsOnLoanDetail = dummyData.getObjectsOnLoanData();
+                data = {
+                    membershipDetail : membershipDetail,
+                    objectsOnLoan : objectsOnLoanDetail
+                }
+                
                 break;
         }
 
@@ -90,12 +106,20 @@ const ProfilePage = () => {
 
     }
 
+    const screenWidth = Dimensions.get('window').width;
+
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: theme.colors.background}}>
             <ProfileHeader />
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} contentContainerStyle={{ paddingBottom: 0 }}>
                 <View style={{ marginVertical: 40, paddingHorizontal: 20 }}>
-                    <CustomText variant='titleLarge' style={{ marginBottom: 20 }}>Personal Information</CustomText>
+                    <View style={{height: 500, width: screenWidth}}>
+                        <WebView
+                            source={{ uri:'https://smh.com.au'}}
+                            nestedScrollEnabled={true} //<-- important we include this for android
+                        />
+                    </View>
+                    <CustomText variant='titleLargeBold' style={{marginVertical: 15, color: theme.colors.primary}}>Personal Information</CustomText>
                     <List.Section style={{ backgroundColor: '#f9f9f9ff', ...GlobalStyles.globalBorderRadius }}>
                         <List.Item
                             style={{ height: 80, justifyContent: 'center' }}
@@ -119,7 +143,7 @@ const ProfilePage = () => {
                         <Divider />
                         <List.Item style={{ height: 80, justifyContent: 'center' }} onPress={() => { onNavigateTopage('EmergencyContactsScreen')}} title={() => <CustomText variant='bodyLarge'>Emergency Contacts</CustomText>} right={() => <LucideIcons.ChevronRight />} />
                     </List.Section>
-                    <CustomText variant='titleLarge' style={{ marginTop: 20, marginBottom: 20 }}>Volunteer Information</CustomText>
+                    <CustomText variant='titleLargeBold' style={{marginVertical: 15, color: theme.colors.primary}}>Volunteer Information</CustomText>
                     <List.Section style={{ backgroundColor: '#f9f9f9ff', ...GlobalStyles.globalBorderRadius }}>
                         <List.Item style={{ height: 80, justifyContent: 'center' }} onPress={() => { onNavigateTopage('MembershipDetailsScreen') }} title={() => <CustomText variant='bodyLarge'>Membership Details</CustomText>} right={() => <LucideIcons.ChevronRight />} />
                         <Divider />
@@ -140,6 +164,7 @@ const Profile = () => {
         <Stack.Navigator initialRouteName='ProfileScreen'
             screenOptions={{
                 headerShown: false,
+                cardStyle:GlobalStyles.AppBackground,
                 gestureEnabled: true,
                 transitionSpec: {
                     open: {

@@ -1,12 +1,16 @@
 import {StyleSheet} from 'react-native';
 
+
 const GlobalStyles = StyleSheet.create({
+    AppBackground: {
+        backgroundColor: '#fff'
+    },
     safeAreaView: {
         flex: 1
     },
     pageContainer: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '',
         alignItems: 'center',
         justifyContent: 'center',
     },

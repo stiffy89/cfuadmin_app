@@ -11,7 +11,7 @@ export default function App() {
       <AppProvider>
         <SecurityProvider>
           <DataProvider>
-            <MainApp />
+            <MainApp/>
           </DataProvider>
         </SecurityProvider>
       </AppProvider>
