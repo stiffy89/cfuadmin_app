@@ -85,8 +85,9 @@ export type ProfileStackParamList = {
     MyUnitDetailsScreen: undefined;
     TrainingHistoryScreen: Record<string, string>[] | undefined;
     TrainingDetailsScreen: Record<string, string> | undefined;
-    MembershipDetailsScreen: undefined;
-    UniformDetailsScreen: Record<string, Record<string, string>[]> | undefined;
+    MembershipDetailsScreen: Record<string, Record<string, string>[]> | undefined;
+    UniformDetailsScreen: Record<string, string> | undefined;
+    MedalsAndAwardsScreen: Record<string, string> | undefined;
 }
 
 export type RootStackScreenKeys = keyof RootStackParamList;

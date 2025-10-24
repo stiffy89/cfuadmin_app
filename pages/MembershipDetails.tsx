@@ -20,6 +20,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
 
     const membershipDetails = params.membershipDetail[0];
     const objectsOnLoan = params.objectsOnLoan;
+    const medalsAndAwards = params.medalsAndAwards;
 
     return (
         <ScrollView>
@@ -48,8 +49,26 @@ const MembershipDetails = ({ route, navigation }: props) => {
                                     <List.Item 
                                         key={i}
                                         style={{ height: 80, justifyContent: 'center' }} 
-                                        onPress={() => {}} 
+                                        onPress={() => {screenFlowModule.onNavigateToScreen('UniformDetailsScreen', item)}} 
                                         title={`${item.ObjectTypesStext} - ${item.Anzkl} ${item.UnitsEtext}` } 
+                                        right={() => <LucideIcons.ChevronRight />} 
+                                    />
+                                )
+                            })
+                        }
+                    </List.Section>
+                    <CustomText style={{ marginVertical: 20 }} variant='bodyLargeBold'>Medals and Awards</CustomText>
+                    <List.Section style={{ backgroundColor: '#f9f9f9ff', ...GlobalStyles.globalBorderRadius }}>
+                        <List.Subheader style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, backgroundColor: theme.colors.surfaceDisabled}}><CustomText variant='bodyMediumBold'>Medals and Awards Details</CustomText></List.Subheader>
+                        {
+                            medalsAndAwards.map((item : any, i : number) => {
+                                return (
+                                    <List.Item 
+                                        key={i}
+                                        style={{ height: 80, justifyContent: 'center' }} 
+                                        onPress={() => {screenFlowModule.onNavigateToScreen('MedalsAndAwardsScreen', item)}} 
+                                        titleNumberOfLines={2}
+                                        title={item.Awdtx} 
                                         right={() => <LucideIcons.ChevronRight />} 
                                     />
                                 )

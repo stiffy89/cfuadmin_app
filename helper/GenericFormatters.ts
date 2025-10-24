@@ -14,6 +14,10 @@ export default class GenericFormatter {
     }
 
     formatFromEdmDate (edmString : string, format? : string) {
+        if (!edmString){
+            return '';
+        }
+        
         const timestamp = parseInt(edmString.replace(/\D/g, ""), 10);
         const luxonDate = DateTime.fromMillis(timestamp);
         let formattedDate;

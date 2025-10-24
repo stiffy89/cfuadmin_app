@@ -37,7 +37,7 @@ export class AuthModule {
             //yout domain from okta
             domain: "https://integrator-3260158.okta.com",
             // yout domain + /oauth2/default
-            issuerUrl: "https://integrator-3260158.okta.com",
+            issuerUrl: "https://integrator-3260158.okta.com/oauth2/default",
             //callback configured in okta signin url
             redirectUri: redirectURI,
         };
@@ -54,7 +54,7 @@ export class AuthModule {
             const request = new AuthSession.AuthRequest({
                 clientId: oktaConfig.clientId,
                 redirectUri: oktaConfig.redirectUri,
-                scopes: ["openid", "profile", "email", "offline_access"],
+                scopes: ["openid"],
                 responseType: 'code',
                 usePKCE: true, //<-- because we are using PKCE, expo-auth-session will generate the code_challenge for us automatically and code_verifier
                 prompt: AuthSession.Prompt.Login //<-- this will use existing session, otherwise users will need to log in everytime

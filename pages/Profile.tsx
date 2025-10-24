@@ -24,8 +24,10 @@ import TrainingHistory from './TrainingHistory';
 import TrainingDetails from './TrainingDetails';
 import MembershipDetails from './MembershipDetails';
 import UniformDetails from './UniformDetails';
-import { openBrowserAsync } from 'expo-web-browser';
-import { WebView } from 'react-native-webview';
+import MedalsAndAwards from './MedalsAndAwards';
+
+import { authModule } from '../helper/AuthModule';
+import { OktaLoginResult } from '../types/AppTypes';
 
 const ProfileHeader = () => {
     const theme = useTheme();
@@ -34,7 +36,28 @@ const ProfileHeader = () => {
     return (
         <View style={{ margin: 20 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <Button mode='outlined' onPress={() => {}}>ID Card</Button>
+                <Button mode='outlined' onPress={async () => {
+                    
+                    if (!dataHandlerModule.securityInstanceInitialised()){
+                        return ;
+                    }
+
+                    authModule.onOktaLogin()
+                    .then(async (result: OktaLoginResult) => {
+                        console.log(result.response);
+                        if (result.response.idToken){
+                            const getTokensResponse = await dataHandlerModule.getInitialTokens(result.response.idToken)
+
+                            const refreshToken = getTokensResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+
+                            const newAccessToken = await dataHandlerModule.getRefreshedAccessToken(refreshToken);
+                            console.log(newAccessToken.data);
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    }) 
+                }}>ID Card</Button>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
                 <View style={{ padding: 20, backgroundColor: '#d3d3d3ff', borderRadius: 50 }}>
@@ -86,9 +109,12 @@ const ProfilePage = () => {
             case "MembershipDetailsScreen":
                 const membershipDetail = dummyData.getMembershipDetailsData();
                 const objectsOnLoanDetail = dummyData.getObjectsOnLoanData();
+                const medalsAndAwards = dummyData.getMedalsAndAwards();
+
                 data = {
                     membershipDetail : membershipDetail,
-                    objectsOnLoan : objectsOnLoanDetail
+                    objectsOnLoan : objectsOnLoanDetail,
+                    medalsAndAwards : medalsAndAwards
                 }
                 
                 break;
@@ -106,19 +132,11 @@ const ProfilePage = () => {
 
     }
 
-    const screenWidth = Dimensions.get('window').width;
-
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background}}>
             <ProfileHeader />
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }} contentContainerStyle={{ paddingBottom: 0 }}>
                 <View style={{ marginVertical: 40, paddingHorizontal: 20 }}>
-                    <View style={{height: 500, width: screenWidth}}>
-                        <WebView
-                            source={{ uri:'https://smh.com.au'}}
-                            nestedScrollEnabled={true} //<-- important we include this for android
-                        />
-                    </View>
                     <CustomText variant='titleLargeBold' style={{marginVertical: 15, color: theme.colors.primary}}>Personal Information</CustomText>
                     <List.Section style={{ backgroundColor: '#f9f9f9ff', ...GlobalStyles.globalBorderRadius }}>
                         <List.Item
@@ -193,6 +211,7 @@ const Profile = () => {
             <Stack.Screen name='TrainingDetailsScreen' component={TrainingDetails} />
             <Stack.Screen name='MembershipDetailsScreen' component={MembershipDetails} />
             <Stack.Screen name='UniformDetailsScreen' component={UniformDetails} />
+            <Stack.Screen name='MedalsAndAwardsScreen' component={MedalsAndAwards} />
         </Stack.Navigator>
     )
 }

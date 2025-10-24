@@ -484,4 +484,43 @@ export class DummyData {
             }
         ]
     }
+
+    getMedalsAndAwards() {
+        return [
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_ESS_MSS_SRV/MedalsAwards('090000019999123120150101000')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_ESS_MSS_SRV/MedalsAwards('090000019999123120150101000')",
+                    "type": "Z_ESS_MSS_SRV.MedalsAward"
+                },
+                "OriginalPskeyPernr": "09000001",
+                "Awdtx": "SES-Long Service Award 10 yrs",
+                "NewRecord": false,
+                "OriginalPskeyInfty": "0183",
+                "BegdaChar": "",
+                "OriginalPskeySubty": "",
+                "ObjectKey": "090000019999123120150101000",
+                "OriginalPskeyObjps": "",
+                "Pernr": "09000001",
+                "OriginalPskeySprps": "",
+                "Subty": "",
+                "OriginalPskeyEndda": "/Date(253402214400000)/",
+                "Objps": "",
+                "OriginalPskeyBegda": "/Date(1420070400000)/",
+                "Sprps": "",
+                "OriginalPskeySeqnr": "000",
+                "Endda": "/Date(253402214400000)/",
+                "Begda": "/Date(1420070400000)/",
+                "Seqnr": "000",
+                "Aedtm": "/Date(1442448000000)/",
+                "Uname": "MIL901348",
+                "Itxex": "X",
+                "Awdtp": "S102",
+                "Grpvl": "13",
+                "Text1": "Awarded Late",
+                "Text2": "Note Line 2",
+                "Text3": "Note Line 3"
+            }
+        ]
+    }
 }

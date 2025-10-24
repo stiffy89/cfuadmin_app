@@ -162,7 +162,21 @@ export class ScreenFlowModule {
                         {
                             screen: 'MyProfileScreen',
                             params: {
-                                screen: 'UniformDetailsScreen'
+                                screen: 'UniformDetailsScreen',
+                                params: data
+                            }
+                        }
+                    );
+                    break;
+
+                case 'MedalsAndAwardsScreen':
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'MyProfileScreen',
+                            params: {
+                                screen: 'MedalsAndAwardsScreen',
+                                params: data
                             }
                         }
                     );
