@@ -1,5 +1,5 @@
 {
-  "name": "cfuadmin_app",
+  "name": "cfuadminapplication",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "cfuadmin_app",
-    "slug": "cfuadmin_app",
-    "scheme": "com.cfu.cfuadmin_app",
+    "name": "cfuadminapplication",
+    "slug": "cfuadminapplication",
+    "scheme": "com.cfu.cfuadminapplication",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.stevencaoernox.cfuadmin-app",
+      "bundleIdentifier": "com.stevencaoernox.cfuadminapplication",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -27,7 +27,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.stevencaoernox.cfuadmin_app"
+      "package": "com.stevencaoernox.cfuadminapplication"
     },
     "web": {
       "favicon": "./assets/favicon.png"

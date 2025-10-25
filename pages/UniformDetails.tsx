@@ -9,7 +9,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { ProfileStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
 
-type props = StackScreenProps<ProfileStackParamList, 'TrainingDetailsScreen'>; //typing the navigation props
+type props = StackScreenProps<ProfileStackParamList, 'UniformDetailsScreen'>; //typing the navigation props
 
 const UniformDetails = ({route, navigation} : props) => {
     
