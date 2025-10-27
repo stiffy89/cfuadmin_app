@@ -48,7 +48,52 @@ export class ScreenFlowModule {
                     this.navigator?.navigate(
                         'MainTabs', 
                         {
-                            screen: 'ContactsScreen'
+                            screen: 'ContactsScreen',
+                            params: {
+                                screen : 'ContactsMain',
+                                params : {
+                                    screen : 'ContactsMyUnit'
+                                }
+                            }
+                        }
+                    );
+                    break;
+
+                case 'MyUnitContactDetail' :
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'ContactsScreen',
+                            params: {
+                                screen : 'MyUnitContactDetail',
+                                params : data
+                            }
+                        }
+                    );
+                    break;
+
+                case 'CfuPhonebookContactsList' :
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'ContactsScreen',
+                            params: {
+                                screen : 'CfuPhonebookContactsList',
+                                params : data
+                            }
+                        }
+                    );
+                    break;
+
+                case 'CfuPhonebookContactDetail' :
+                    this.navigator?.navigate(
+                        'MainTabs', 
+                        {
+                            screen: 'ContactsScreen',
+                            params: {
+                                screen : 'CfuPhonebookContactDetail',
+                                params : data
+                            }
                         }
                     );
                     break;

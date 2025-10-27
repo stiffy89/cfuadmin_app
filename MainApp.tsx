@@ -135,7 +135,8 @@ export default function MainApp() {
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
 	const { showDialog, setShowDialog, showBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
-	const { setUser, setServices } = useDataContext();
+	
+	const dataContext = useDataContext();
 
 	const lastAppState = useRef<AppStateStatus | null>(null)
 
@@ -199,8 +200,13 @@ export default function MainApp() {
 		const DummyObj = new DummyData();
 		const UserInfo = DummyObj.getUserInformation();
 		const ServiceInfo = DummyObj.getServices();
-		setUser(UserInfo);
-		setServices(ServiceInfo);
+		const MyUnitContacts = DummyObj.getMyUnitContactList();
+		const CfuPhonebookSuburbs = DummyObj.getCFUPhonebookSuburbsList();
+
+		dataContext.setUser(UserInfo);
+		dataContext.setServices(ServiceInfo);
+		dataContext.setMyUnitContacts(MyUnitContacts);
+		dataContext.setCfuPhonebookSuburbs(CfuPhonebookSuburbs)
 	}
 
 	useEffect(() => {

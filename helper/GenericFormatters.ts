@@ -2,6 +2,16 @@
 import { DateTime } from 'luxon';
 
 export default class GenericFormatter {
+    formatContactsAddress (data: any) {
+        let addressString = '';
+
+        data.Street ? addressString += (data.Street + ", ") : addressString += '';
+        data.Suburb ? addressString += (data.Suburb + " ") : addressString += '';
+        data.Postcode ? addressString += (data.Postcode + " ") : addressString += '';
+
+        return addressString;
+    }
+
     formatAddress (data : any) {
         let addressString = '';
 

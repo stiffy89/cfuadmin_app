@@ -523,4 +523,250 @@ export class DummyData {
             }
         ]
     }
+
+    getCFUPhonebookSuburbsList() {
+        return [
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Suburbs('%20ENGADINE')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Suburbs('%20ENGADINE')",
+                    "type": "Z_CFU_CONTACTS_SRV.Suburb"
+                },
+                "SuburbName": "ENGADINE",
+                "ContactsCount": "   1"
+            },
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Suburbs('BLIGH%20PARK')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Suburbs('BLIGH%20PARK')",
+                    "type": "Z_CFU_CONTACTS_SRV.Suburb"
+                },
+                "SuburbName": "BLIGH PARK",
+                "ContactsCount": "   1"
+            }
+        ]
+    }
+
+    getMyUnitContactList() {
+        return [
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('00813465')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('00813465')",
+                    "type": "Z_VOL_MEMBER_SRV.Contact"
+                },
+                "Mss": false,
+                "PernrExt": "813465",
+                "Stext": "Aspen Livingston (test)",
+                "Pernr": "00813465",
+                "Telnr": "",
+                "HomePhone": "02 9541 0287",
+                "Zzplans": "52009491",
+                "WorkPhone": "02 9545 5379",
+                "MobilePhone": "",
+                "Email": "ASPEN.LIVINGSTON@VIRGINBROADBAND.COM.AU",
+                "Rank": "",
+                "RankVisible": false,
+                "Role": "Team member",
+                "Volstatus": "IN TRAINING",
+                "RankOrder": "999",
+                "Nachn": "Livingston",
+                "Vorna": "Aspen",
+                "Rufnm": "test",
+                "Team": "",
+                "TeamVisible": false,
+                "Stras": "359 - 143 Natoque St.",
+                "StrasVisible": true,
+                "SilentHome": false,
+                "SilentMobile": false
+            },
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('09000001')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('09000001')",
+                    "type": "Z_VOL_MEMBER_SRV.Contact"
+                },
+                "Mss": false,
+                "PernrExt": "9000001",
+                "Stext": "CFU Vol Test (Volleyballs)",
+                "Pernr": "09000001",
+                "Telnr": "",
+                "HomePhone": "",
+                "Zzplans": "52009491",
+                "WorkPhone": "",
+                "MobilePhone": "",
+                "Email": "TESTG@HOTMAIL.COM",
+                "Rank": "",
+                "RankVisible": false,
+                "Role": "Secondarycontact",
+                "Volstatus": "OPERATIONAL",
+                "RankOrder": "999",
+                "Nachn": "Vol Test",
+                "Vorna": "CFU",
+                "Rufnm": "Volleyballs",
+                "Team": "",
+                "TeamVisible": false,
+                "Stras": "13 Test st",
+                "StrasVisible": true,
+                "SilentHome": false,
+                "SilentMobile": false
+            },
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('09020001')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('09020001')",
+                    "type": "Z_VOL_MEMBER_SRV.Contact"
+                },
+                "Mss": false,
+                "PernrExt": "9020001",
+                "Stext": "Dolly Parton",
+                "Pernr": "09020001",
+                "Telnr": "0477171777",
+                "HomePhone": "",
+                "Zzplans": "52009491",
+                "WorkPhone": "",
+                "MobilePhone": "",
+                "Email": "RAY.SABANDAL@ERNOX.COM",
+                "Rank": "",
+                "RankVisible": false,
+                "Role": "SES PROBATIONARY",
+                "Volstatus": "IN TRAINING",
+                "RankOrder": "999",
+                "Nachn": "Parton",
+                "Vorna": "Dolly",
+                "Rufnm": "",
+                "Team": "",
+                "TeamVisible": false,
+                "Stras": "22",
+                "StrasVisible": true,
+                "SilentHome": false,
+                "SilentMobile": false
+            },
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('00813470')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('00813470')",
+                    "type": "Z_VOL_MEMBER_SRV.Contact"
+                },
+                "Mss": false,
+                "PernrExt": "813470",
+                "Stext": "Ezra Mccarthy",
+                "Pernr": "00813470",
+                "Telnr": "0400 374 544",
+                "HomePhone": "02 9543 2705",
+                "Zzplans": "52009491",
+                "WorkPhone": "",
+                "MobilePhone": "0400 374 544",
+                "Email": "DEJARLAIS@BIGPOND.COM",
+                "Rank": "",
+                "RankVisible": false,
+                "Role": "Team coordinator",
+                "Volstatus": "OPERATIONAL",
+                "RankOrder": "999",
+                "Nachn": "Mccarthy",
+                "Vorna": "Ezra",
+                "Rufnm": "",
+                "Team": "",
+                "TeamVisible": false,
+                "Stras": "P.O. Box 253 3046 Purus St.",
+                "StrasVisible": true,
+                "SilentHome": false,
+                "SilentMobile": false
+            },
+            {
+                "__metadata": {
+                    "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('09020002')",
+                    "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/Contacts('09020002')",
+                    "type": "Z_VOL_MEMBER_SRV.Contact"
+                },
+                "Mss": false,
+                "PernrExt": "9020002",
+                "Stext": "Freddy Baggins (Fred)",
+                "Pernr": "09020002",
+                "Telnr": "0483 454 988",
+                "HomePhone": "Silent",
+                "Zzplans": "52009491",
+                "WorkPhone": "",
+                "MobilePhone": "",
+                "Email": "TEST1@HOTMAIL.COM",
+                "Rank": "",
+                "RankVisible": false,
+                "Role": "Community leader",
+                "Volstatus": "OPERATIONAL",
+                "RankOrder": "999",
+                "Nachn": "Baggins",
+                "Vorna": "Freddy",
+                "Rufnm": "Fred",
+                "Team": "",
+                "TeamVisible": false,
+                "Stras": "2 Kuringai Avenue",
+                "StrasVisible": true,
+                "SilentHome": true,
+                "SilentMobile": false
+            }
+        ]
+    }
+
+    getBrigadeSummary() {
+        return [
+            [
+                {
+                    "__metadata": {
+                        "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/BrigadeSummaries('52009491')",
+                        "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV/BrigadeSummaries('52009491')",
+                        "type": "Z_VOL_MEMBER_SRV.BrigadeSummary"
+                    },
+                    "Admin": "",
+                    "Zzorgeh": "00000000",
+                    "Otext": "",
+                    "Short": "MHP-378",
+                    "Zzplans": "52009491",
+                    "Stext": "BLIGH PARK, Dorrington Crescent 22"
+                }
+            ]
+        ]
+    }
+
+    getSuburbContacts() {
+        return (
+            [
+                {
+                    "__metadata": {
+                        "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Contacts('09000001')",
+                        "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Contacts('09000001')",
+                        "type": "Z_CFU_CONTACTS_SRV.Contact"
+                    },
+                    "EmployeeNo": "09000001",
+                    "Salutation": "Mr",
+                    "FirstName": "CFU",
+                    "PreferredName": "Volleyballs",
+                    "Surname": "Vol Test",
+                    "ContactNo": "",
+                    "Role": "CFU SECONDARYCONTACT",
+                    "UnitShortName": "MHP-378",
+                    "Street": "Opp 22 Dorrington Crescent",
+                    "Suburb": "BLIGH PARK",
+                    "Postcode": "2756"
+                },
+                {
+                    "__metadata": {
+                        "id": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Contacts('09020002')",
+                        "uri": "https://sapdep.nswfire.nsw.gov.au/sap/opu/odata/sap/Z_CFU_CONTACTS_SRV/Contacts('09020002')",
+                        "type": "Z_CFU_CONTACTS_SRV.Contact"
+                    },
+                    "EmployeeNo": "09020002",
+                    "Salutation": "Mr",
+                    "FirstName": "Freddy",
+                    "PreferredName": "Fred",
+                    "Surname": "Baggins",
+                    "ContactNo": "0483 454 988",
+                    "Role": "CFU COMMUNITY LEADER",
+                    "UnitShortName": "MHP-378",
+                    "Street": "Opp 22 Dorrington Crescent",
+                    "Suburb": "BLIGH PARK",
+                    "Postcode": "2756"
+                }
+            ]
+        )
+    }
 }

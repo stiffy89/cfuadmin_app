@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "cfuadminapplication",
-    "slug": "cfuadminapplication",
+    "slug": "cfuadmin_app",
     "scheme": "com.cfu.cfuadminapplication",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -39,6 +39,7 @@
     },
     "plugins": [
       "expo-web-browser"
-    ]
+    ],
+    "owner": "stevencaoernox"
   }
 }

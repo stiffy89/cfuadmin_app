@@ -105,7 +105,7 @@ class DataHandlerModule {
         }
     }
 
-    async readEntity (entityset : string) : Promise<AxiosResponse> {
+    async readEntity (entityset : string, accessToken? : string) : Promise<AxiosResponse> {
         try {
             let headers: Record<string, string> = {
                 "Accept" : 'application/json'
@@ -113,6 +113,10 @@ class DataHandlerModule {
 
             if (this.csrfToken == null){
                 headers['X-CSRF-Token'] = 'Fetch';
+            }
+
+            if (accessToken){
+                headers['Authorization'] = `Bearer ${accessToken}`
             }
 
             const response = await this.axiosInstance?.get(entityset, {

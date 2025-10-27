@@ -17,11 +17,18 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
     const [services, setServices] = useState<ServiceData[]>([])
 
+    const [myUnitContacts, setMyUnitContacts] = useState<any>([]);
+    const [cfuPhonebookSuburbs, setCfuPhonebookSuburbs] = useState<any>([]);
+
     const value: DataContextType = {
         user,
         setUser,
         services,
-        setServices
+        setServices,
+        myUnitContacts,
+        setMyUnitContacts,
+        cfuPhonebookSuburbs,
+        setCfuPhonebookSuburbs
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

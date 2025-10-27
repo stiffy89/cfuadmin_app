@@ -53,6 +53,10 @@ export type DataContextType = {
     setUser: (val: UserData) => void;
     services: ServiceData[];
     setServices: (val: ServiceData[]) => void;
+    myUnitContacts: any[];
+    setMyUnitContacts: (val: any[]) => void;
+    cfuPhonebookSuburbs : any[];
+    setCfuPhonebookSuburbs: (val: any[]) => void;
 }
 
 export type OktaLoginResult = {
@@ -73,8 +77,20 @@ export type RootStackParamList = {
 
 export type TabParamList = {
     HomeScreen: undefined;
-    ContactsScreen: undefined;
+    ContactsScreen: NavigatorScreenParams<ContactsStackParamList>;
     MyProfileScreen: NavigatorScreenParams<ProfileStackParamList>;
+}
+
+export type ContactsStackParamList = {
+    ContactsMain : NavigatorScreenParams<ContactsTabParamList>;
+    MyUnitContactDetail : Record<string, string> |undefined;
+    CfuPhonebookContactsList : any | undefined;
+    CfuPhonebookContactDetail : Record<string, string> | undefined;
+}
+
+export type ContactsTabParamList = {
+    ContactsMyUnit: undefined;
+    ContactsCFUPhonebook: undefined;
 }
 
 export type ProfileStackParamList = {
