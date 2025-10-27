@@ -9,7 +9,7 @@ class DataHandlerModule {
     
     init () {
         this.axiosInstance = axios.create({
-            baseURL: 'https://sapes5.sapdevcenter.com/sap/opu/odata/iwbep/GWSAMPLE_BASIC'
+            baseURL: 'https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/Z_VOL_MEMBER_SRV'
         })
 
         this.axiosSecurityInstance = axios.create({
@@ -111,16 +111,13 @@ class DataHandlerModule {
                 "Accept" : 'application/json'
             }
 
-            if (this.csrfToken == null){
-                headers['X-CSRF-Token'] = 'Fetch';
-            }
-
+            //hard code this for now
             if (accessToken){
                 headers['Authorization'] = `Bearer ${accessToken}`
             }
 
             const response = await this.axiosInstance?.get(entityset, {
-                headers : headers
+                headers
             });
 
             if (!response){

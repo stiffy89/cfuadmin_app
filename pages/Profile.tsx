@@ -44,14 +44,14 @@ const ProfileHeader = () => {
 
                     authModule.onOktaLogin()
                     .then(async (result: OktaLoginResult) => {
-                        console.log(result.response);
                         if (result.response.idToken){
                             const getTokensResponse = await dataHandlerModule.getInitialTokens(result.response.idToken)
+                            const accessToken = getTokensResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                            console.log(accessToken);
 
-                            const refreshToken = getTokensResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
-
-                            const newAccessToken = await dataHandlerModule.getRefreshedAccessToken(refreshToken);
-                            console.log(newAccessToken.data);
+                            //try calling our /MembershipDetails end point and see if it works
+                            const membershipDetails = await dataHandlerModule.readEntity("/Brigades", accessToken);
+                            console.log(membershipDetails);
                         }
                     })
                     .catch((error) => {
