@@ -199,6 +199,7 @@ export default function MainApp() {
 		//set up the data handler module
 		try {
 			await dataHandlerModule.init();
+			resourceDataHandlerModule.init();
 		}
 		catch (error) {
 			setDialogMessage('An error occurred during data handler initialisation');
