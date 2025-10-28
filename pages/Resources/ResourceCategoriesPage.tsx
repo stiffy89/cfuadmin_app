@@ -5,8 +5,10 @@ import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
 
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
+import { useAppContext } from '../../helper/AppContext';
 
 const ResourceCategoriesPage = () => {
+  const { setShowDialog, setShowBusyIndicator } = useAppContext();
   const theme = useTheme();
 
   const categories = [
@@ -37,7 +39,12 @@ const ResourceCategoriesPage = () => {
   ];
 
   const navigate = (category: { ParentRid: string; Path: string }) => {
-    screenFlowModule.onNavigateToScreen("ResourceList", category);
+    setShowBusyIndicator(true);
+    setShowDialog(true);
+        
+    setTimeout(() => {    
+      screenFlowModule.onNavigateToScreen("ResourceList", category);
+    }, 500);
   };
 
   return (

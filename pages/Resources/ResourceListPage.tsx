@@ -8,8 +8,8 @@ import { StackScreenProps} from "@react-navigation/stack";
 import { ResourceStackParamList} from "../../types/AppTypes";
 
 import {resourceDataHandlerModule} from "../../helper/ResourcesDataHandlerModule"
-
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
+import { useAppContext } from '../../helper/AppContext';
 
 
 const loadResourceList = async (Path: string) => {
@@ -33,17 +33,28 @@ type props = StackScreenProps<
 >;
 
 const ResourceListPage = ({ route, navigation }: props) => {
+  const { setShowDialog, setShowBusyIndicator } = useAppContext();
   const [resourceList, setResourceList] = useState([]);
 
   const theme = useTheme();
   const params = route.params ?? {};
 
   useEffect(() => {
-    loadResourceList(params.Path).then((res) => setResourceList(res));
+    loadResourceList(params.Path).then((res) => {
+      setResourceList(res)
+
+      setShowBusyIndicator(false);
+      setShowDialog(false);
+    });
   }, []);
 
   const navigate = (resource: any) => {
-    screenFlowModule.onNavigateToScreen("Resource", resource);
+    setShowBusyIndicator(true);
+    setShowDialog(true);
+    
+    setTimeout(() => {    
+      screenFlowModule.onNavigateToScreen("Resource", resource);
+    }, 500);
   };
 
   return (

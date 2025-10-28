@@ -11,8 +11,8 @@ import {StackScreenProps} from "@react-navigation/stack";
 import { ResourceStackParamList} from "../../types/AppTypes";
 
 import { resourceDataHandlerModule } from "../../helper/ResourcesDataHandlerModule";
-
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
+import { useAppContext } from '../../helper/AppContext';
 
 import Pdf from "react-native-pdf";
 import { Buffer } from "buffer";
@@ -38,6 +38,7 @@ const storeResource = async (contentString: string, filename:string, fileType: s
 type props = StackScreenProps<ResourceStackParamList, "Resource">;
 
 const ResourcePage = ({ route, navigation }: props) => {
+  const { setShowDialog, setShowBusyIndicator } = useAppContext();
   const [resource, setResource] = useState<any>();
   const [pdfSource, setPdfSource] = useState("")
   const [htmlContent, setHtmlContent] = useState<any>()
@@ -79,13 +80,27 @@ const ResourcePage = ({ route, navigation }: props) => {
         <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
         <CustomText style={{marginLeft: 20, marginRight: 60}} variant='titleMediumBold'>{displayName}</CustomText>
       </View>
-      {htmlContent && <WebView
+      {htmlContent && 
+        (<WebView
           originWhitelist={['*']} // Important for custom HTML to allow all origins
           source={{ html: htmlContent }}
           javaScriptEnabled={true}
           style={{flex: 1,}}
-      />}
-      {pdfSource && <Pdf source={{uri:pdfSource}} style={{flex: 1, width: Dimensions.get("window").width, height: Dimensions.get("window").height}} trustAllCerts={false} />}
+          onLoadEnd={() => {
+            setShowBusyIndicator(false);
+            setShowDialog(false);
+          }}
+        />)}
+      {pdfSource && 
+        (<Pdf 
+          source={{uri:pdfSource}} 
+          style={{flex: 1, width: Dimensions.get("window").width, height: Dimensions.get("window").height}} 
+          trustAllCerts={false}
+          onLoadComplete={() => {
+            setShowBusyIndicator(false);
+            setShowDialog(false);
+          }}
+        />)}
     </View>
   );
 };
