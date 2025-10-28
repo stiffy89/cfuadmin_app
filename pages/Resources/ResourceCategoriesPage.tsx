@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 import { useTheme, Button, IconButton} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
@@ -7,9 +7,28 @@ import CustomText from "../../assets/CustomText";
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
 
+const Icon = ({ name, color, size, style } : { name:keyof typeof LucideIcons.icons, color: string, size: number, style: StyleProp<ViewStyle> }) => {
+  const LucideIcon = LucideIcons.icons[name];
+
+  return <LucideIcon color={color} size={size} style={[style]}/>;
+};
+
 const ResourceCategoriesPage = () => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();
   const theme = useTheme();
+  
+  interface CategoryIcons {
+    [key:string] : string
+  }
+
+  const categoryIcons : CategoryIcons = {
+    "Guidelines and Recommended Practices": "FolderCog",
+    "Info/Training Documents": "Info",
+    "Policies & Procedures": "BookCheck",
+    "Skills Maintenance": "UserStar",
+    "Test your CFU Knowledge" : "BookOpenCheck",
+    "CFU Engage": "FolderHeart"
+  }
 
   const categories = [
     {
@@ -68,7 +87,7 @@ const ResourceCategoriesPage = () => {
                     onPress={() => navigate(category)}
                   >
                     <View style={{borderWidth: 1, borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center"}}>
-                      <LucideIcons.Image style={{ width: "100%" }} size={24} />
+                      <Icon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid] as keyof typeof LucideIcons.icons} color={theme.colors.primary} />
                     </View>
                     <CustomText
                       variant="bodySmall"
