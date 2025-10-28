@@ -1,0 +1,100 @@
+//this module handles all our oData calls
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import * as Crypto from 'expo-crypto';
+
+class ResourcesDataHandlerModule {
+
+    private axiosInstance : AxiosInstance | null = null;
+    
+    init () {
+        this.axiosInstance = axios.create({baseURL: "https://portal.uat.rfs.nsw.gov.au/sap/opu/odata/sap/Z_CFU_DOCUMENTS_SRV"})
+
+    }
+
+    oDataInstanceInitialised () {
+        return (this.axiosInstance !== null)
+    }
+
+    async getResourceList (path: string) : Promise<AxiosResponse> {
+        try {
+            const pathURI = encodeURIComponent(path);
+            const odataServiceUrl = "/$batch";
+            
+            const id = Crypto.randomUUID()
+            const batchBoundary = `batch_${id}`;
+
+            const batchReq1 = 
+`Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+GET Files?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${pathURI}%27%20and%20Desktop%20eq%20false HTTP/1.1
+sap-cancel-on-close: true
+sap-contextid-accept: header
+Accept: application/json
+Accept-Language: en-AU
+DataServiceVersion: 2.0
+MaxDataServiceVersion: 2.0
+
+`;
+
+            const batchBody = `
+--${batchBoundary}
+${batchReq1}
+--${batchBoundary}--`;
+
+            const username = process.env.BASIC_USERNAME;
+            const password = process.env.BASIC_PASSWORD;
+            const credentials = btoa(`${username}:${password}`);
+
+            const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
+                headers: {
+                    Authorization: `Basic ${credentials}`,
+                    "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
+                    Accept: "multipart/mixed",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                },
+            })
+            
+            if (!response){
+                throw new Error ('cannot get entity, no response')
+            }
+
+
+            return response;
+        }catch(error) {
+            throw error
+        }
+    }
+
+    async getResource(path: string, fileType: string) : Promise<AxiosResponse> {
+        try {
+            const encodedPathURI = encodeURIComponent(path);
+            const encodedFileType = encodeURIComponent(fileType);
+
+            const filters = `Url='${encodedPathURI}',FileType='${encodedFileType}'`;
+            const odataServiceUrl = `/FileExports(${filters})/$value`;
+
+            const username = process.env.BASIC_USERNAME;
+            const password = process.env.BASIC_PASSWORD;
+            const credentials = btoa(`${username}:${password}`);
+
+            const response = await this.axiosInstance?.get(odataServiceUrl, {
+                headers: {
+                    Authorization: `Basic ${credentials}`,
+                },
+                responseType: fileType == "application/pdf" ? "arraybuffer" : "json",
+                })
+            
+            if (!response){
+                throw new Error ('cannot get entity, no response')
+            }
+
+
+            return response;    
+        }catch(error){
+            throw error
+        }
+    }
+}
+
+export const resourceDataHandlerModule = new ResourcesDataHandlerModule ();
