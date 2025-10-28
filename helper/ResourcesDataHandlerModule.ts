@@ -23,24 +23,9 @@ class ResourcesDataHandlerModule {
             const id = Crypto.randomUUID()
             const batchBoundary = `batch_${id}`;
 
-            const batchReq1 = 
-`Content-Type: application/http
-Content-Transfer-Encoding: binary
-
-GET Files?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${pathURI}%27%20and%20Desktop%20eq%20false HTTP/1.1
-sap-cancel-on-close: true
-sap-contextid-accept: header
-Accept: application/json
-Accept-Language: en-AU
-DataServiceVersion: 2.0
-MaxDataServiceVersion: 2.0
-
-`;
-
-            const batchBody = `
---${batchBoundary}
-${batchReq1}
---${batchBoundary}--`;
+            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Files?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${pathURI}%27%20and%20Desktop%20eq%20false HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
+            
+            const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const username = process.env.BASIC_USERNAME;
             const password = process.env.BASIC_PASSWORD;

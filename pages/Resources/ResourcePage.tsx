@@ -74,10 +74,10 @@ const ResourcePage = ({ route, navigation }: props) => {
   }, [resource])
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
         <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-        <CustomText style={{marginLeft: 20, marginRight: 25}} variant='titleMediumBold'>{displayName}</CustomText>
+        <CustomText style={{marginLeft: 20, marginRight: 60}} variant='titleMediumBold'>{displayName}</CustomText>
       </View>
       {htmlContent && <WebView
           originWhitelist={['*']} // Important for custom HTML to allow all origins
