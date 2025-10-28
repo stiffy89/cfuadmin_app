@@ -226,6 +226,32 @@ export class ScreenFlowModule {
                         }
                     );
                     break;
+
+                case 'ResourceList':
+                    this.navigator?.navigate(
+                      'MainTabs', 
+                      {
+                          screen: 'Resources',
+                          params: {
+                            screen: 'ResourceList',
+                            params: data,
+                          }
+                      }
+                    );
+                    break;
+
+                case 'Resource':
+                    this.navigator?.navigate(
+                      'MainTabs', 
+                      {
+                          screen: 'Resources',
+                          params: {
+                            screen: 'Resource',
+                            params: data,
+                          }
+                      }
+                    );
+                    break;
             }
         }
     }

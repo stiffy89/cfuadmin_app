@@ -20,6 +20,7 @@ import HomePage from './pages/Home';
 import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
+import ResourceStack from './pages/Resources/Resources';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -46,6 +47,7 @@ import { authModule } from './helper/AuthModule';
 import { screenFlowModule } from './helper/ScreenFlowModule';
 import { dataHandlerModule } from './helper/DataHandlerModule';
 import { DummyData } from './data/DummyData';
+import { resourceDataHandlerModule } from './helper/ResourcesDataHandlerModule';
 
 //set up custom themes
 const customLightTheme = {
@@ -126,6 +128,7 @@ const TabNavigator = () => {
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
 			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
 			<Tab.Screen name="MyProfileScreen" component={ProfilePage}/>
+			<Tab.Screen name ="Resources" component={ResourceStack}/>
 		</Tab.Navigator>
 	)
 }
