@@ -20,6 +20,7 @@ import HomePage from './pages/Home';
 import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
+import Resources from './pages/Resources/Resources';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -126,6 +127,7 @@ const TabNavigator = () => {
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
 			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
 			<Tab.Screen name="MyProfileScreen" component={ProfilePage}/>
+			<Tab.Screen name ="Resources" component={Resources}/>
 		</Tab.Navigator>
 	)
 }

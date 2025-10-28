@@ -79,6 +79,7 @@ export type TabParamList = {
     HomeScreen: undefined;
     ContactsScreen: NavigatorScreenParams<ContactsStackParamList>;
     MyProfileScreen: NavigatorScreenParams<ProfileStackParamList>;
+    Resources: NavigatorScreenParams<ResourceStackParamList>
 }
 
 export type ContactsStackParamList = {
@@ -105,6 +106,12 @@ export type ProfileStackParamList = {
     UniformDetailsScreen: Record<string, string> | undefined;
     MedalsAndAwardsScreen: Record<string, string> | undefined;
 }
+
+export type ResourceStackParamList = {
+    ResourceCategories: Record<string, string> | undefined;
+    ResourceList: Record<string, string> | undefined;
+    Resource: Record<string, string> | undefined;
+};
 
 export type RootStackScreenKeys = keyof RootStackParamList;
 export type ProfileStackScreenKeys = keyof ProfileStackParamList;
