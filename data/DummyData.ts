@@ -769,4 +769,67 @@ export class DummyData {
             ]
         )
     }
+
+    getDummyEmail() {
+        return (
+            {
+                "__metadata": {
+                    "id": "https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/Z_ESS_MSS_SRV/EmployeeEmails(Begda=datetime'2025-10-28T00%3A00%3A00',Endda=datetime'9999-12-31T00%3A00%3A00',Objps='',Pernr='00825004',Seqnr='000',Sprps='',Subty='9040')",
+                    "uri": "https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/Z_ESS_MSS_SRV/EmployeeEmails(Begda=datetime'2025-10-28T00%3A00%3A00',Endda=datetime'9999-12-31T00%3A00%3A00',Objps='',Pernr='00825004',Seqnr='000',Sprps='',Subty='9040')",
+                    "type": "Z_ESS_MSS_SRV.EmployeeEmail"
+                },
+                "NewEmail": false,
+                "Volunteer": false,
+                "Zzsil00": false,
+                "Begda": "/Date(1761609600000)/",
+                "Endda": "/Date(253402214400000)/",
+                "Objps": "",
+                "Pernr": "00825004",
+                "Seqnr": "000",
+                "Sprps": "",
+                "Subty": "9040",
+                "UsridLong": "SAMUELJONES@FISTFULOFDYNAMITEE.COM.AU"
+            }
+        )
+    }
+
+    getDummyMobile() {
+        return (
+            {
+                "__metadata": {
+                    "id": "https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/Z_ESS_MSS_SRV/EmployeePhoneNumbers(Endda=datetime'9999-12-31T00%3A00%3A00',Begda=datetime'2025-10-28T00%3A00%3A00',Pernr='00825004',Subty='1',Objps='',Sprps='',Seqnr='000')",
+                    "uri": "https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/Z_ESS_MSS_SRV/EmployeePhoneNumbers(Endda=datetime'9999-12-31T00%3A00%3A00',Begda=datetime'2025-10-28T00%3A00%3A00',Pernr='00825004',Subty='1',Objps='',Sprps='',Seqnr='000')",
+                    "type": "Z_ESS_MSS_SRV.EmployeePhoneNumber"
+                },
+                "Zzsil00": false,
+                "Zzsil01": false,
+                "Zzsil02": false,
+                "Zzsil03": false,
+                "Zzsil04": false,
+                "Zzsil05": false,
+                "Zzsil06": false,
+                "Endda": "/Date(253402214400000)/",
+                "Begda": "/Date(1761609600000)/",
+                "Pernr": "00825004",
+                "Zzmessage": "The Primary Mobile number above is the number you will be contacted on to send you alerts. Please ensure it is filled in and correct.",
+                "Zzcom01": "",
+                "Subty": "1",
+                "Zzcom02": "",
+                "Objps": "",
+                "Zzcom03": "",
+                "Telnr": "0414 111 111",
+                "Zzcom04": "",
+                "Sprps": "",
+                "Zzcom05": "",
+                "Zznum01": "",
+                "Zzcom06": "",
+                "Zznum02": "",
+                "Zznum03": "",
+                "Seqnr": "000",
+                "Zznum04": "",
+                "Zznum05": "",
+                "Zznum06": ""
+            }
+        )
+    }
 }
