@@ -134,7 +134,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { showDialog, setShowDialog, showBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
+	const { showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -192,14 +192,74 @@ export default function MainApp() {
 		AsyncStorage.setItem('last_active', currentTimeStamp);
 	}
 
-	const onGetInitialLoad = () => {
+	const onGetInitialLoad = async () => {
 		//set up the data handler module
-		dataHandlerModule.init();
-		
-		//get user information - dummy for now
+		try {
+			await dataHandlerModule.init();
+		}
+		catch (error) {
+			setDialogMessage('An error occurred during data handler initialisation');
+			setShowDialog(true);
+			return;
+		}
+
 		const DummyObj = new DummyData();
+		//get the information for the tiles
+
+		//get profile information
+		// - Z_VOL_MEMBER_SRV/MembershipDetails
+		// - Z_VO_MEMBER_SRV/TrainingHistoryDetails
+		// - Z_ESS_MSS_SRV/EmployeeDetails
+		// - Z_VOL_MEMBER_SRV/VolunteerRoles
+		// - Z_ESS_MSS_SRV/ObjectOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true
+		// - Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100
+
+	/*	const initialProfileData = [
+			'Z_VOL_MEMBER_SRV/MembershipDetails',
+			'Z_VO_MEMBER_SRV/TrainingHistoryDetails',
+			'Z_ESS_MSS_SRV/EmployeeDetails',
+			'Z_VOL_MEMBER_SRV/VolunteerRoles',
+			'Z_ESS_MSS_SRV/ObjectOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true',
+			'Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100'
+		]. */
+
+	/*	const results = await Promise.all([
+			dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/MembershipDetails'),
+      		dataHandlerModule.readEntity('Z_VO_MEMBER_SRV/TrainingHistoryDetails'),
+      		dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/VolunteerRoles'),
+			dataHandlerModule.readEntity('Z_ESS_MSS_SRV/EmployeeDetails'),
+			dataHandlerModule.readEntity('Z_ESS_MSS_SRV/ObjectOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true'),
+			dataHandlerModule.readEntity('Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100')
+		]); */
+
+	/*	const profileData = {
+			"membershipDetails" : {}
+		}
+
+		try {
+			const membershipDetails = await dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/MembershipDetails');
+			profileData.membershipDetails = membershipDetails.data.d.results;
+			
+			const trainingHistoryDetails = await dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/TrainingHistoryDetails');
+
+			const volRoles = await dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/VolunteerRoles');
+
+			const empRoles = await dataHandlerModule.readEntity('Z_ESS_MSS_SRV/EmployeeDetails');
+
+			const objOnLoan = await dataHandlerModule.readEntity('Z_ESS_MSS_SRV/ObjectsOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true');
+
+			const medalsAndAwards = await dataHandlerModule.readEntity('Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100') 
+		}
+		catch (error){
+			console.log(error);
+			setDialogMessage('new error on loading initial data : ' + error);
+			setShowDialog(true);
+		}
+*/
+
+		//get profile information
+		const ServiceInfo = DummyObj.getServices()
 		const UserInfo = DummyObj.getUserInformation();
-		const ServiceInfo = DummyObj.getServices();
 		const MyUnitContacts = DummyObj.getMyUnitContactList();
 		const CfuPhonebookSuburbs = DummyObj.getCFUPhonebookSuburbsList();
 

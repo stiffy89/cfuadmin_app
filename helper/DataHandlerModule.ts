@@ -10,7 +10,7 @@ class DataHandlerModule {
     private axiosSecurityInstance: AxiosInstance | null = null;
     private csrfToken: string | null = null;
 
-    async init() {
+    async init() : Promise<boolean> {
         this.axiosInstance = axios.create({
             baseURL: 'https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap'
         })
@@ -35,10 +35,13 @@ class DataHandlerModule {
                 await AsyncStorage.setItem('access-token', newAccessToken);
                 await AsyncStorage.setItem('refresh-token', newRefreshToken);
 
+                return true;
             } catch (error) {
                 throw new Error("Token refresh or retry failed: " + error);
             }
         }
+        
+        return true;
     }
 
     oDataInstanceInitialised() {
