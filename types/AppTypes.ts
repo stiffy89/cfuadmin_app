@@ -20,6 +20,12 @@ export type AppContextType = {
     setAuthenticationMode: (val: AuthenticationMode) => void;
 };
 
+export type batchGETResponse = {
+    entityName : string;
+    responseBody : any;
+}
+
+
 export type SecurityContextType = {
     isLoggedIn: boolean;
     setIsLoggedIn: (val: boolean) => void;

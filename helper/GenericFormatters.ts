@@ -35,4 +35,19 @@ export default class GenericFormatter {
         format ? formattedDate = luxonDate.toFormat(format) : formattedDate = luxonDate.toFormat('dd/MM/yyyy');
         return formattedDate;
     }
+
+    extractODataResults(raw: string): any[] {
+        const matches = raw.match(/{\s*"d"\s*:\s*{[\s\S]*?}}/g);
+
+        if (!matches) return [];
+
+        return matches.map((m) => {
+            try {
+            return JSON.parse(m);
+            } catch {
+            console.warn("Skipping invalid JSON segment:", m);
+            return null;
+            }
+        }).filter(Boolean);
+    }
 }

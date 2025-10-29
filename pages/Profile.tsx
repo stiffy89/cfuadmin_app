@@ -51,12 +51,35 @@ const ProfileHeader = () => {
                             return;
                         }
 
-                        const token = 'AFBWp5zVH-Cs-9RK0h7vy0ie7uqlFl3L1kOITGNcMTSz4Eyy';
+                    /*    const loginResponse = await authModule.onOktaLogin();
+                        console.log(loginResponse);
+                        return; */
+
+                    /*    const token = 'AFBWp5zVH-Cs-9RK0h7vy0ie7uqlFl3L1kOITGNcMTSz4Eyy';
                         const phoneData = new DummyData().getDummyMobile();
-                        const batchBody = dataHandlerModule.batchBodyFormatter('MERGE', "EmployeePhoneNumbers(Endda=datetime'9999-12-31T00%3A00%3A00',Begda=datetime'2025-10-28T00%3A00%3A00',Pernr='00825004',Subty='1',Objps='',Sprps='',Seqnr='000')", phoneData);
+                        const batchObj = dataHandlerModule.batchBodyFormatter('MERGE', "EmployeePhoneNumbers(Endda=datetime'9999-12-31T00%3A00%3A00',Begda=datetime'2025-10-28T00%3A00%3A00',Pernr='00825004',Subty='1',Objps='',Sprps='',Seqnr='000')", phoneData);
+                        const batchBody = batchObj.batchBody;
+                        const batchId = batchObj.batch;
+                        const dataResponse = await dataHandlerModule.updateEntity('/Z_ESS_MSS_SRV/$batch', batchBody, batchId, token);
+                        */
 
-                        const dataResponse = await dataHandlerModule.updateEntity('/Z_ESS_MSS_SRV/$batch', batchBody, token);
+                        const volRolesBatchBody = dataHandlerModule.getBatchBody('VolunteerRoles');
 
+                        const membershipDetailsBatchBody = dataHandlerModule.getBatchBody('MembershipDetails');
+
+                        const batchBodyArray = [membershipDetailsBatchBody, volRolesBatchBody]
+
+                        try {
+                            const responseBody = await dataHandlerModule.batchGet('MembershipDetailsss', "Z_VOL_MEMBER_SRV", 'MembershipDetails')
+
+                            console.log(responseBody);
+                        }
+                        catch (error) {
+                            throw error;
+                        }
+                        
+
+                        
 
                     }}
                 >

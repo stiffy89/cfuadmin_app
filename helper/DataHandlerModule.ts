@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosResponse, isAxiosError } from 'axios';
 import { authModule } from './AuthModule';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
+import { batchGETResponse } from '../types/AppTypes';
 
 class DataHandlerModule {
 
@@ -10,16 +11,16 @@ class DataHandlerModule {
     private axiosSecurityInstance: AxiosInstance | null = null;
     private csrfToken: string | null = null;
 
-    async init() : Promise<boolean> {
+    async init(): Promise<boolean> {
         this.axiosInstance = axios.create({
-            baseURL: 'https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap'
+            baseURL: 'https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/'
         })
 
         this.axiosSecurityInstance = axios.create({
             baseURL: 'https://portalicmuat.fire.nsw.gov.au/mslm'
         })
-        
-    /*    const accessToken = await AsyncStorage.getItem('access-token');
+
+        const accessToken = await AsyncStorage.getItem('access-token');
 
         if (!accessToken) {
             //go get auth token
@@ -40,8 +41,8 @@ class DataHandlerModule {
             } catch (error) {
                 throw new Error("Token refresh or retry failed: " + error);
             }
-        } */
-        
+        }
+
         return true;
     }
 
@@ -231,15 +232,147 @@ class DataHandlerModule {
     }
 
     batchBodyFormatter(action: string, urlPath: string, data: any) {
+        const changeSet = 'changeset_' + Crypto.randomUUID();
+        const batch = 'batch_' + Crypto.randomUUID();
 
         const dataStr = JSON.stringify(data);
 
-        const batchBody = `--batch\nContent-Type: multipart/mixed; boundary=changeset\n\n--changeset\nContent-Type: application/http\nContent-Transfer-Encoding: binary\n\n${action} ${urlPath} HTTP/1.1\nsap-context-id-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\nContent-Type: application/json\nContent-Length: 10000\n\n${dataStr}\n\n--changeset--\n--batch--`;
+        const batchBody = `--${batch}\nContent-Type: multipart/mixed; boundary=${changeSet}\n\n--${changeSet}\nContent-Type: application/http\nContent-Transfer-Encoding: binary\n\n${action} ${urlPath} HTTP/1.1\nsap-context-id-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\nContent-Type: application/json\nContent-Length: 10000\n\n${dataStr}\n\n--${changeSet}--\n--${batch}--`;
 
+        const batchBodyObj = {
+            'batch': batch,
+            'batchBody': batchBody
+        }
+
+        return batchBodyObj;
+    }
+
+    updateBatchBody(urlPath: string, data: any) {
+        const dataStr = JSON.stringify(data);
+        const batchBody = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nMERGE ${urlPath} HTTP/1.1\nsap-context-id-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\nContent-Type: application/json\nContent-Length: 10000\n\n${dataStr}`;
         return batchBody;
     }
 
-    async updateEntity(entity: string, batchBody: any, passedToken?: string): Promise<AxiosResponse> {
+    getBatchBody(urlPath: string) {
+        const batchBody = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET ${urlPath} HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept:header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n\n`;
+        return batchBody;
+    }
+
+    formatGETResponse(raw: string) {
+        const breaker = raw.split(/\r?\n/)[0] + '--';
+        const arr = raw.split(/\r?\n|\r/);
+        const index = arr.indexOf(breaker);
+        const jsonRaw = arr[index - 1];
+        return JSON.parse(jsonRaw);
+    }
+
+    async batchGet(path: string, serviceName: string, entityName: string, passedAccessToken?: string): Promise<batchGETResponse> {
+        //build the request body and post
+        const batch = 'batch_' + Crypto.randomUUID();
+
+        let batchString = `--${batch}\n` + this.getBatchBody(path) + `--${batch}--`;
+
+        try {
+            let csrfToken = await AsyncStorage.getItem('csrf-token');
+
+            if (!csrfToken) {
+                const csrfResponse = await this.readEntity('/Z_VOL_MEMBER_SRV/MembershipDetails');
+                const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                await AsyncStorage.setItem('csrf-token', newCsrfToken);
+                csrfToken = newCsrfToken;
+            }
+
+            let accessToken;
+
+            if (passedAccessToken) {
+                accessToken = passedAccessToken;
+            }
+            else {
+                accessToken = await AsyncStorage.getItem('access-token');
+            }
+
+            //run the create call
+            const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                batchString,
+                {
+                    headers: {
+                        "Content-Type": `multipart/mixed; boundary=${batch}`,
+                        'x-csrf-token': csrfToken,
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                }
+            );
+
+            if (!postResponse) throw new Error('no response from update');
+
+            //format the response
+            const jsonResponse = this.formatGETResponse(postResponse.data);
+
+            if (!jsonResponse) {
+                throw new Error('response body is malformed, cannot parse')
+            }
+
+            return {
+                entityName: entityName,
+                responseBody: jsonResponse
+            }
+        }
+        catch (error) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                if (status === 401) {
+                    try {
+                        const refreshToken = await AsyncStorage.getItem('refresh-token');
+                        let newAccessToken;
+
+                        if (!refreshToken) {
+                            const oktaLoginResponse = await authModule.onOktaLogin();
+                            const idToken = oktaLoginResponse.response.idToken;
+                            if (!idToken) throw new Error('No idToken returned');
+
+                            const tokenResponse = await this.getInitialTokens(idToken);
+
+                            await AsyncStorage.setItem('access-token', tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+                            await AsyncStorage.setItem('refresh-token', tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN);
+
+                            newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                        }
+                        else {
+                            const tokenResponse = await this.getRefreshedAccessToken(refreshToken);
+                            await AsyncStorage.setItem('access-token', tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+
+                            newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                        }
+
+                        const retryResponse = await this.updateEntity(path, serviceName, entityName, newAccessToken);
+
+                        if (!retryResponse) throw new Error('no response from update');
+
+                        //format the response
+                        const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+
+                        if (!retryJsonResponse) {
+                            throw new Error('response body is malformed, cannot parse')
+                        }
+
+                        return {
+                            entityName: entityName,
+                            responseBody: retryJsonResponse
+                        }
+
+                    } catch (error) {
+                        console.error("Token refresh or retry failed:", error);
+                        throw error;
+                    }
+                }
+            }
+
+            throw error;
+        }
+
+    }
+
+    async updateEntity(entity: string, batchBody: any, batchId: string, passedToken?: string): Promise<AxiosResponse> {
         let accessToken;
 
         if (passedToken) {
@@ -286,7 +419,7 @@ class DataHandlerModule {
                 batchBody,
                 {
                     headers: {
-                        "Content-Type": 'multipart/mixed; boundary=batch',
+                        "Content-Type": `multipart/mixed; boundary=${batchId}`,
                         'x-csrf-token': csrfToken,
                         'Authorization': `Bearer ${accessToken}`
                     }
