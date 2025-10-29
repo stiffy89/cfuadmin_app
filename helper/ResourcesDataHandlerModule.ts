@@ -5,10 +5,14 @@ import * as Crypto from 'expo-crypto';
 class ResourcesDataHandlerModule {
 
     private axiosInstance : AxiosInstance | null = null;
-    
+    private credentials : string | null = null;
+
     init () {
         this.axiosInstance = axios.create({baseURL: "https://portal.uat.rfs.nsw.gov.au/sap/opu/odata/sap/Z_CFU_DOCUMENTS_SRV"})
 
+        const username = process.env.EXPO_PUBLIC_BASIC_USERNAME;
+        const password = process.env.EXPO_PUBLIC_BASIC_PASSWORD;
+        this.credentials = btoa(`${username}:${password}`);
     }
 
     oDataInstanceInitialised () {
@@ -27,13 +31,9 @@ class ResourcesDataHandlerModule {
             
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
-            const username = process.env.BASIC_USERNAME;
-            const password = process.env.BASIC_PASSWORD;
-            const credentials = btoa(`${username}:${password}`);
-
             const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
                 headers: {
-                    Authorization: `Basic ${credentials}`,
+                    Authorization: `Basic ${this.credentials}`,
                     "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
                     Accept: "multipart/mixed",
                     "Accept-Encoding": "gzip, deflate, br, zstd",
@@ -59,13 +59,9 @@ class ResourcesDataHandlerModule {
             const filters = `Url='${encodedPathURI}',FileType='${encodedFileType}'`;
             const odataServiceUrl = `/FileExports(${filters})/$value`;
 
-            const username = process.env.BASIC_USERNAME;
-            const password = process.env.BASIC_PASSWORD;
-            const credentials = btoa(`${username}:${password}`);
-
             const response = await this.axiosInstance?.get(odataServiceUrl, {
                 headers: {
-                    Authorization: `Basic ${credentials}`,
+                    Authorization: `Basic ${this.credentials}`,
                 },
                 responseType: fileType == "application/pdf" ? "arraybuffer" : "json",
                 })

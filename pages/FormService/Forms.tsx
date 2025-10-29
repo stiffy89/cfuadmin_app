@@ -181,17 +181,15 @@ const FormPage = ({ route, navigation }: formPageProps) => {
         }
 
         if(webViewHistory.indexOf(url) > 0){
-            console.log("can go back")
             setCanGoBack(true)
         }else{
-            console.log("cant go back")
             setCanGoBack(false)
         }
 
-        if(webViewHistory.indexOf(url) < webViewHistory.length){
-            setCanGoForward(false)
-        }else{
+        if(webViewHistory.indexOf(url) != webViewHistory.length - 1){
             setCanGoForward(true)
+        }else{
+            setCanGoForward(false)
         }
     };
 
@@ -228,8 +226,8 @@ const FormPage = ({ route, navigation }: formPageProps) => {
                     <CustomText style={{color: "grey", textAlign: "center"}} variant='labelSmall'>{currentUri}</CustomText>
                 </View>
                 <View style={{flexDirection: "row", justifyContent: "space-around"}}>
-                    <IconButton icon={() => <CustomIcon name="ChevronLeft" color={theme.colors.primary} size={25}/>} disabled={!canGoBack} size={25} onPress={webViewBack} />
-                    <IconButton icon={() => <CustomIcon name="ChevronRight" color={theme.colors.primary} size={25}/>} disabled={!canGoForward} size={25} onPress={webViewForward} />
+                    <IconButton icon={() => <CustomIcon name="ChevronLeft" color={canGoBack ? theme.colors.primary : theme.colors.surfaceDisabled} size={25}/>} disabled={!canGoBack} size={25} onPress={webViewBack} />
+                    <IconButton icon={() => <CustomIcon name="ChevronRight" color={canGoForward ? theme.colors.primary : theme.colors.surfaceDisabled} size={25}/>} disabled={!canGoForward} size={25} onPress={webViewForward} />
                     <IconButton icon={() => <CustomIcon name="Share" color={theme.colors.primary} size={25}/>} size={25} onPress={webViewShare} />
                   <IconButton icon={() => <CustomIcon name="LogOut" color={theme.colors.primary} size={25}/>} size={25} onPress={webViewExit} />
                 </View>
