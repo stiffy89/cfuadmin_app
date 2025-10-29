@@ -38,6 +38,13 @@ const ProfileHeader = () => {
         <View style={{ margin: 20 }}>
             <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
                 <Button
+                    onPress={() => {
+                        authModule.onClearAllDevTokens();
+                    }}
+                >
+                    Clear Tokens
+                </Button>
+                <Button
                     mode="outlined"
                     onPress={async () => {
                         if (!dataHandlerModule.securityInstanceInitialised()) {

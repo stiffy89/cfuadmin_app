@@ -239,6 +239,10 @@ export class AuthModule {
         return true;
     }
 
+    async onClearAllDevTokens () {
+        await AsyncStorage.clear();
+    }
+
     async onLogOut(): Promise<boolean> {
         const screenLogout = await screenFlowModule.onLogout();
 
