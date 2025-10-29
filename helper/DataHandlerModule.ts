@@ -19,7 +19,7 @@ class DataHandlerModule {
             baseURL: 'https://portalicmuat.fire.nsw.gov.au/mslm'
         })
         
-        const accessToken = await AsyncStorage.getItem('access-token');
+    /*    const accessToken = await AsyncStorage.getItem('access-token');
 
         if (!accessToken) {
             //go get auth token
@@ -36,10 +36,11 @@ class DataHandlerModule {
                 await AsyncStorage.setItem('refresh-token', newRefreshToken);
 
                 return true;
+
             } catch (error) {
                 throw new Error("Token refresh or retry failed: " + error);
             }
-        }
+        } */
         
         return true;
     }
@@ -131,8 +132,6 @@ class DataHandlerModule {
             throw error;
         }
     }
-
-
 
     async readEntity(entityset: string, passedToken?: string): Promise<AxiosResponse> {
 
