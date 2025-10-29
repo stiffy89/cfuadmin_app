@@ -1,4 +1,5 @@
 //auth module that handles okta login, local auth and other auth related things
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import * as WebBrowser from "expo-web-browser";
@@ -11,6 +12,7 @@ import { screenFlowModule } from './ScreenFlowModule';
 
 //types
 import { OktaLoginResult, TokenError } from '../types/AppTypes';
+
 
 export class AuthModule {
 
@@ -28,7 +30,7 @@ export class AuthModule {
         // the redirect uri from the scheme will not be used when we're testing in expo go env
         // once we move this to a standalone build, we will use the 'native : <scheme url>' as explained here https://docs.expo.dev/versions/latest/sdk/auth-session/#authsessionredirecturioptions
         // the prebuild means our environment is 'bare' so we need to cater for it aswell
-        let redirectURI = (Constants.executionEnvironment == 'standalone' || Constants.executionEnvironment == 'bare') ? 'com.ernox.login://callback' : AuthSession.makeRedirectUri({ preferLocalhost: true });
+        let redirectURI = (Constants.executionEnvironment == 'standalone' || Constants.executionEnvironment == 'bare') ? Platform.OS == "android" ?  AuthSession.makeRedirectUri({path: "redirect"}) : 'com.ernox.login://callback' : AuthSession.makeRedirectUri({ preferLocalhost: true });
 
         //configuration
         const oktaConfig = {
