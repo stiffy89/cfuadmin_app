@@ -21,6 +21,7 @@ import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
+import FormServiceStack from './pages/FormService/Forms';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -122,13 +123,17 @@ const TabNavigator = () => {
 						case "MyProfileScreen":
 							return <LucideIcons.CircleUser size={24} color={iconColor} />;
 					}
+				},
+				tabBarStyle: {
+					display: route.name === 'FormService' ? 'none' : 'flex',
 				}
 			})}
 		>
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
 			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
 			<Tab.Screen name="MyProfileScreen" component={ProfilePage}/>
-			<Tab.Screen name ="Resources" component={ResourceStack}/>
+			<Tab.Screen name="Resources" component={ResourceStack}/>
+			<Tab.Screen name="FormService" component={FormServiceStack}/>
 		</Tab.Navigator>
 	)
 }

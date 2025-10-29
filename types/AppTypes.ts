@@ -80,6 +80,7 @@ export type TabParamList = {
     ContactsScreen: NavigatorScreenParams<ContactsStackParamList>;
     MyProfileScreen: NavigatorScreenParams<ProfileStackParamList>;
     Resources: NavigatorScreenParams<ResourceStackParamList>
+    FormService: NavigatorScreenParams<FormServiceStackParamList>;
 }
 
 export type ContactsStackParamList = {
@@ -111,6 +112,11 @@ export type ResourceStackParamList = {
     ResourceCategories: Record<string, string> | undefined;
     ResourceList: Record<string, string> | undefined;
     Resource: Record<string, string> | undefined;
+};
+
+export type FormServiceStackParamList = {
+    FormServicePage: Record<string, string> | undefined;
+    FormPage: Record<string, string> | undefined;
 };
 
 export type RootStackScreenKeys = keyof RootStackParamList;
