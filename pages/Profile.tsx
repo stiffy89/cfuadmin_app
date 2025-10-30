@@ -31,6 +31,7 @@ import { authModule } from "../helper/AuthModule";
 import { OktaLoginResult } from "../types/AppTypes";
 
 const ProfileHeader = () => {
+    const { setCardModalVisible } = useAppContext();
     const theme = useTheme();
     const { user } = useDataContext();
     const [name, setName] = useState('John Smith');
@@ -47,6 +48,7 @@ const ProfileHeader = () => {
                 <Button
                     mode="outlined"
                     onPress={async () => {
+                        setCardModalVisible(true)
                         if (!dataHandlerModule.securityInstanceInitialised()) {
                             return;
                         }

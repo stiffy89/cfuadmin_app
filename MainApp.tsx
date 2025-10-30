@@ -22,6 +22,7 @@ import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
 import FormServiceStack from './pages/FormService/Forms';
+import CardModal from './assets/CardModal';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -142,8 +143,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
-	
+	const { showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, cardModalVisible, setCardModalVisible } = useAppContext();
 	const dataContext = useDataContext();
 
 	const lastAppState = useRef<AppStateStatus | null>(null)
@@ -356,6 +356,7 @@ export default function MainApp() {
 								)
 							}
 						</Dialog>
+						<CardModal visible={cardModalVisible} setVisible={setCardModalVisible}/>
 					</Portal>
 					<NavigationContainer
 						ref={navigatorRef}

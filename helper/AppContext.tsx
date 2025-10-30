@@ -15,6 +15,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [lastAppState, setLastAppState] = useState<string>('none');
   const [authenticationMode, setAuthenticationMode] = useState<AuthenticationMode>('bypass');
 
+  const [cardModalVisible, setCardModalVisible] = useState(false)
+
   const value: AppContextType = {
     showDialog,
     setShowDialog,
@@ -25,7 +27,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     lastAppState,
     setLastAppState,
     authenticationMode,
-    setAuthenticationMode
+    setAuthenticationMode,
+    cardModalVisible,
+    setCardModalVisible
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

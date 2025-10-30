@@ -18,6 +18,8 @@ export type AppContextType = {
     setLastAppState: (val: string) => void;
     authenticationMode: AuthenticationMode;
     setAuthenticationMode: (val: AuthenticationMode) => void;
+    cardModalVisible: boolean,
+    setCardModalVisible: (val: boolean) => void
 };
 
 export type SecurityContextType = {
