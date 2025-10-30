@@ -25,12 +25,9 @@ export class ScreenFlowModule {
        
         if (this.navigator?.isReady()){
             switch (screen) {
+
                 case 'LoginScreen' :
                     this.navigator?.navigate('LoginScreen');
-                    break;
-
-                case 'Resources' : 
-                    this.navigator?.navigate('Resources');
                     break;
 
                 case 'EditScreen' :
@@ -40,6 +37,37 @@ export class ScreenFlowModule {
                     );
                     break;
 
+                case 'Resources' : 
+                    this.navigator?.navigate(
+                        'Resources', 
+                        {
+                            screen: 'ResourceCategories',
+                            params: data
+                        }
+                    );
+                    break;
+
+                case 'ResourceList' : 
+                    this.navigator?.navigate(
+                        'Resources', 
+                        {
+                            screen: 'ResourceList',
+                            params: data
+                        }
+                    );
+                    break;
+
+                case 'Resource':
+                    this.navigator?.navigate(
+                        'Resources',
+                        {
+                            screen: 'Resource',
+                            params: data
+                        }
+                    )
+                    break;
+
+                
                 case 'HomeScreen' :
                     this.navigator?.navigate(
                         'MainTabs', 
@@ -229,19 +257,6 @@ export class ScreenFlowModule {
                                 params: data
                             }
                         }
-                    );
-                    break;
-
-                case 'ResourceList':
-                    this.navigator?.navigate(
-                      'MainTabs', 
-                      {
-                          screen: 'Resources',
-                          params: {
-                            screen: 'ResourceList',
-                            params: data,
-                          }
-                      }
                     );
                     break;
                 

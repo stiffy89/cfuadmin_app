@@ -118,7 +118,7 @@ export type RootStackParamList = {
     MainTabs: NavigatorScreenParams<TabParamList>;
     LoginScreen: undefined;
     EditScreen: Record<string, string> | undefined;
-    Resources: undefined;
+    Resources: NavigatorScreenParams<ResourceStackParamList>;
 }
 
 export type TabParamList = {
