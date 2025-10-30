@@ -31,6 +31,7 @@ import { OktaLoginResult } from "../types/AppTypes";
 import { DummyData } from "../data/DummyData";
 
 const ProfileHeader = () => {
+    const { setCardModalVisible } = useAppContext();
     const theme = useTheme();
     const { employeeDetails, membershipDetails } = useDataContext();
     const employee = employeeDetails[0];
@@ -49,6 +50,7 @@ const ProfileHeader = () => {
                 <Button
                     mode="outlined"
                     onPress={async () => {
+                        setCardModalVisible(true)
                         if (!dataHandlerModule.securityInstanceInitialised()) {
                             return;
                         }

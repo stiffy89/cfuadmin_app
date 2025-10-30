@@ -253,6 +253,19 @@ export class ScreenFlowModule {
                       }
                     );
                     break;
+                
+                case 'FormPage':
+                    this.navigator?.navigate(
+                      'MainTabs', 
+                      {
+                          screen: 'FormService',
+                          params: {
+                            screen: 'FormPage',
+                            params: data,
+                          }
+                      }
+                    );
+                    break;
             }
         }
     }

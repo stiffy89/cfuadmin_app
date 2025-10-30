@@ -3,15 +3,10 @@ import { View, ScrollView, TouchableOpacity, StyleProp, ViewStyle } from "react-
 import { useTheme, Button, IconButton} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
+import CustomIcon from "../../assets/CustomIcon"
 
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
-
-const Icon = ({ name, color, size, style } : { name:keyof typeof LucideIcons.icons, color: string, size: number, style: StyleProp<ViewStyle> }) => {
-  const LucideIcon = LucideIcons.icons[name];
-
-  return <LucideIcon color={color} size={size} style={[style]}/>;
-};
 
 const ResourceCategoriesPage = () => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();
@@ -87,7 +82,7 @@ const ResourceCategoriesPage = () => {
                     onPress={() => navigate(category)}
                   >
                     <View style={{borderWidth: 1, borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center"}}>
-                      <Icon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid] as keyof typeof LucideIcons.icons} color={theme.colors.primary} />
+                      <CustomIcon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
                     </View>
                     <CustomText
                       variant="bodySmall"
