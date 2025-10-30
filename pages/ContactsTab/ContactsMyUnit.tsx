@@ -5,7 +5,6 @@ import CustomText from '../../assets/CustomText';
 import { useDataContext } from '../../helper/DataContext';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule } from '../../helper/ScreenFlowModule';
-import { DummyData } from '../../data/DummyData';
 
 const ContactsMyUnit = () => {
     

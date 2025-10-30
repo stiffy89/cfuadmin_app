@@ -1,7 +1,7 @@
 import { Button, TextInput, Surface, Text } from 'react-native-paper';
 import { ScrollView } from 'react-native';
 import CustomText from '../assets/CustomText';
-import { View } from 'react-native';
+import { View, Pressable } from 'react-native';
 import GlobalStyles from '../style/GlobalStyles';
 
 import { useSecurityContext } from '../helper/SecurityContext';
@@ -33,12 +33,42 @@ const Services = () => {
 
     //map our services into an array of tiles
     const Tiles = services.map((x) => {
-        return (
-            <View style={{alignItems: 'center', padding: 10}}>
-                <LucideIcons.Image style={{width: '100%'}} size={24}/>
-                <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.title}</CustomText>
-            </View>
-        )
+        if (x.title == 'My Members'){
+            return (
+                <Pressable
+                    onPress={() => {
+                        console.log('My members')
+                    }}
+                >
+                    <View style={{alignItems: 'center', padding: 10}}>
+                        <LucideIcons.Image style={{width: '100%'}} size={24}/>
+                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.title}</CustomText>
+                    </View>
+                </Pressable>
+            )
+        }
+        else if (x.title == 'Resources'){
+            return (
+                <Pressable
+                    onPress={() => {
+                        screenFlowModule.onNavigateToScreen('Resources');
+                    }}
+                >
+                    <View style={{alignItems: 'center', padding: 10}}>
+                        <LucideIcons.Image style={{width: '100%'}} size={24}/>
+                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.title}</CustomText>
+                    </View>
+                </Pressable>
+            )
+        }
+        else {
+            return (
+                <View style={{alignItems: 'center', padding: 10}}>
+                    <LucideIcons.Image style={{width: '100%'}} size={24}/>
+                    <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.title}</CustomText>
+                </View>
+            )
+        }
     });
 
     return (

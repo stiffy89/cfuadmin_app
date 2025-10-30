@@ -29,6 +29,10 @@ export class ScreenFlowModule {
                     this.navigator?.navigate('LoginScreen');
                     break;
 
+                case 'Resources' : 
+                    this.navigator?.navigate('Resources');
+                    break;
+
                 case 'EditScreen' :
                     this.navigator?.navigate(
                         'EditScreen',
@@ -235,19 +239,6 @@ export class ScreenFlowModule {
                           screen: 'Resources',
                           params: {
                             screen: 'ResourceList',
-                            params: data,
-                          }
-                      }
-                    );
-                    break;
-
-                case 'Resource':
-                    this.navigator?.navigate(
-                      'MainTabs', 
-                      {
-                          screen: 'Resources',
-                          params: {
-                            screen: 'Resource',
                             params: data,
                           }
                       }

@@ -34,7 +34,7 @@ export class DummyData {
                 'title': 'Uniform Replacement'
             },
             {
-                'title': 'Map Update (PIP and Bushfire risk)'
+                'title': 'My Members'
             },
             {
                 'title': 'All Services'

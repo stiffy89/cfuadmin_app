@@ -22,8 +22,6 @@ import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
 import SplashScreen from './pages/SplashScreen';
-import FormServiceStack from './pages/FormService/Forms';
-import CardModal from './assets/CardModal';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -125,17 +123,12 @@ const TabNavigator = () => {
 						case "MyProfileScreen":
 							return <LucideIcons.CircleUser size={24} color={iconColor} />;
 					}
-				},
-				tabBarStyle: {
-					display: route.name === 'FormService' ? 'none' : 'flex',
 				}
 			})}
 		>
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
 			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
 			<Tab.Screen name="MyProfileScreen" component={ProfilePage}/>
-			<Tab.Screen name="Resources" component={ResourceStack}/>
-			<Tab.Screen name="FormService" component={FormServiceStack}/>
 		</Tab.Navigator>
 	)
 }
@@ -144,7 +137,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, cardModalVisible, setCardModalVisible } = useAppContext();
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -289,6 +282,7 @@ export default function MainApp() {
 					break;
 
 				case 'Brigades':
+					dataContext.setBrigadeSummary(x.value.responseBody.d.results);
 					const zzplans = x.value.responseBody.d.results[0].Zzplans;
 					try {
 						const myUnitContacts = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'Suburbs');
@@ -398,7 +392,6 @@ export default function MainApp() {
 								)
 							}
 						</Dialog>
-						<CardModal visible={cardModalVisible} setVisible={setCardModalVisible}/>
 					</Portal>
 					<NavigationContainer
 						ref={navigatorRef}
@@ -408,6 +401,7 @@ export default function MainApp() {
 						}}
 					>
 						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+							<Stack.Screen name='Resources' component={ResourceStack}/>
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
