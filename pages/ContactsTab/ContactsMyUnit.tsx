@@ -14,13 +14,7 @@ const ContactsMyUnit = () => {
     type listType = Record<string, Record<string, string>[]> | undefined;
     const [contactsList, setContactsList] = useState<listType>(undefined);
 
-    type brigadeSummaryType = any | undefined;
-    const [brigadeSummary, setBrigadeSummary] = useState<brigadeSummaryType>(undefined);
-
     useEffect(() => {
-        const dummyData = new DummyData();
-        const brigadeSummaryArray = dummyData.getBrigadeSummary()[0];
-        setBrigadeSummary(brigadeSummaryArray[0]);
 
         const filteredList = filterAndFormatList('');
         setContactsList(filteredList);
@@ -92,7 +86,7 @@ const ContactsMyUnit = () => {
                                                             //next screen also needs the brigade information, so combine them into ones
                                                             const contactInfo = {
                                                                 ...contact,
-                                                                ...brigadeSummary
+                                                                ...dataContext.brigadeSummary[0]
                                                             }
                                                             
                                                             screenFlowModule.onNavigateToScreen('MyUnitContactDetail', contactInfo)

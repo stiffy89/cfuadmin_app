@@ -1,74 +1,166 @@
-import React from 'react';
-import {View} from 'react-native';
-import {useTheme, IconButton, Button} from 'react-native-paper';
-import { StackScreenProps } from '@react-navigation/stack';
-import { ProfileStackParamList } from '../types/AppTypes';
-import { screenFlowModule } from '../helper/ScreenFlowModule';
-import GlobalStyles from '../style/GlobalStyles';
-import * as LucideIcons from 'lucide-react-native';
-import CustomText from '../assets/CustomText';
+import React from "react";
+import { View, ScrollView } from "react-native";
+import { useTheme, IconButton, Button } from "react-native-paper";
+import { StackScreenProps } from "@react-navigation/stack";
+import { ProfileStackParamList } from "../types/AppTypes";
+import { screenFlowModule } from "../helper/ScreenFlowModule";
+import GlobalStyles from "../style/GlobalStyles";
+import * as LucideIcons from "lucide-react-native";
+import CustomText from "../assets/CustomText";
+import { useDataContext } from "../helper/DataContext";
+import GenericFormatter from "../helper/GenericFormatters";
 
-type props = StackScreenProps<ProfileStackParamList, 'EmergencyContactsScreen'>; //typing the navigation props
+type props = StackScreenProps<ProfileStackParamList, "EmergencyContactsScreen">; //typing the navigation props
 
-const EmergencyContacts = ({route, navigation} : props) => {
+const EmergencyContacts = ({ route, navigation }: props) => {
     const theme = useTheme();
     const params = route.params ?? [];
 
-    const EditData = (data : any) => {
-        screenFlowModule.onNavigateToScreen('EditScreen', {screenName: 'EmergencyContacts', editData: data})
-    }
+    const pernr = useDataContext().employeeDetails[0].Pernr;
+    const employeeAddresses = useDataContext().employeeAddresses;
 
-    const AddressFormatter = (dataObj : any) => {
-        let addressString = '';
-        
-        dataObj.street ? addressString += (dataObj.street + ", ") : addressString += '';
-        dataObj.suburb ? addressString += (dataObj.suburb + " ") : addressString += '';
-        dataObj.state ? addressString += (dataObj.state + " ") : addressString += '';
-        dataObj.postcode ? addressString += (dataObj.postcode + " ") : addressString += '';
+    const EditData = (data: any) => {
+        screenFlowModule.onNavigateToScreen("EditScreen", {
+            screenName: "EmergencyContacts",
+            editData: data,
+        });
+    };
+
+    const AddressFormatter = (dataObj: any) => {
+        let addressString = "";
+
+        dataObj.StreetE
+            ? (addressString += dataObj.StreetE + ", ")
+            : (addressString += "");
+        dataObj.CityE
+            ? (addressString += dataObj.CityE + " ")
+            : (addressString += "");
+        dataObj.StateE
+            ? (addressString += dataObj.StateE + " ")
+            : (addressString += "");
+        dataObj.ZipcodeE
+            ? (addressString += dataObj.ZipcodeE + " ")
+            : (addressString += "");
 
         return addressString;
-    } 
+    };
+
+    const SecondaryAddressFormatter = (dataObj: any) => {
+        let addressString = "";
+
+        dataObj.Street
+            ? (addressString += dataObj.Street + ", ")
+            : (addressString += "");
+        dataObj.City
+            ? (addressString += dataObj.City + " ")
+            : (addressString += "");
+        dataObj.State
+            ? (addressString += dataObj.State + " ")
+            : (addressString += "");
+        dataObj.Zipcode
+            ? (addressString += dataObj.Zipcode + " ")
+            : (addressString += "");
+
+        return addressString;
+    };
 
     return (
         <View style={GlobalStyles.page}>
-            <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
-                <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Emergency Contacts</CustomText>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginVertical: 20,
+                }}
+            >
+                <IconButton
+                    icon={() => (
+                        <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />
+                    )}
+                    size={20}
+                    onPress={() => screenFlowModule.onGoBack()}
+                />
+                <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
+                    Emergency Contacts
+                </CustomText>
             </View>
-            <View style={{paddingHorizontal: 20}}>
-                {
-                    params.map((x, i) => {
-                        return (
-                            <View key={i} style={{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#efefef', padding: 20, ...GlobalStyles.globalBorderRadius}}>
-                                <View>
-                                    <CustomText style={{marginBottom: 10}}>{x.name}</CustomText>
-                                    <CustomText style={{marginBottom: 10}}>{x.relationship}</CustomText>
-                                    <CustomText style={{marginBottom: 10}}>{x.mobile}</CustomText>
-                                    <CustomText style={{marginBottom: 10}}>{AddressFormatter(x)}</CustomText>
-                                </View>
-                                <IconButton icon={() => <LucideIcons.Pencil color={theme.colors.primary} size={20}/>} onPress={() => EditData(x)}/>
+            <ScrollView
+                style={{ flex: 1, backgroundColor: "#fff", paddingHorizontal: 20 }}
+                contentContainerStyle={{ paddingBottom: 0 }}
+            >
+                {employeeAddresses.map((x, i) => {
+                    return (
+                        <View
+                            key={i}
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                backgroundColor: "#efefef",
+                                padding: 20,
+                                marginBottom: 20,
+                                ...GlobalStyles.globalBorderRadius,
+                            }}
+                        >
+                            <View>
+                                <CustomText style={{ marginBottom: 10 }}>{x.Coname}</CustomText>
+                                <CustomText style={{ marginBottom: 10 }}>
+                                    {x.ZzindrlAtext}
+                                </CustomText>
+                                <CustomText style={{ marginBottom: 10 }}>{x.Telnr}</CustomText>
+                                <CustomText style={{ marginBottom: 10 }}>
+                                    {SecondaryAddressFormatter(x)}
+                                </CustomText>
                             </View>
-                        )
-                    })
-                }
-                <Button onPress={() => {
+                            <IconButton
+                                icon={() => (
+                                    <LucideIcons.Pencil color={theme.colors.primary} size={20} />
+                                )}
+                                onPress={() => EditData(x)}
+                            />
+                        </View>
+                    );
+                })}
+                <Button
+                    onPress={() => {
+                        const genericFormatter = new GenericFormatter();
 
-                    const EmptyContact = {
-                        name: '',
-                        relationship: '',
-                        mobile: '',
-                        street: '',
-                        suburb: '',
-                        state: '',
-                        postcode: ''
-                    }
+                        const EmptyContact = {
+                            AddressType: "4",
+                            NewAddress: true,
+                            Addressline: "",
+                            Begda: genericFormatter.formatToEdmDate(new Date()),
+                            City: "",
+                            Coname: "",
+                            Countrykey: "",
+                            County: "",
+                            Endda: genericFormatter.formatToEdmDate(new Date()),
+                            Objps: "",
+                            Pernr: "",
+                            Seqnr: "",
+                            Sprps: "",
+                            State: "",
+                            Statekey: "",
+                            Street: "",
+                            Subty: "",
+                            Telnr: "",
+                            Zipcode: "",
+                            Zznum01: "",
+                            Zznum02: "",
+                            Zznum03: "",
+                            Zzindrl: "",
+                            ZzindrlAtext: "",
+                        };
 
-                    EditData(EmptyContact);
+                        EmptyContact.Pernr = pernr;
 
-                }}>Add Contact</Button>
-            </View>
+                        EditData(EmptyContact);
+                    }}
+                >
+                    Add Contact
+                </Button>
+            </ScrollView>
         </View>
-    )
-}
+    );
+};
 
 export default EmergencyContacts;

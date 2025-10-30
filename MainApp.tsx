@@ -21,6 +21,7 @@ import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
+import SplashScreen from './pages/SplashScreen';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -137,7 +138,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -208,69 +209,98 @@ export default function MainApp() {
 		}
 
 		const DummyObj = new DummyData();
-		//get the information for the tiles
 
 		//get profile information
-		// - Z_VOL_MEMBER_SRV/MembershipDetails
-		// - Z_VO_MEMBER_SRV/TrainingHistoryDetails
-		// - Z_ESS_MSS_SRV/EmployeeDetails
-		// - Z_VOL_MEMBER_SRV/VolunteerRoles
-		// - Z_ESS_MSS_SRV/ObjectOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true
-		// - Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100
-
-	/*	const initialProfileData = [
-			'Z_VOL_MEMBER_SRV/MembershipDetails',
-			'Z_VO_MEMBER_SRV/TrainingHistoryDetails',
-			'Z_ESS_MSS_SRV/EmployeeDetails',
-			'Z_VOL_MEMBER_SRV/VolunteerRoles',
-			'Z_ESS_MSS_SRV/ObjectOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true',
-			'Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100'
-		]. */
-
-	/*	const results = await Promise.all([
-			dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/MembershipDetails'),
-      		dataHandlerModule.readEntity('Z_VO_MEMBER_SRV/TrainingHistoryDetails'),
-      		dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/VolunteerRoles'),
-			dataHandlerModule.readEntity('Z_ESS_MSS_SRV/EmployeeDetails'),
-			dataHandlerModule.readEntity('Z_ESS_MSS_SRV/ObjectOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true'),
-			dataHandlerModule.readEntity('Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100')
-		]); */
-
-	/*	const profileData = {
-			"membershipDetails" : {}
-		}
-
-		try {
-			const membershipDetails = await dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/MembershipDetails');
-			profileData.membershipDetails = membershipDetails.data.d.results;
-			
-			const trainingHistoryDetails = await dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/TrainingHistoryDetails');
-
-			const volRoles = await dataHandlerModule.readEntity('Z_VOL_MEMBER_SRV/VolunteerRoles');
-
-			const empRoles = await dataHandlerModule.readEntity('Z_ESS_MSS_SRV/EmployeeDetails');
-
-			const objOnLoan = await dataHandlerModule.readEntity('Z_ESS_MSS_SRV/ObjectsOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true');
-
-			const medalsAndAwards = await dataHandlerModule.readEntity('Z_ESS_MSS_SRV/MedalsAwards?$skip=0&$top=100') 
-		}
-		catch (error){
-			console.log(error);
-			setDialogMessage('new error on loading initial data : ' + error);
-			setShowDialog(true);
-		}
-*/
-
-		//get profile information
-		const ServiceInfo = DummyObj.getServices()
-		const UserInfo = DummyObj.getUserInformation();
-		const MyUnitContacts = DummyObj.getMyUnitContactList();
-		const CfuPhonebookSuburbs = DummyObj.getCFUPhonebookSuburbsList();
-
-		dataContext.setUser(UserInfo);
+		const ServiceInfo = DummyObj.getServices();
 		dataContext.setServices(ServiceInfo);
-		dataContext.setMyUnitContacts(MyUnitContacts);
-		dataContext.setCfuPhonebookSuburbs(CfuPhonebookSuburbs)
+		
+
+		const requests = [
+			dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
+			dataHandlerModule.batchGet('TrainingHistoryDetails', 'Z_VOL_MEMBER_SRV', 'TrainingHistoryDetails'),
+			dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'),
+			dataHandlerModule.batchGet('EmployeeDetails', 'Z_ESS_MSS_SRV', 'EmployeeDetails'),
+			dataHandlerModule.batchGet('ObjectsOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true', 'Z_ESS_MSS_SRV', 'ObjectsOnLoan'),
+			dataHandlerModule.batchGet('MedalsAwards?$skip=0&$top=100', 'Z_ESS_MSS_SRV', 'MedalsAwards'),
+			dataHandlerModule.batchGet('AddressStates?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressStates'),
+			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships'),
+			dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'),
+			dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs')
+		]
+
+		const results = await Promise.allSettled(requests);
+		//if we have any fails - its a critical error
+		const passed = results.every(x => x.status == 'fulfilled');
+
+		if (!passed){
+			//TODO take them to a critical error page
+			setDialogMessage('Critical error occurred during the initial GET');
+			setShowDialog(true);
+			return;
+		}
+
+		//check to see if we have any read errors from server
+		const readErrors = results.every(x => x.value.responseBody.error);
+		if (readErrors){
+			//TODO handle read errors somewhere
+			setShowDialog(true);
+			setDialogMessage('Read error on initialisation');
+		}
+
+		for (const x of results) {
+			
+			switch (x.value.entityName){
+				case 'MembershipDetails':
+					dataContext.setMembershipDetails(x.value.responseBody.d.results);
+					break;
+				
+				case 'EmployeeDetails':
+					dataContext.setEmployeeDetails(x.value.responseBody.d.results);
+					break;
+
+				case 'VolunteerDetails':
+					dataContext.setVolunteerDetails(x.value.responseBody.d.results);
+					break;
+
+				case 'ObjectsOnLoan':
+					dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
+					break;
+
+				case 'TrainingHistoryDetails':
+					dataContext.setTrainingHistoryDetails(x.value.responseBody.d.results);
+					break;
+
+				case 'MedalsAwards':
+					dataContext.setMedalsAwards(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_AddressStates':
+					dataContext.setAddressStates(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_AddressRelationships':
+					dataContext.setAddressRelationships(x.value.responseBody.d.results);
+					break;
+
+				case 'Brigades':
+					const zzplans = x.value.responseBody.d.results[0].Zzplans;
+					try {
+						const myUnitContacts = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'Suburbs');
+						dataContext.setMyUnitContacts(myUnitContacts.responseBody.d.results);
+					}
+					catch (error) {
+						console.log(error)
+					}
+					break;
+
+				case 'Suburbs':
+					dataContext.setCfuPhonebookSuburbs(x.value.responseBody.d.results);
+					break;
+			}
+		}
+					
+
+		screenFlowModule.onNavigateToScreen('HomeScreen');
 	}
 
 	useEffect(() => {
@@ -341,11 +371,22 @@ export default function MainApp() {
 							{
 								!showBusyIndicator && (
 									<Dialog.Actions>
+										{
+											showDialogCancelButton && (
+												<Button
+													onPress={() => {
+														setShowDialog(false);
+													}}>
+													Cancel
+												</Button>
+											)
+										}
 										<Button
 											onPress={() => {
 												setShowDialog(false);
+												dialogActionFunction?.();
 											}}>
-											OK
+											{dialogActionButtonText}
 										</Button>
 									</Dialog.Actions>
 								)
@@ -359,7 +400,8 @@ export default function MainApp() {
 							screenFlowModule.onInitRootNavigator(navigatorRef)
 						}}
 					>
-						<Stack.Navigator initialRouteName='MainTabs' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='EditScreen' component={EditScreen} options={{presentation: 'modal'}}/>

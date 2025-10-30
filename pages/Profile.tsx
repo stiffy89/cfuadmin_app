@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { View, ScrollView, Easing, Dimensions } from "react-native";
 import { useTheme, Button, List, Divider } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
@@ -11,10 +11,9 @@ import { ProfileStackParamList } from "../types/AppTypes";
 
 import { useAppContext } from "../helper/AppContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
-import { DummyData } from "../data/DummyData";
 
 import { screenFlowModule } from "../helper/ScreenFlowModule";
-import {DateTime} from 'luxon';
+import { DateTime } from "luxon";
 
 //screens
 import MyDetails from "./MyDetails";
@@ -29,11 +28,14 @@ import MedalsAndAwards from "./MedalsAndAwards";
 
 import { authModule } from "../helper/AuthModule";
 import { OktaLoginResult } from "../types/AppTypes";
+import { DummyData } from "../data/DummyData";
 
 const ProfileHeader = () => {
     const theme = useTheme();
-    const { user } = useDataContext();
-    const [name, setName] = useState('John Smith');
+    const { employeeDetails, membershipDetails } = useDataContext();
+    const employee = employeeDetails[0];
+    const membership = membershipDetails[0];
+
     return (
         <View style={{ margin: 20 }}>
             <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
@@ -51,36 +53,28 @@ const ProfileHeader = () => {
                             return;
                         }
 
-                    /*    const loginResponse = await authModule.onOktaLogin();
-                        console.log(loginResponse);
-                        return; */
+                        const volRolesBatchBody =
+                            dataHandlerModule.getBatchBody("VolunteerRoles");
 
-                    /*    const token = 'AFBWp5zVH-Cs-9RK0h7vy0ie7uqlFl3L1kOITGNcMTSz4Eyy';
-                        const phoneData = new DummyData().getDummyMobile();
-                        const batchObj = dataHandlerModule.batchBodyFormatter('MERGE', "EmployeePhoneNumbers(Endda=datetime'9999-12-31T00%3A00%3A00',Begda=datetime'2025-10-28T00%3A00%3A00',Pernr='00825004',Subty='1',Objps='',Sprps='',Seqnr='000')", phoneData);
-                        const batchBody = batchObj.batchBody;
-                        const batchId = batchObj.batch;
-                        const dataResponse = await dataHandlerModule.updateEntity('/Z_ESS_MSS_SRV/$batch', batchBody, batchId, token);
-                        */
+                        const membershipDetailsBatchBody =
+                            dataHandlerModule.getBatchBody("MembershipDetails");
 
-                        const volRolesBatchBody = dataHandlerModule.getBatchBody('VolunteerRoles');
-
-                        const membershipDetailsBatchBody = dataHandlerModule.getBatchBody('MembershipDetails');
-
-                        const batchBodyArray = [membershipDetailsBatchBody, volRolesBatchBody]
+                        const batchBodyArray = [
+                            membershipDetailsBatchBody,
+                            volRolesBatchBody,
+                        ];
 
                         try {
-                            const responseBody = await dataHandlerModule.batchGet('MembershipDetailsss', "Z_VOL_MEMBER_SRV", 'MembershipDetails')
+                            const responseBody = await dataHandlerModule.batchGet(
+                                "MembershipDetailsss",
+                                "Z_VOL_MEMBER_SRV",
+                                "MembershipDetails"
+                            );
 
                             console.log(responseBody);
-                        }
-                        catch (error) {
+                        } catch (error) {
                             throw error;
                         }
-                        
-
-                        
-
                     }}
                 >
                     ID Card
@@ -107,19 +101,19 @@ const ProfileHeader = () => {
                 variant="displaySmallBold"
                 style={{ textAlign: "center", marginTop: 20 }}
             >
-                {name}
+                {employee.Vorna} {employee.Nachn}
             </CustomText>
             <CustomText
                 variant="titleLarge"
                 style={{ textAlign: "center", marginTop: 10 }}
             >
-                {user.position}
+                {membership.ZzmemtyDesc}
             </CustomText>
             <CustomText
                 variant="titleSmall"
                 style={{ textAlign: "center", marginTop: 10 }}
             >
-                {user.unitid}
+                {membership.Otext}
             </CustomText>
         </View>
     );
@@ -127,29 +121,34 @@ const ProfileHeader = () => {
 
 const ProfilePage = () => {
     const { setShowDialog, setShowBusyIndicator } = useAppContext();
+    const dataContext = useDataContext();
+    const appContext = useAppContext();
+
     const theme = useTheme();
 
-    const onNavigateTopage = (PageName: any) => {
+    const onNavigateTopage = (PageName: any, passedData?: any) => {
         //show busy dialog and do a read
-        setShowBusyIndicator(true);
-        setShowDialog(true);
-
         const dummyData = new DummyData();
-
         let data: any | null = null;
+
+        if (passedData) {
+            data = passedData;
+        }
 
         //get the data from the data handler module
         switch (PageName) {
             case "MyDetailsScreen":
-                data = dummyData.getMyDetailData();
                 break;
 
             case "ContactDetailsScreen":
-                data = dummyData.getContactDetails();
+                data = dataContext.employeeDetails[0];
                 break;
 
             case "EmergencyContactsScreen":
-                data = dummyData.getEmergencyContacts();
+                data = [
+                    ...dataContext.employeeAddresses,
+                    ...dataContext.employeeDetails,
+                ];
                 break;
 
             case "MyUnitDetailsScreen":
@@ -174,13 +173,7 @@ const ProfilePage = () => {
                 break;
         }
 
-        setTimeout(() => {
-            setShowBusyIndicator(false);
-            setShowDialog(false);
-
-            //navigate to page
-            screenFlowModule.onNavigateToScreen(PageName, data);
-        }, 2000);
+        screenFlowModule.onNavigateToScreen(PageName, data);
 
         //dataHandlerModule.get(xxxx);
     };
@@ -207,8 +200,11 @@ const ProfilePage = () => {
                     >
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
-                            onPress={() => {
-                                onNavigateTopage("MyDetailsScreen");
+                            onPress={async () => {
+                                onNavigateTopage(
+                                    "MyDetailsScreen",
+                                    dataContext.employeeDetails[0]
+                                );
                             }}
                             title={() => (
                                 <CustomText variant="bodyLarge">My Details</CustomText>
@@ -229,8 +225,29 @@ const ProfilePage = () => {
                         <Divider />
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
-                            onPress={() => {
-                                onNavigateTopage("EmergencyContactsScreen");
+                            onPress={async () => {
+                                appContext.setShowBusyIndicator(true);
+                                appContext.setShowDialog(true);
+
+                                try {
+                                    const empAddResponse = await dataHandlerModule.batchGet(
+                                        `EmployeeAddresses?$filter=Pernr%20eq%20%27${dataContext.employeeDetails[0].Pernr}%27%20and%20Subty%20eq%20%274%27`,
+                                        "Z_ESS_MSS_SRV",
+                                        "EmployeeAddresses"
+                                    );
+                                    if (empAddResponse.responseBody.d) {
+                                        dataContext.setEmployeeAddresses(
+                                            empAddResponse.responseBody.d.results
+                                        );
+                                    } 
+                                    appContext.setShowBusyIndicator(false);
+                                    appContext.setShowDialog(false);
+                                    onNavigateTopage("EmergencyContactsScreen");
+                                } catch (error){
+                                    appContext.setShowBusyIndicator(false);
+                                    appContext.setDialogMessage('An error occurred whilst getting employee addresses')
+                                    console.log(error)
+                                }
                             }}
                             title={() => (
                                 <CustomText variant="bodyLarge">Emergency Contacts</CustomText>

@@ -11,6 +11,8 @@ class DataHandlerModule {
     private axiosSecurityInstance: AxiosInstance | null = null;
     private csrfToken: string | null = null;
 
+    private useToken = false;
+
     async init(): Promise<boolean> {
         this.axiosInstance = axios.create({
             baseURL: 'https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/'
@@ -20,29 +22,61 @@ class DataHandlerModule {
             baseURL: 'https://portalicmuat.fire.nsw.gov.au/mslm'
         })
 
-        const accessToken = await AsyncStorage.getItem('access-token');
+        //update the csrf token for now
+        try {
+            const csrfResponse = await this.fetchCsrfToken()
+            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+        }
+        catch (error) {
+            console.log('csrf token init error')
+        }
 
-        if (!accessToken) {
-            //go get auth token
-            try {
+        /*    try {
                 const oktaLoginResponse = await authModule.onOktaLogin();
                 const idToken = oktaLoginResponse.response.idToken;
                 if (!idToken) throw new Error('No idToken returned');
-
+    
                 const tokenResponse = await this.getInitialTokens(idToken);
                 const newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
                 const newRefreshToken = tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
-
+    
                 await AsyncStorage.setItem('access-token', newAccessToken);
                 await AsyncStorage.setItem('refresh-token', newRefreshToken);
-
+    
+                const csrfResponse = await this.readEntity('/Z_VOL_MEMBER_SRV/MembershipDetails');
+                const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                await AsyncStorage.setItem('csrf-token', newCsrfToken);
+    
                 return true;
-
+    
             } catch (error) {
                 throw new Error("Token refresh or retry failed: " + error);
-            }
-        }
+            } */
 
+        /*        const accessToken = await AsyncStorage.getItem('access-token');
+        
+                if (!accessToken) {
+                    //go get auth token
+                    try {
+                        const oktaLoginResponse = await authModule.onOktaLogin();
+                        const idToken = oktaLoginResponse.response.idToken;
+                        if (!idToken) throw new Error('No idToken returned');
+        
+                        const tokenResponse = await this.getInitialTokens(idToken);
+                        const newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                        const newRefreshToken = tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+        
+                        await AsyncStorage.setItem('access-token', newAccessToken);
+                        await AsyncStorage.setItem('refresh-token', newRefreshToken);
+        
+                        return true;
+        
+                    } catch (error) {
+                        throw new Error("Token refresh or retry failed: " + error);
+                    }
+                }
+        */
         return true;
     }
 
@@ -266,39 +300,373 @@ class DataHandlerModule {
         return JSON.parse(jsonRaw);
     }
 
+    formatMERGEResponse(raw: string){
+        try {
+            const breaker = raw.split(/\r?\n/)[0] + '--';
+            const arr = raw.split(/\r?\n|\r/);
+            const index = arr.indexOf(breaker);
+            const jsonRaw = arr[index - 1];
+            return JSON.parse(jsonRaw);
+        }
+        catch(error){
+            return ''
+        }
+    }
+
+    async fetchCsrfToken(): Promise<AxiosResponse> {
+        //TODO need to fix this up eventually
+        try {
+            const username = 'WAK816316';
+            const password = 'BUTTERbar1!';
+            const token = btoa(`${username}:${password}`);
+            const authString = `Basic ${token}`
+
+            const response = await this.axiosInstance?.get('/Z_VOL_MEMBER_SRV/MembershipDetails', {
+                headers: {
+                    'x-csrf-token' : 'Fetch'
+                },
+                auth: {
+                    username: 'WAK816316',
+                    password: 'BUTTERbar1!',
+                },
+            });
+
+            if (response)
+                return response;
+
+            else
+                throw new Error('no csrf token response')
+        }
+        catch (error) {
+            throw error
+        }
+    }
+
+    async batchSingleUpdate(urlPath: string, serviceName: string, data: any, passedAccessToken?: string): Promise<batchGETResponse> {
+        const batchBodyObj = this.batchBodyFormatter('MERGE', urlPath, data);
+        const batchBodyString = batchBodyObj.batchBody;
+        const batchSeparator = batchBodyObj.batch;
+
+        let csrfToken = await AsyncStorage.getItem('csrf-token');
+
+        if (!csrfToken) {
+            const csrfResponse = await this.fetchCsrfToken();
+            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+            csrfToken = newCsrfToken;
+        }
+
+        const username = 'WAK816316';
+        const password = 'BUTTERbar1!';
+        const token = btoa(`${username}:${password}`);
+        const authString = `Basic ${token}`
+
+        try {
+             //run the create call
+            const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                batchBodyString,
+                {
+                    headers: {
+                        'Content-Type': `multipart/mixed; boundary=${batchSeparator}`,
+                        'x-csrf-token': csrfToken,
+                        'Authorization': authString
+                    }
+                }
+            );
+
+            if (!postResponse) throw new Error('no response from update');
+
+            //format the response
+            const jsonResponse = this.formatMERGEResponse(postResponse.data);
+
+            return {
+                entityName: '',
+                responseBody: jsonResponse
+            }
+        }
+        catch (error) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                if (status === 401) {
+                    try {
+                        const refreshToken = await AsyncStorage.getItem('refresh-token');
+                        let newAccessToken;
+
+                        if (!refreshToken) {
+                            const oktaLoginResponse = await authModule.onOktaLogin();
+                            const idToken = oktaLoginResponse.response.idToken;
+                            if (!idToken) throw new Error('No idToken returned');
+
+                            const tokenResponse = await this.getInitialTokens(idToken);
+
+                            await AsyncStorage.setItem('access-token', tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+                            await AsyncStorage.setItem('refresh-token', tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN);
+
+                            newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                        }
+                        else {
+                            const tokenResponse = await this.getRefreshedAccessToken(refreshToken);
+                            await AsyncStorage.setItem('access-token', tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+
+                            newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                        }
+
+                        const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                            batchBodyString,
+                            {
+                                headers: {
+                                    'Content-Type': `multipart/mixed; boundary=${batchSeparator}`,
+                                    'x-csrf-token': csrfToken,
+                                    'Authorization': authString
+                                }
+                            }
+                        );
+
+                        if (!retryResponse) throw new Error('no response from update');
+
+                        //format the response
+                        const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+
+                        if (!retryJsonResponse) {
+                            throw new Error('response body is malformed, cannot parse')
+                        }
+
+                        return {
+                            entityName: '',
+                            responseBody: retryJsonResponse
+                        }
+
+                    } catch (error) {
+                        console.error("Token refresh or retry failed:", error);
+                        throw error;
+                    }
+                }
+                else if (status == 403) {
+                    //try getting csrf token
+                    const csrfResponse = await this.fetchCsrfToken()
+                    const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                    await AsyncStorage.setItem('csrf-token', newCsrfToken);
+                    const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                        batchBodyString,
+                        {
+                            headers: {
+                                'Content-Type': `multipart/mixed; boundary=${batchSeparator}`,
+                                'x-csrf-token': csrfToken,
+                                'Authorization': authString
+                            }
+                        }
+                    );
+
+                    if (!retryResponse) throw new Error('no response from update');
+
+                    //format the response
+                    const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+
+                    if (!retryJsonResponse) {
+                        throw new Error('response body is malformed, cannot parse')
+                    }
+
+                    return {
+                        entityName: '',
+                        responseBody: retryJsonResponse
+                    }
+                }
+            }
+
+            throw error;
+        }
+    }
+
+    async batchSingleDelete(urlPath: string, serviceName: string, data: any, passedAccessToken?: string): Promise<batchGETResponse> {
+
+        const changeSet = 'changeset_' + Crypto.randomUUID();
+        const batch = 'batch_' + Crypto.randomUUID();
+
+        const batchBody = `--${batch}\nContent-Type: multipart/mixed; boundary=${changeSet}\n\n--${changeSet}\nContent-Type: application/http\nContent-Transfer-Encoding: binary\n\nDELETE ${urlPath} HTTP/1.1\nsap-context-id-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n\n\n--${changeSet}--\n--${batch}--`;
+
+        let csrfToken = await AsyncStorage.getItem('csrf-token');
+
+        if (!csrfToken) {
+            const csrfResponse = await this.fetchCsrfToken();
+            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+            csrfToken = newCsrfToken;
+        }
+
+        const username = 'WAK816316';
+        const password = 'BUTTERbar1!';
+        const token = btoa(`${username}:${password}`);
+        const authString = `Basic ${token}`
+
+        try {
+             //run the create call
+            const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                batchBody,
+                {
+                    headers: {
+                        'Content-Type': `multipart/mixed; boundary=${batch}`,
+                        'x-csrf-token': csrfToken,
+                        'Authorization': authString
+                    }
+                }
+            );
+
+            if (!postResponse) throw new Error('no response from update');
+
+            //format the response
+            const jsonResponse = this.formatMERGEResponse(postResponse.data);
+
+            return {
+                entityName: '',
+                responseBody: jsonResponse
+            }
+        }
+        catch (error) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                if (status === 401) {
+                    try {
+                        const refreshToken = await AsyncStorage.getItem('refresh-token');
+                        let newAccessToken;
+
+                        if (!refreshToken) {
+                            const oktaLoginResponse = await authModule.onOktaLogin();
+                            const idToken = oktaLoginResponse.response.idToken;
+                            if (!idToken) throw new Error('No idToken returned');
+
+                            const tokenResponse = await this.getInitialTokens(idToken);
+
+                            await AsyncStorage.setItem('access-token', tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+                            await AsyncStorage.setItem('refresh-token', tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN);
+
+                            newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                        }
+                        else {
+                            const tokenResponse = await this.getRefreshedAccessToken(refreshToken);
+                            await AsyncStorage.setItem('access-token', tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+
+                            newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                        }
+
+                        const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                            batchBody,
+                            {
+                                headers: {
+                                    'Content-Type': `multipart/mixed; boundary=${batch}`,
+                                    'x-csrf-token': csrfToken,
+                                    'Authorization': authString
+                                }
+                            }
+                        );
+
+                        if (!retryResponse) throw new Error('no response from update');
+
+                        //format the response
+                        const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+
+                        if (!retryJsonResponse) {
+                            throw new Error('response body is malformed, cannot parse')
+                        }
+
+                        return {
+                            entityName: '',
+                            responseBody: retryJsonResponse
+                        }
+
+                    } catch (error) {
+                        console.error("Token refresh or retry failed:", error);
+                        throw error;
+                    }
+                }
+                else if (status == 403) {
+                    //try getting csrf token
+                    const csrfResponse = await this.fetchCsrfToken()
+                    const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                    await AsyncStorage.setItem('csrf-token', newCsrfToken);
+                    const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                        batchBody,
+                        {
+                            headers: {
+                                'Content-Type': `multipart/mixed; boundary=${batch}`,
+                                'x-csrf-token': csrfToken,
+                                'Authorization': authString
+                            }
+                        }
+                    );
+
+                    if (!retryResponse) throw new Error('no response from update');
+
+                    //format the response
+                    const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+
+                    if (!retryJsonResponse) {
+                        throw new Error('response body is malformed, cannot parse')
+                    }
+
+                    return {
+                        entityName: '',
+                        responseBody: retryJsonResponse
+                    }
+                }
+            }
+
+            throw error;
+        }
+    }
+
     async batchGet(path: string, serviceName: string, entityName: string, passedAccessToken?: string): Promise<batchGETResponse> {
         //build the request body and post
         const batch = 'batch_' + Crypto.randomUUID();
 
         let batchString = `--${batch}\n` + this.getBatchBody(path) + `--${batch}--`;
 
-        try {
-            let csrfToken = await AsyncStorage.getItem('csrf-token');
+        let csrfToken = await AsyncStorage.getItem('csrf-token');
 
-            if (!csrfToken) {
-                const csrfResponse = await this.readEntity('/Z_VOL_MEMBER_SRV/MembershipDetails');
-                const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
-                await AsyncStorage.setItem('csrf-token', newCsrfToken);
-                csrfToken = newCsrfToken;
-            }
+        if (!csrfToken) {
+            const csrfResponse = await this.fetchCsrfToken();
+            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+            csrfToken = newCsrfToken;
+        }
+
+        const username = 'WAK816316';
+        const password = 'BUTTERbar1!';
+        const token = btoa(`${username}:${password}`);
+        const authString = `Basic ${token}`
+
+        try {
+
 
             let accessToken;
 
-            if (passedAccessToken) {
-                accessToken = passedAccessToken;
+            if (this.useToken) {
+                if (passedAccessToken) {
+                    accessToken = passedAccessToken;
+                }
+                else {
+                    accessToken = await AsyncStorage.getItem('access-token');
+                }
             }
-            else {
-                accessToken = await AsyncStorage.getItem('access-token');
+
+            let customHeaders;
+
+            customHeaders = {
+                'Content-Type': `multipart/mixed; boundary=${batch}`,
+                'x-csrf-token': csrfToken,
+                'Authorization': `Bearer ${accessToken}`
             }
+
+
+
 
             //run the create call
             const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
                 batchString,
                 {
                     headers: {
-                        "Content-Type": `multipart/mixed; boundary=${batch}`,
+                        'Content-Type': `multipart/mixed; boundary=${batch}`,
                         'x-csrf-token': csrfToken,
-                        'Authorization': `Bearer ${accessToken}`
+                        'Authorization': authString
                     }
                 }
             );
@@ -344,7 +712,16 @@ class DataHandlerModule {
                             newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
                         }
 
-                        const retryResponse = await this.updateEntity(path, serviceName, entityName, newAccessToken);
+                        const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                            batchString,
+                            {
+                                headers: {
+                                    'Content-Type': `multipart/mixed; boundary=${batch}`,
+                                    'x-csrf-token': csrfToken,
+                                    'Authorization': authString
+                                }
+                            }
+                        );
 
                         if (!retryResponse) throw new Error('no response from update');
 
@@ -365,11 +742,40 @@ class DataHandlerModule {
                         throw error;
                     }
                 }
+                else if (status == 403) {
+                    //try getting csrf token
+                    const csrfResponse = await this.fetchCsrfToken()
+                    const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                    await AsyncStorage.setItem('csrf-token', newCsrfToken);
+                    const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                        batchString,
+                        {
+                            headers: {
+                                'Content-Type': `multipart/mixed; boundary=${batch}`,
+                                'x-csrf-token': csrfToken,
+                                'Authorization': authString
+                            }
+                        }
+                    );
+
+                    if (!retryResponse) throw new Error('no response from update');
+
+                    //format the response
+                    const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+
+                    if (!retryJsonResponse) {
+                        throw new Error('response body is malformed, cannot parse')
+                    }
+
+                    return {
+                        entityName: entityName,
+                        responseBody: retryJsonResponse
+                    }
+                }
             }
 
             throw error;
         }
-
     }
 
     async updateEntity(entity: string, batchBody: any, batchId: string, passedToken?: string): Promise<AxiosResponse> {

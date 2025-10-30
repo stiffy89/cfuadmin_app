@@ -21,6 +21,7 @@ export class ScreenFlowModule {
     }
 
     onNavigateToScreen (screen : any, data? : any) {
+        console.log(data);
        
         if (this.navigator?.isReady()){
             switch (screen) {

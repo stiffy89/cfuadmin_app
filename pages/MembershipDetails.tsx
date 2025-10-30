@@ -8,6 +8,7 @@ import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ProfileStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
+import { useDataContext } from '../helper/DataContext';
 
 type props = StackScreenProps<ProfileStackParamList, 'MembershipDetailsScreen'>; //typing the navigation props
 
@@ -17,10 +18,11 @@ const MembershipDetails = ({ route, navigation }: props) => {
     const params: any = route.params ?? {};
 
     const genericFormatter = new GenericFormatter();
+    const dataContext = useDataContext();
 
-    const membershipDetails = params.membershipDetail[0];
-    const objectsOnLoan = params.objectsOnLoan;
-    const medalsAndAwards = params.medalsAndAwards;
+    const membershipDetails = dataContext.volunteerDetails[0];
+    const objectsOnLoan = dataContext.objectsOnLoan;
+    const medalsAndAwards = dataContext.medalsAwards;
 
     return (
         <ScrollView>

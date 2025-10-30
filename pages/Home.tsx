@@ -17,11 +17,12 @@ import { ServiceData } from '../types/AppTypes';
 
 const NameBanner = () => {
     const theme = useTheme();
-    const {user} = useDataContext();
+    const {employeeDetails} = useDataContext();
+    const employee = employeeDetails[0];
 
     return (
         <View style={{paddingHorizontal: 20, paddingVertical: 20, backgroundColor: theme.colors.secondary}}>
-            <CustomText variant='displaySmallBold' style={{color: '#fff'}}>Hi {user.firstname}</CustomText>
+            <CustomText variant='displaySmallBold' style={{color: '#fff'}}>Hi {employee.Vorna}</CustomText>
         </View>
     )
 }

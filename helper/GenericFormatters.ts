@@ -2,7 +2,7 @@
 import { DateTime } from 'luxon';
 
 export default class GenericFormatter {
-    formatContactsAddress (data: any) {
+    formatContactsAddress(data: any) {
         let addressString = '';
 
         data.Street ? addressString += (data.Street + ", ") : addressString += '';
@@ -12,7 +12,7 @@ export default class GenericFormatter {
         return addressString;
     }
 
-    formatAddress (data : any) {
+    formatAddress(data: any) {
         let addressString = '';
 
         data.Stras ? addressString += (data.Stras + ", ") : addressString += '';
@@ -23,11 +23,11 @@ export default class GenericFormatter {
         return addressString;
     }
 
-    formatFromEdmDate (edmString : string, format? : string) {
-        if (!edmString){
+    formatFromEdmDate(edmString: string, format?: string) {
+        if (!edmString) {
             return '';
         }
-        
+
         const timestamp = parseInt(edmString.replace(/\D/g, ""), 10);
         const luxonDate = DateTime.fromMillis(timestamp);
         let formattedDate;
@@ -36,18 +36,30 @@ export default class GenericFormatter {
         return formattedDate;
     }
 
-    extractODataResults(raw: string): any[] {
-        const matches = raw.match(/{\s*"d"\s*:\s*{[\s\S]*?}}/g);
+    formatToEdmDate(dateObj: Date): string {
+        if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+            throw new Error("Invalid Date object");
+        }
 
-        if (!matches) return [];
 
-        return matches.map((m) => {
-            try {
-            return JSON.parse(m);
-            } catch {
-            console.warn("Skipping invalid JSON segment:", m);
-            return null;
-            }
-        }).filter(Boolean);
+        const millis = dateObj.getTime();
+
+
+        return `/Date(${millis})/`;
+    }
+
+    convertEdmToAbapDateTime(edmString: string): string {
+        if (!edmString) return "";
+
+        const timestamp = parseInt(edmString.replace(/\D/g, ""), 10);
+        if (isNaN(timestamp)) return "";
+
+        const luxonDate = DateTime.fromMillis(timestamp);
+
+        const iso = luxonDate.toFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+        const encoded = iso.replace(/:/g, "%3A");
+
+        return `datetime'${encoded}'`;
     }
 }

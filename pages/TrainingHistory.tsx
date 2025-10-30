@@ -7,7 +7,7 @@ import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ProfileStackParamList } from '../types/AppTypes';
-
+import { useDataContext } from '../helper/DataContext';
 
 import GenericFormatter from '../helper/GenericFormatters';
 
@@ -16,7 +16,9 @@ type props = StackScreenProps<ProfileStackParamList, 'TrainingHistoryScreen'>; /
 const TrainingHistory = ({ route, navigation }: props) => {
 
     const theme = useTheme();
-    const params = route.params ?? [];
+    const dataContext = useDataContext();
+    const trainingData = dataContext.trainingHistoryDetails;
+
     const [page, setPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(0)
 
@@ -29,7 +31,7 @@ const TrainingHistory = ({ route, navigation }: props) => {
     }
 
     const from = page * itemsPerPage;
-    const to = Math.min((page + 1) * itemsPerPage, params.length);
+    const to = Math.min((page + 1) * itemsPerPage, trainingData.length);
 
     return (
         <View
@@ -47,7 +49,7 @@ const TrainingHistory = ({ route, navigation }: props) => {
                     <DataTable.Title style={{ flex: 0.5 }}> </DataTable.Title>
                 </DataTable.Header>
                 {
-                    params.slice(from, to).map((item, i) => {
+                    trainingData.slice(from, to).map((item, i) => {
                         return (
                             <DataTable.Row key={i} onPress={() => {
                                 screenFlowModule.onNavigateToScreen('TrainingDetailScreen', item)
@@ -62,9 +64,9 @@ const TrainingHistory = ({ route, navigation }: props) => {
                 }
                 <DataTable.Pagination
                     page={page}
-                    numberOfPages={Math.ceil(params.length / itemsPerPage)}
+                    numberOfPages={Math.ceil(trainingData.length / itemsPerPage)}
                     onPageChange={(page) => setPage(page)}
-                    label={`${from + 1}-${to} of ${params.length}`}
+                    label={`${from + 1}-${to} of ${trainingData.length}`}
                     numberOfItemsPerPage={itemsPerPage}
                     showFastPaginationControls
                     selectPageDropdownLabel={'Rows per page'}

@@ -11,11 +11,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [showDialog, setShowDialog] = useState(false);
   const [showBusyIndicator, setShowBusyIndicator] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
+  const [showDialogCancelButton, setShowDialogCancelButton] = useState(false);
+  const [dialogActionButtonText, setDialogActionButtonText] = useState('OK');
+  const [dialogActionFunction, setDialogActionFunction] = useState<(() => void) | undefined>(undefined);
   
   const [lastAppState, setLastAppState] = useState<string>('none');
   const [authenticationMode, setAuthenticationMode] = useState<AuthenticationMode>('bypass');
 
   const value: AppContextType = {
+    showDialogCancelButton,
+    setShowDialogCancelButton,
+    dialogActionButtonText,
+    setDialogActionButtonText,
+    dialogActionFunction,
+    setDialogActionFunction,
     showDialog,
     setShowDialog,
     showBusyIndicator,

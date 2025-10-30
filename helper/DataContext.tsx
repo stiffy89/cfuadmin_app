@@ -6,29 +6,47 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 // provider component
 export const DataProvider = ({ children }: { children: ReactNode }) => {
-
-    const [user, setUser] = useState<UserData>({
-        firstname : '',
-        lastname : '',
-        pernr : '',
-        position: '',
-        unitid: ''
-    });
-
     const [services, setServices] = useState<ServiceData[]>([])
-
+    const [membershipDetails, setMembershipDetails] = useState<any[]>([])
+    const [trainingHistoryDetails, setTrainingHistoryDetails] = useState<any[]>([])
+    const [employeeDetails, setEmployeeDetails] = useState<any[]>([])
+    const [volunteerDetails, setVolunteerDetails] = useState<any[]>([])
+    const [objectsOnLoan, setObjectsOnLoan] = useState<any[]>([])
+    const [medalsAwards, setMedalsAwards] = useState<any[]>([])
     const [myUnitContacts, setMyUnitContacts] = useState<any>([]);
     const [cfuPhonebookSuburbs, setCfuPhonebookSuburbs] = useState<any>([]);
+    const [employeeAddresses, setEmployeeAddresses] = useState<any>([]);
+    const [addressStates, setAddressStates] = useState<any>([]);
+    const [addressRelationships, setAddressRelationships] = useState<any>([]);
+    const [brigadeSummary, setBrigadeSummary] = useState<any>([]);
 
     const value: DataContextType = {
-        user,
-        setUser,
         services,
         setServices,
+        membershipDetails,
+        setMembershipDetails,
+        trainingHistoryDetails,
+        setTrainingHistoryDetails,
+        employeeDetails,
+        setEmployeeDetails,
+        volunteerDetails,
+        setVolunteerDetails,
+        objectsOnLoan,
+        setObjectsOnLoan,
+        medalsAwards,
+        setMedalsAwards,
+        employeeAddresses,
+        setEmployeeAddresses,
+        addressStates,
+        setAddressStates,
+        addressRelationships,
+        setAddressRelationships,
         myUnitContacts,
         setMyUnitContacts,
         cfuPhonebookSuburbs,
-        setCfuPhonebookSuburbs
+        setCfuPhonebookSuburbs,
+        brigadeSummary,
+        setBrigadeSummary
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

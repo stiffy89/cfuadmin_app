@@ -8,6 +8,12 @@ export type AuthType = 'okta' | 'local' | 'pin';
 export type AuthenticationMode = 'authenticate' | 'bypass';
 
 export type AppContextType = {
+    showDialogCancelButton: boolean;
+    setShowDialogCancelButton: (val: boolean) => void;
+    dialogActionButtonText: string;
+    setDialogActionButtonText: (val: string) => void;
+    dialogActionFunction? : () => void;
+    setDialogActionFunction: (fn: (() => void) | undefined) => void;
     showDialog: boolean;
     setShowDialog: (val: boolean) => void;
     showBusyIndicator: boolean;
@@ -21,8 +27,8 @@ export type AppContextType = {
 };
 
 export type batchGETResponse = {
-    entityName : string;
-    responseBody : any;
+    entityName: string;
+    responseBody: any;
 }
 
 
@@ -55,12 +61,42 @@ export type ServiceData = {
 }
 
 export type DataContextType = {
-    user: UserData;
-    setUser: (val: UserData) => void;
     services: ServiceData[];
     setServices: (val: ServiceData[]) => void;
+
+    membershipDetails: any[];
+    setMembershipDetails: (val: any[]) => void;
+
+    trainingHistoryDetails: any[];
+    setTrainingHistoryDetails: (val: any[]) => void;
+
+    employeeDetails: any[];
+    setEmployeeDetails: (val: any[]) => void;
+
+    volunteerDetails: any[];
+    setVolunteerDetails: (val: any[]) => void;
+
+    objectsOnLoan: any[];
+    setObjectsOnLoan: (val: any[]) => void;
+
+    medalsAwards: any[];
+    setMedalsAwards: (val: any[]) => void;
+
+    employeeAddresses: any[];
+    setEmployeeAddresses: (val: any[]) => void;
+
+    addressStates: any[];
+    setAddressStates: (val: any[]) => void;
+
+    addressRelationships: any[];
+    setAddressRelationships: (val: any[]) => void;
+
+    brigadeSummary: any[];
+    setBrigadeSummary: (val: any[]) => void;
+
     myUnitContacts: any[];
     setMyUnitContacts: (val: any[]) => void;
+
     cfuPhonebookSuburbs : any[];
     setCfuPhonebookSuburbs: (val: any[]) => void;
 }
@@ -76,6 +112,7 @@ export type TokenError = {
 export type ScreenState = 'auth' | 'home';
 
 export type RootStackParamList = {
+    SplashScreen: undefined;
     MainTabs: NavigatorScreenParams<TabParamList>;
     LoginScreen: undefined;
     EditScreen: Record<string, string> | undefined;
@@ -89,10 +126,10 @@ export type TabParamList = {
 }
 
 export type ContactsStackParamList = {
-    ContactsMain : NavigatorScreenParams<ContactsTabParamList>;
-    MyUnitContactDetail : Record<string, string> |undefined;
-    CfuPhonebookContactsList : any | undefined;
-    CfuPhonebookContactDetail : Record<string, string> | undefined;
+    ContactsMain: NavigatorScreenParams<ContactsTabParamList>;
+    MyUnitContactDetail: Record<string, string> | undefined;
+    CfuPhonebookContactsList: any | undefined;
+    CfuPhonebookContactDetail: Record<string, string> | undefined;
 }
 
 export type ContactsTabParamList = {

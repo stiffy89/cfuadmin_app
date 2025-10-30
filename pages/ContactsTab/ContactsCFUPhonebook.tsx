@@ -6,7 +6,7 @@ import { useDataContext } from '../../helper/DataContext';
 import { screenFlowModule } from '../../helper/ScreenFlowModule';
 import * as LucideIcons from 'lucide-react-native';
 import { useAppContext } from '../../helper/AppContext';
-import { DummyData } from '../../data/DummyData';
+import { dataHandlerModule } from '../../helper/DataHandlerModule';
 
 const ContactsCFUPhoneBook = () => {
 
@@ -64,25 +64,26 @@ const ContactsCFUPhoneBook = () => {
         return grouped;
     }
 
-    const onBrigadeSelect = (brigadeName : string) => {
+    const onBrigadeSelect = async (brigadeName : string) => {
         //read our brigade contacts
         appContext.setShowBusyIndicator(true);
         appContext.setShowDialog(true);
 
-        const dummyData = new DummyData();
-        const suburbData = dummyData.getSuburbContacts();
-
-        const suburbContactsObj = {
-            suburbName : brigadeName,
-            suburbContacts : suburbData
-        }
-        
-        setTimeout(() => {
+        try {
+            //convert the spaces
+            const formattedBrigadeName = brigadeName.replace(/ /g, "%20");
+            const suburbData = await dataHandlerModule.batchGet(`Contacts?$filter=Suburb%20eq%20%27${formattedBrigadeName}%27`, 'Z_CFU_CONTACTS_SRV', 'SuburbContacts');
+            const suburbContactsObj = {
+                suburbName : brigadeName,
+                suburbContacts : suburbData.responseBody.d.results
+            }
             appContext.setShowDialog(false);
             appContext.setShowBusyIndicator(false);
             screenFlowModule.onNavigateToScreen('CfuPhonebookContactsList', suburbContactsObj);
-        }, 1000)
-        
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
 
     return (
