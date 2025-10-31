@@ -19,6 +19,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [authenticationMode, setAuthenticationMode] = useState<AuthenticationMode>('bypass');
 
   const [cardModalVisible, setCardModalVisible] = useState(false)
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(true)
 
   const value: AppContextType = {
     showDialogCancelButton,
@@ -38,7 +39,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     authenticationMode,
     setAuthenticationMode,
     cardModalVisible,
-    setCardModalVisible
+    setCardModalVisible,
+    feedbackModalVisible,
+    setFeedbackModalVisible
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

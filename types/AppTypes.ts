@@ -25,7 +25,9 @@ export type AppContextType = {
     authenticationMode: AuthenticationMode;
     setAuthenticationMode: (val: AuthenticationMode) => void;
     cardModalVisible: boolean,
-    setCardModalVisible: (val: boolean) => void
+    setCardModalVisible: (val: boolean) => void,
+    feedbackModalVisible : boolean,
+    setFeedbackModalVisible: (val:boolean) => void
 };
 
 export type batchGETResponse = {

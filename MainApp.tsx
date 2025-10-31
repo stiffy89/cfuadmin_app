@@ -23,6 +23,7 @@ import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
 import SkillsMaintenanceStack from './pages/SkillsMaintenance/SkillsMaintenance';
 import SplashScreen from './pages/SplashScreen';
+import FeedbackModal from './assets/FeedbackModal';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -138,7 +139,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, feedbackModalVisible, setFeedbackModalVisible } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -393,6 +394,7 @@ export default function MainApp() {
 								)
 							}
 						</Dialog>
+						<FeedbackModal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}/>
 					</Portal>
 					<NavigationContainer
 						ref={navigatorRef}
