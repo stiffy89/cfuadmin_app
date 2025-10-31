@@ -61,6 +61,20 @@ const Services = () => {
                 </Pressable>
             )
         }
+        else if (x.title == 'Skills Maintenance'){
+            return (
+                <Pressable
+                    onPress={() => {
+                        screenFlowModule.onNavigateToScreen('SkillsMaintenancePage');
+                    }}
+                >
+                    <View style={{alignItems: 'center', padding: 10}}>
+                        <LucideIcons.Image style={{width: '100%'}} size={24}/>
+                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.title}</CustomText>
+                    </View>
+                </Pressable>
+            )
+        }
         else {
             return (
                 <View style={{alignItems: 'center', padding: 10}}>

@@ -21,7 +21,7 @@ export class ScreenFlowModule {
     }
 
     onNavigateToScreen (screen : any, data? : any) {
-        console.log(data);
+        // console.log(data);
        
         if (this.navigator?.isReady()){
             switch (screen) {
@@ -62,6 +62,36 @@ export class ScreenFlowModule {
                         'Resources',
                         {
                             screen: 'Resource',
+                            params: data
+                        }
+                    )
+                    break;
+
+                case 'SkillsMaintenancePage' : 
+                    this.navigator?.navigate(
+                        'SkillsMaintenance', 
+                        {
+                            screen: 'SkillsMaintenancePage',
+                            params: data
+                        }
+                    );
+                    break;
+
+                case 'DrillPage' : 
+                    this.navigator?.navigate(
+                        'SkillsMaintenance', 
+                        {
+                            screen: 'DrillPage',
+                            params: data
+                        }
+                    );
+                    break;
+
+                case 'DrillCardPage':
+                    this.navigator?.navigate(
+                        'SkillsMaintenance',
+                        {
+                            screen: 'DrillCardPage',
                             params: data
                         }
                     )

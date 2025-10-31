@@ -119,6 +119,7 @@ export type RootStackParamList = {
     LoginScreen: undefined;
     EditScreen: Record<string, string> | undefined;
     Resources: NavigatorScreenParams<ResourceStackParamList>;
+    SkillsMaintenance: NavigatorScreenParams<SkillsMaintenanceStackParamList>
 }
 
 export type TabParamList = {
@@ -164,6 +165,12 @@ export type FormServiceStackParamList = {
     FormServicePage: Record<string, string> | undefined;
     FormPage: Record<string, string> | undefined;
 };
+
+export type SkillsMaintenanceStackParamList = {
+    SkillsMaintenancePage: Record<string, string> | undefined;
+    DrillPage: Record<string, string> | undefined;
+    DrillCardPage: Record<string, string> | undefined;
+}
 
 export type RootStackScreenKeys = keyof RootStackParamList;
 export type ProfileStackScreenKeys = keyof ProfileStackParamList;

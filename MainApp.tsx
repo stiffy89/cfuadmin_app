@@ -21,6 +21,7 @@ import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
+import SkillsMaintenanceStack from './pages/SkillsMaintenance/SkillsMaintenance';
 import SplashScreen from './pages/SplashScreen';
 
 //navigation modules
@@ -401,6 +402,7 @@ export default function MainApp() {
 						}}
 					>
 						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+							<Stack.Screen name="SkillsMaintenance" component={SkillsMaintenanceStack}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
