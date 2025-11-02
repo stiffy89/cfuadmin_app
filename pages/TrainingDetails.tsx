@@ -6,10 +6,10 @@ import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
-import { ProfileStackParamList } from '../types/AppTypes';
+import { RootStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
 
-type props = StackScreenProps<ProfileStackParamList, 'TrainingDetailsScreen'>; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, 'TrainingDetailsScreen'>; //typing the navigation props
 
 const TrainingDetails = ({route, navigation} : props) => {
     

@@ -6,11 +6,11 @@ import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
-import { ProfileStackParamList } from '../types/AppTypes';
+import { RootStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
 import { useDataContext } from '../helper/DataContext';
 
-type props = StackScreenProps<ProfileStackParamList, 'MembershipDetailsScreen'>; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, 'MembershipDetailsScreen'>; //typing the navigation props
 
 const MembershipDetails = ({ route, navigation }: props) => {
 
@@ -20,7 +20,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
     const genericFormatter = new GenericFormatter();
     const dataContext = useDataContext();
 
-    const membershipDetails = dataContext.volunteerDetails[0];
+    const membershipDetails = dataContext.membershipDetails[0];
     const objectsOnLoan = dataContext.objectsOnLoan;
     const medalsAndAwards = dataContext.medalsAwards;
 

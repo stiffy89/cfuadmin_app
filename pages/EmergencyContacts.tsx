@@ -2,7 +2,7 @@ import React from "react";
 import { View, ScrollView } from "react-native";
 import { useTheme, IconButton, Button } from "react-native-paper";
 import { StackScreenProps } from "@react-navigation/stack";
-import { ProfileStackParamList } from "../types/AppTypes";
+import {RootStackParamList } from "../types/AppTypes";
 import { screenFlowModule } from "../helper/ScreenFlowModule";
 import GlobalStyles from "../style/GlobalStyles";
 import * as LucideIcons from "lucide-react-native";
@@ -10,13 +10,13 @@ import CustomText from "../assets/CustomText";
 import { useDataContext } from "../helper/DataContext";
 import GenericFormatter from "../helper/GenericFormatters";
 
-type props = StackScreenProps<ProfileStackParamList, "EmergencyContactsScreen">; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, "EmergencyContactsScreen">; //typing the navigation props
 
 const EmergencyContacts = ({ route, navigation }: props) => {
     const theme = useTheme();
-    const params = route.params ?? [];
+    const dataContext = useDataContext();
+    const pernr = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMemberEmployeeDetails[0].Pernr : dataContext.employeeDetails[0].Pernr;
 
-    const pernr = useDataContext().employeeDetails[0].Pernr;
     const employeeAddresses = useDataContext().employeeAddresses;
 
     const EditData = (data: any) => {
@@ -101,13 +101,13 @@ const EmergencyContacts = ({ route, navigation }: props) => {
                                 ...GlobalStyles.globalBorderRadius,
                             }}
                         >
-                            <View>
+                            <View style={{width: '90%'}}>
                                 <CustomText style={{ marginBottom: 10 }}>{x.Coname}</CustomText>
                                 <CustomText style={{ marginBottom: 10 }}>
                                     {x.ZzindrlAtext}
                                 </CustomText>
                                 <CustomText style={{ marginBottom: 10 }}>{x.Telnr}</CustomText>
-                                <CustomText style={{ marginBottom: 10 }}>
+                                <CustomText style={{ marginBottom: 10, flexWrap: 'wrap' }}>
                                     {SecondaryAddressFormatter(x)}
                                 </CustomText>
                             </View>

@@ -6,18 +6,18 @@ import { screenFlowModule, ScreenFlowModule } from "../helper/ScreenFlowModule";
 import CustomText from "../assets/CustomText";
 import GlobalStyles from "../style/GlobalStyles";
 import { StackScreenProps } from "@react-navigation/stack";
-import { ProfileStackParamList } from "../types/AppTypes";
+import { RootStackParamList } from "../types/AppTypes";
 import { useAppContext } from "../helper/AppContext";
 import { useDataContext } from "../helper/DataContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 import GenericFormatter from "../helper/GenericFormatters";
 
-type props = StackScreenProps<ProfileStackParamList, "ContactDetailsScreen">; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, "ContactDetailsScreen">; //typing the navigation props
 
 const ContactDetails = ({ route, navigation }: props) => {
     const theme = useTheme();
-    //const params = route.params ?? {};
-    const params = useDataContext().employeeDetails[0];
+    const dataContext = useDataContext();
+    const params = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMemberEmployeeDetails[0] : dataContext.employeeDetails[0];
     const appContext = useAppContext();
 
     const EditData = async (dataObj: any) => {

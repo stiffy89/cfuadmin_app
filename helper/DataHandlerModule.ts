@@ -300,7 +300,7 @@ class DataHandlerModule {
         return JSON.parse(jsonRaw);
     }
 
-    formatMERGEResponse(raw: string){
+    formatMERGEResponse(raw: string) {
         try {
             const breaker = raw.split(/\r?\n/)[0] + '--';
             const arr = raw.split(/\r?\n|\r/);
@@ -308,7 +308,7 @@ class DataHandlerModule {
             const jsonRaw = arr[index - 1];
             return JSON.parse(jsonRaw);
         }
-        catch(error){
+        catch (error) {
             return ''
         }
     }
@@ -323,7 +323,7 @@ class DataHandlerModule {
 
             const response = await this.axiosInstance?.get('/Z_VOL_MEMBER_SRV/MembershipDetails', {
                 headers: {
-                    'x-csrf-token' : 'Fetch'
+                    'x-csrf-token': 'Fetch'
                 },
                 auth: {
                     username: 'WAK816316',
@@ -362,7 +362,7 @@ class DataHandlerModule {
         const authString = `Basic ${token}`
 
         try {
-             //run the create call
+            //run the create call
             const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
                 batchBodyString,
                 {
@@ -477,7 +477,7 @@ class DataHandlerModule {
         }
     }
 
-    async batchSingleDelete(urlPath: string, serviceName: string, data: any, passedAccessToken?: string): Promise<batchGETResponse> {
+    async batchSingleDelete(urlPath: string, serviceName: string, passedAccessToken?: string): Promise<batchGETResponse> {
 
         const changeSet = 'changeset_' + Crypto.randomUUID();
         const batch = 'batch_' + Crypto.randomUUID();
@@ -499,7 +499,7 @@ class DataHandlerModule {
         const authString = `Basic ${token}`
 
         try {
-             //run the create call
+            //run the create call
             const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
                 batchBody,
                 {
@@ -614,13 +614,14 @@ class DataHandlerModule {
         }
     }
 
-    async batchGet(path: string, serviceName: string, entityName: string, passedAccessToken?: string): Promise<batchGETResponse> {
+    async batchGet(path: string, serviceName: string, entityName: string, passedAccessToken?: string, menuSet?: boolean): Promise<batchGETResponse> {
         //build the request body and post
         const batch = 'batch_' + Crypto.randomUUID();
 
         let batchString = `--${batch}\n` + this.getBatchBody(path) + `--${batch}--`;
 
         let csrfToken = await AsyncStorage.getItem('csrf-token');
+        let csrfRefreshPromise: Promise<void> | null = null;
 
         if (!csrfToken) {
             const csrfResponse = await this.fetchCsrfToken();
@@ -657,17 +658,21 @@ class DataHandlerModule {
             }
 
 
+            let header: any = {
+                'Content-Type': `multipart/mixed; boundary=${batch}`,
+                //    'x-csrf-token': csrfToken,
+                'Authorization': authString
+            }
 
+            if (menuSet) {
+                header['client-id'] = 'CFU2APP'
+            }
 
             //run the create call
             const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
                 batchString,
                 {
-                    headers: {
-                        'Content-Type': `multipart/mixed; boundary=${batch}`,
-                        'x-csrf-token': csrfToken,
-                        'Authorization': authString
-                    }
+                    headers: header
                 }
             );
 
@@ -744,33 +749,44 @@ class DataHandlerModule {
                 }
                 else if (status == 403) {
                     //try getting csrf token
-                    const csrfResponse = await this.fetchCsrfToken()
-                    const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
-                    await AsyncStorage.setItem('csrf-token', newCsrfToken);
-                    const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                    if (!csrfRefreshPromise) {
+                        csrfRefreshPromise = (async () => {
+                            console.log('Refreshing CSRF token...');
+                            const csrfResponse = await this.fetchCsrfToken();
+                            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                            if (!newCsrfToken) throw new Error('No CSRF token returned');
+                            
+                            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+                            console.log('CSRF token refreshed.');
+                            csrfRefreshPromise = null;
+                        })().catch(err => {
+                            csrfRefreshPromise = null;
+                            throw err;
+                        });
+                    }
+
+                    // Wait for the CSRF refresh to complete (even if another request started it)
+                    await csrfRefreshPromise;
+
+                    // Re-run the request after refresh
+                    const retryResponse = await this.axiosInstance?.post(
+                        serviceName + '/$batch',
                         batchString,
                         {
                             headers: {
                                 'Content-Type': `multipart/mixed; boundary=${batch}`,
-                                'x-csrf-token': csrfToken,
-                                'Authorization': authString
-                            }
+                                'x-csrf-token': await AsyncStorage.getItem('csrf-token'),
+                                'Authorization': authString,
+                            },
                         }
                     );
 
                     if (!retryResponse) throw new Error('no response from update');
 
-                    //format the response
                     const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+                    if (!retryJsonResponse) throw new Error('response body is malformed');
 
-                    if (!retryJsonResponse) {
-                        throw new Error('response body is malformed, cannot parse')
-                    }
-
-                    return {
-                        entityName: entityName,
-                        responseBody: retryJsonResponse
-                    }
+                    return { entityName, responseBody: retryJsonResponse };
                 }
             }
 

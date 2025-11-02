@@ -22,6 +22,17 @@ import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
 import SplashScreen from './pages/SplashScreen';
+import MyMembers from './pages/MyMembers';
+import MyMembersProfile from './pages/MyMembersProfile';
+import MyDetails from './pages/MyDetails';
+import ContactDetails from './pages/ContactDetails';
+import EmergencyContacts from './pages/EmergencyContacts';
+import MembershipDetails from './pages/MembershipDetails';
+import TrainingHistory from './pages/TrainingHistory';
+import TrainingDetails from './pages/TrainingDetails';
+import MyUnit from './pages/MyUnit';
+import UniformDetails from './pages/UniformDetails';
+import MedalsAndAwards from './pages/MedalsAndAwards';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -77,6 +88,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 const TabNavigator = () => {
 
 	const theme = useTheme();
+	const dataContext = useDataContext();
 
 	return (
 		<Tab.Navigator
@@ -110,7 +122,6 @@ const TabNavigator = () => {
 					return <CustomText variant='labelSmall' style={{ color: iconColor }}>{formattedRouteName}</CustomText>
 				},
 				tabBarIcon: ({ focused, color, size }) => {
-
 					let iconColor = focused ? theme.colors.primary : theme.colors.outline;
 
 					switch (route.name) {
@@ -128,7 +139,11 @@ const TabNavigator = () => {
 		>
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
 			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
-			<Tab.Screen name="MyProfileScreen" component={ProfilePage}/>
+			<Tab.Screen name="MyProfileScreen" component={ProfilePage} listeners={({ navigation, route }) => ({
+				tabPress: (e) => {
+					dataContext.setCurrentProfile('CurrentUser')
+				},
+			})}/>
 		</Tab.Navigator>
 	)
 }
@@ -210,21 +225,20 @@ export default function MainApp() {
 		const DummyObj = new DummyData();
 
 		//get profile information
-		const ServiceInfo = DummyObj.getServices();
-		dataContext.setServices(ServiceInfo);
+	//	const ServiceInfo = DummyObj.getServices();
+	//	dataContext.setServices(ServiceInfo);
 		
-
 		const requests = [
-			dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
-			dataHandlerModule.batchGet('TrainingHistoryDetails', 'Z_VOL_MEMBER_SRV', 'TrainingHistoryDetails'),
-			dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'),
+			dataHandlerModule.batchGet('MenuSet?$format=json', 'Z_MOB2_SRV', 'MenuSet', undefined, true),
+			dataHandlerModule.batchGet('Users','Z_ESS_MSS_SRV', 'Users'),
 			dataHandlerModule.batchGet('EmployeeDetails', 'Z_ESS_MSS_SRV', 'EmployeeDetails'),
-			dataHandlerModule.batchGet('ObjectsOnLoan?$skip=0&$top=100&$filter=CurrentOnly%20eq%20true', 'Z_ESS_MSS_SRV', 'ObjectsOnLoan'),
-			dataHandlerModule.batchGet('MedalsAwards?$skip=0&$top=100', 'Z_ESS_MSS_SRV', 'MedalsAwards'),
+			dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
+			dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'),
 			dataHandlerModule.batchGet('AddressStates?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressStates'),
 			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships'),
 			dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'),
-			dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs')
+			dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs'),
+			dataHandlerModule.batchGet('RootOrgUnits', 'Z_VOL_MANAGER_SRV', 'RootOrgUnits') 
 		]
 
 		const results = await Promise.allSettled(requests);
@@ -249,28 +263,24 @@ export default function MainApp() {
 		for (const x of results) {
 			
 			switch (x.value.entityName){
-				case 'MembershipDetails':
-					dataContext.setMembershipDetails(x.value.responseBody.d.results);
+				case 'MenuSet':
+					dataContext.setServices(x.value.responseBody.d.results);
 					break;
-				
+
+				case 'Users':
+					dataContext.setCurrentUser(x.value.responseBody.d.results);
+					break;
+
 				case 'EmployeeDetails':
 					dataContext.setEmployeeDetails(x.value.responseBody.d.results);
 					break;
 
-				case 'VolunteerDetails':
-					dataContext.setVolunteerDetails(x.value.responseBody.d.results);
+				case 'MembershipDetails':
+					dataContext.setMembershipDetails(x.value.responseBody.d.results);
 					break;
 
-				case 'ObjectsOnLoan':
-					dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
-					break;
-
-				case 'TrainingHistoryDetails':
-					dataContext.setTrainingHistoryDetails(x.value.responseBody.d.results);
-					break;
-
-				case 'MedalsAwards':
-					dataContext.setMedalsAwards(x.value.responseBody.d.results);
+				case 'VolunteerRoles':
+					dataContext.setVolunteerRoles(x.value.responseBody.d.results);
 					break;
 
 				case 'VH_AddressStates':
@@ -295,6 +305,21 @@ export default function MainApp() {
 
 				case 'Suburbs':
 					dataContext.setCfuPhonebookSuburbs(x.value.responseBody.d.results);
+					break;
+
+				case 'RootOrgUnits':
+					dataContext.setRootOrgUnits(x.value.responseBody.d.results);
+					if (x.value.responseBody.d.results.length > 0){
+						const firstRootOrgUnit = x.value.responseBody.d.results[0];
+						const plans = firstRootOrgUnit.Plans;
+						try {
+							const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
+							dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results)
+						}
+						catch (error) {
+							console.log(error)
+						}
+					}
 					break;
 			}
 		}
@@ -401,10 +426,21 @@ export default function MainApp() {
 						}}
 					>
 						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+							<Stack.Screen name='MyMembers' component={MyMembers}/>
+							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
+							<Stack.Screen name='MyDetailsScreen' component={MyDetails}/>
+							<Stack.Screen name='ContactDetailsScreen' component={ContactDetails}/>
+							<Stack.Screen name='EmergencyContactsScreen' component={EmergencyContacts} />
+							<Stack.Screen name='MyUnitDetailsScreen' component={MyUnit} />
+							<Stack.Screen name='TrainingHistoryScreen' component={TrainingHistory} />
+							<Stack.Screen name='TrainingDetailsScreen' component={TrainingDetails}/>
+							<Stack.Screen name='MembershipDetailsScreen' component={MembershipDetails}/>
+							<Stack.Screen name='UniformDetailsScreen' component={UniformDetails}/>
+							<Stack.Screen name='MedalsAndAwardsScreen' component={MedalsAndAwards}/>
 							<Stack.Screen name='EditScreen' component={EditScreen} options={{presentation: 'modal'}}/>
 						</Stack.Navigator>
 					</NavigationContainer>

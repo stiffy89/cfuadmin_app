@@ -19,6 +19,8 @@ import { useAppContext } from "../helper/AppContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 import { useDataContext } from "../helper/DataContext";
 import GenericFormatter from "../helper/GenericFormatters";
+import { MaskedTextInput } from 'react-native-mask-text';
+import { DateTime } from "luxon";
 
 type props = StackScreenProps<RootStackParamList, "EditScreen">; //typing the navigation props
 
@@ -79,14 +81,24 @@ const MyDetailsEdit = (data: any) => {
                             if (!response.responseBody) {
                                 //update success, do a read of and update the info
                                 const pernr = originalData.Pernr;
+                                const plans = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMembersMembershipDetails[0].Zzplans : dataContext.membershipDetails[0].Zzplans;
+
                                 const employeeDetails = await dataHandlerModule.batchGet(
-                                    "EmployeeDetails",
+                                    `EmployeeDetails?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`,
                                     "Z_ESS_MSS_SRV",
                                     "EmployeeDetails"
                                 );
-                                dataContext.setEmployeeDetails(
-                                    employeeDetails.responseBody.d.results
-                                );
+
+                                if (dataContext.currentProfile == 'MyMembers') {
+                                    dataContext.setMyMemberEmployeeDetails(
+                                        employeeDetails.responseBody.d.results
+                                    );
+                                }
+                                else {
+                                    dataContext.setEmployeeDetails(
+                                        employeeDetails.responseBody.d.results
+                                    );
+                                }
 
                                 screenFlowModule.onGoBack();
                                 appContext.setShowBusyIndicator(false);
@@ -222,12 +234,26 @@ const ContactDetailsEdit = (data: any) => {
             originalData.Zzcom02 = "WORK";
 
             updateData(uriPath, "Z_ESS_MSS_SRV", originalData, async () => {
+
+                const pernr = originalData.Pernr;
+                const plans = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMembersMembershipDetails[0].Zzplans : dataContext.membershipDetails[0].Zzplans;
+
                 const employeeDetails = await dataHandlerModule.batchGet(
-                    "EmployeeDetails",
+                    `EmployeeDetails?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`,
                     "Z_ESS_MSS_SRV",
                     "EmployeeDetails"
                 );
-                dataContext.setEmployeeDetails(employeeDetails.responseBody.d.results);
+
+                if (dataContext.currentProfile == 'MyMembers') {
+                    dataContext.setMyMemberEmployeeDetails(
+                        employeeDetails.responseBody.d.results
+                    );
+                }
+                else {
+                    dataContext.setEmployeeDetails(
+                        employeeDetails.responseBody.d.results
+                    );
+                }
 
                 screenFlowModule.onGoBack();
                 appContext.setShowBusyIndicator(false);
@@ -251,12 +277,26 @@ const ContactDetailsEdit = (data: any) => {
             const uriParts = originalData.__metadata.uri.split("Z_ESS_MSS_SRV");
             const uriPath = uriParts[1].substring(1);
             updateData(uriPath, "Z_ESS_MSS_SRV", originalData, async () => {
+
+                const pernr = originalData.Pernr;
+                const plans = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMembersMembershipDetails[0].Zzplans : dataContext.membershipDetails[0].Zzplans;
+
                 const employeeDetails = await dataHandlerModule.batchGet(
-                    "EmployeeDetails",
+                    `EmployeeDetails?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`,
                     "Z_ESS_MSS_SRV",
                     "EmployeeDetails"
                 );
-                dataContext.setEmployeeDetails(employeeDetails.responseBody.d.results);
+
+                if (dataContext.currentProfile == 'MyMembers') {
+                    dataContext.setMyMemberEmployeeDetails(
+                        employeeDetails.responseBody.d.results
+                    );
+                }
+                else {
+                    dataContext.setEmployeeDetails(
+                        employeeDetails.responseBody.d.results
+                    );
+                }
 
                 screenFlowModule.onGoBack();
                 appContext.setShowBusyIndicator(false);
@@ -313,12 +353,26 @@ const ContactDetailsEdit = (data: any) => {
             }
 
             updateData(urlPath, "Z_ESS_MSS_SRV", originalData, async () => {
+
+                const pernr = originalData.Pernr;
+                const plans = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMembersMembershipDetails[0].Zzplans : dataContext.membershipDetails[0].Zzplans;
+
                 const employeeDetails = await dataHandlerModule.batchGet(
-                    "EmployeeDetails",
+                    `EmployeeDetails?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`,
                     "Z_ESS_MSS_SRV",
                     "EmployeeDetails"
                 );
-                dataContext.setEmployeeDetails(employeeDetails.responseBody.d.results);
+
+                if (dataContext.currentProfile == 'MyMembers') {
+                    dataContext.setMyMemberEmployeeDetails(
+                        employeeDetails.responseBody.d.results
+                    );
+                }
+                else {
+                    dataContext.setEmployeeDetails(
+                        employeeDetails.responseBody.d.results
+                    );
+                }
 
                 screenFlowModule.onGoBack();
                 appContext.setShowBusyIndicator(false);
@@ -348,12 +402,27 @@ const ContactDetailsEdit = (data: any) => {
                 );
 
                 if (!response.responseBody) {
+
+                    const pernr = originalData.Pernr;
+                    const plans = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMembersMembershipDetails[0].Zzplans : dataContext.membershipDetails[0].Zzplans;
+
                     const employeeDetails = await dataHandlerModule.batchGet(
-                        "EmployeeDetails",
+                        `EmployeeDetails?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`,
                         "Z_ESS_MSS_SRV",
                         "EmployeeDetails"
                     );
-                    dataContext.setEmployeeDetails(employeeDetails.responseBody.d.results);
+
+                    if (dataContext.currentProfile == 'MyMembers') {
+                        dataContext.setMyMemberEmployeeDetails(
+                            employeeDetails.responseBody.d.results
+                        );
+                    }
+                    else {
+                        dataContext.setEmployeeDetails(
+                            employeeDetails.responseBody.d.results
+                        );
+                    }
+
                     screenFlowModule.onGoBack();
                     appContext.setShowBusyIndicator(false);
                     appContext.setShowDialog(false);
@@ -649,11 +718,15 @@ const EmergencyContactsEdit = (data: any) => {
         }
 
         updateData(urlPath, "Z_ESS_MSS_SRV", emergencyContact, async () => {
+
+            const pernr = emergencyContact.Pernr;
+
             const employeeDetails = await dataHandlerModule.batchGet(
-                "EmployeeAddresses",
+                `EmployeeAddresses?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Subty%20eq%20%274%27`,
                 "Z_ESS_MSS_SRV",
                 "EmployeeAddresses"
             );
+
             dataContext.setEmployeeAddresses(employeeDetails.responseBody.d.results);
 
             screenFlowModule.onGoBack();
@@ -708,7 +781,7 @@ const EmergencyContactsEdit = (data: any) => {
     return (
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
             <View
-                style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20}}
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}
             >
                 <CustomText variant="titleLargeBold">
                     Emergency Contacts Edit
@@ -724,7 +797,7 @@ const EmergencyContactsEdit = (data: any) => {
                     />
                 }
             </View>
-            <ScrollView style={{ paddingBottom: 40}}>
+            <ScrollView style={{ paddingBottom: 40 }}>
                 <TextInput
                     label="Name *"
                     mode="flat"
@@ -898,9 +971,136 @@ const EmergencyContactsEdit = (data: any) => {
     );
 };
 
+const UniformDetailsEdit = (data: any) => {
+    const theme = useTheme();
+    const dataObj = data.data;
+
+    const dataContext = useDataContext();
+    const appContext = useAppContext();
+    const genericFormatter = new GenericFormatter();
+
+    const [returnDate, setReturnDate] = useState<string>('');
+
+    async function saveData() {
+        appContext.setShowBusyIndicator(true);
+        appContext.setShowDialog(true);
+
+        //convert DD/MM/YYYY to EDM Date
+        const luxonDate = DateTime.fromFormat(returnDate, 'dd/MM/yyyy');
+
+        if (!luxonDate.isValid){
+            appContext.setShowBusyIndicator(false);
+            appContext.setShowDialog(true);
+            appContext.setDialogMessage('Please input a valid date into the return date field')
+        }
+
+        const jsDate = luxonDate.toJSDate();
+        const edmDate = genericFormatter.formatToEdmDate(jsDate);
+        dataObj.ReturnDate = edmDate;
+
+        try {
+            const uriParts =dataObj.__metadata.uri.split("Z_ESS_MSS_SRV");
+            const uriPath = uriParts[1].substring(1);
+            const response = await dataHandlerModule.batchSingleUpdate(
+                uriPath,
+                "Z_ESS_MSS_SRV",
+                dataObj
+            );
+
+            if (!response.responseBody) {
+                //update success, do a read of and update the info
+                const pernr = dataObj.Pernr;
+                const plans = dataObj.Zzplans;
+
+                const objectsOnLoan = await dataHandlerModule.batchGet(
+                    `ObjectsOnLoan?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27%20and%20Mss%20eq%20true`,
+                    "Z_ESS_MSS_SRV",
+                    "ObjectsOnLoan"
+                );
+
+                dataContext.setObjectsOnLoan(objectsOnLoan.responseBody.d.results);
+
+                screenFlowModule.onGoBack();
+                appContext.setShowBusyIndicator(false);
+                appContext.setShowDialog(false);
+            } else if (response.responseBody.error) {
+                appContext.setShowBusyIndicator(false);
+                appContext.setDialogMessage(
+                    response.responseBody.error.message.value
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    return (
+        <View style={{ paddingHorizontal: 20, flex: 1 }}>
+            <View
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}
+            >
+                <CustomText variant="titleLargeBold">
+                    Uniform Details Edit
+                </CustomText>
+            </View>
+            <ScrollView style={{ paddingBottom: 40 }}>
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Object' value={dataObj.ObjectTypesStext} />
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='From' value={genericFormatter.formatFromEdmDate(dataObj.OriginalPskeyBegda)} />
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Quantity' value={dataObj.Anzkl} />
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={dataObj.UnitsEtext} />
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Reference No.' value={dataObj.Lobnr} />
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    editable={true} mode='flat'
+                    underlineColor='transparent'
+                    label='Return Date'
+                    placeholder="DD/MM/YYYY"
+                    value={genericFormatter.formatFromEdmDate(data.ReturnDate)}
+                    keyboardType='numeric'
+                    render={(props) => {
+                        return (
+                            <MaskedTextInput
+                                {...props}
+                                mask="99/99/9999"
+                                value={returnDate}
+                                onChangeText={(text, rawText) => {
+                                    setReturnDate(text);
+                                }}
+                            />
+                        )
+                    }}
+                />
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 1' value={dataObj.Text1} />
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 2' value={dataObj.Text2} />
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 3' value={dataObj.Text3} />
+            </ScrollView>
+
+            <Button
+                style={{
+                    backgroundColor: theme.colors.primary,
+                    ...GlobalStyles.floatingButtonBottom,
+                }}
+                mode="elevated"
+                textColor={theme.colors.background}
+                onPress={() => {
+                    if (returnDate == ''){
+                        appContext.setShowDialog(true)
+                        appContext.setDialogMessage('Please add a return date before continuing')
+                        return;
+                    }
+
+                    saveData()
+                }}
+            >
+                Save
+            </Button>
+        </View>
+    );
+}
+
 const EditScreen = ({ route, navigation }: props) => {
     const EditPayload = route.params;
-
+    console.log(EditPayload);
     let SelectedEditScreen;
 
     switch (EditPayload?.screenName) {
@@ -915,6 +1115,12 @@ const EditScreen = ({ route, navigation }: props) => {
         case "EmergencyContacts":
             SelectedEditScreen = (
                 <EmergencyContactsEdit data={EditPayload.editData} />
+            );
+            break;
+
+        case "UniformDetails":
+            SelectedEditScreen = (
+                <UniformDetailsEdit data={EditPayload.editData} />
             );
             break;
     }

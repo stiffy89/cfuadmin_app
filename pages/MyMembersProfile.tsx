@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, ScrollView, Easing, Dimensions } from "react-native";
-import { useTheme, Button, List, Divider } from "react-native-paper";
+import { useTheme, Button, List, Divider, IconButton } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../assets/CustomText";
 import { useDataContext } from "../helper/DataContext";
@@ -13,61 +13,19 @@ import { useAppContext } from "../helper/AppContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 
 import { screenFlowModule } from "../helper/ScreenFlowModule";
-
-import { authModule } from "../helper/AuthModule";
-import { OktaLoginResult } from "../types/AppTypes";
-import { DummyData } from "../data/DummyData";
+import { StackScreenProps } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/AppTypes';
 
 const ProfileHeader = () => {
-    const { setCardModalVisible } = useAppContext();
     const theme = useTheme();
-    const user = useDataContext().currentUser[0];
-    const membership = useDataContext().membershipDetails[0];
+    const dataContext = useDataContext();
+    const employeeDetails = dataContext.myMemberEmployeeDetails[0];
+    const membership = dataContext.myMembersMembershipDetails[0];
 
     return (
         <View style={{ margin: 20 }}>
             <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-                <Button
-                    onPress={() => {
-                        authModule.onClearAllDevTokens();
-                    }}
-                >
-                    Clear Tokens
-                </Button>
-                <Button
-                    mode="outlined"
-                    onPress={async () => {
-                        setCardModalVisible(true)
-                        if (!dataHandlerModule.securityInstanceInitialised()) {
-                            return;
-                        }
-
-                        const volRolesBatchBody =
-                            dataHandlerModule.getBatchBody("VolunteerRoles");
-
-                        const membershipDetailsBatchBody =
-                            dataHandlerModule.getBatchBody("MembershipDetails");
-
-                        const batchBodyArray = [
-                            membershipDetailsBatchBody,
-                            volRolesBatchBody,
-                        ];
-
-                        try {
-                            const responseBody = await dataHandlerModule.batchGet(
-                                "MembershipDetailsss",
-                                "Z_VOL_MEMBER_SRV",
-                                "MembershipDetails"
-                            );
-
-                            console.log(responseBody);
-                        } catch (error) {
-                            throw error;
-                        }
-                    }}
-                >
-                    ID Card
-                </Button>
+            
             </View>
             <View
                 style={{
@@ -90,7 +48,7 @@ const ProfileHeader = () => {
                 variant="displaySmallBold"
                 style={{ textAlign: "center", marginTop: 20 }}
             >
-                {user.Vorna} {user.Nachn}
+                {employeeDetails.Vorna} {employeeDetails.Nachn}
             </CustomText>
             <CustomText
                 variant="titleLarge"
@@ -108,10 +66,14 @@ const ProfileHeader = () => {
     );
 };
 
-const ProfilePage = () => {
+type props = StackScreenProps<RootStackParamList, 'MyMembersProfile'>;
+
+const MyMembersProfile = ({ route }: props) => {
     const { setShowDialog, setShowBusyIndicator, setDialogMessage } = useAppContext();
     const dataContext = useDataContext();
     const appContext = useAppContext();
+    const employeeDetails = dataContext.myMemberEmployeeDetails[0];
+    const membershipDetails = dataContext.myMembersMembershipDetails[0];
 
     const theme = useTheme();
 
@@ -138,6 +100,24 @@ const ProfilePage = () => {
 
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginVertical: 20,
+                }}
+            >
+                <IconButton
+                    icon={() => (
+                        <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />
+                    )}
+                    size={20}
+                    onPress={() => screenFlowModule.onGoBack()}
+                />
+                <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
+                    Contact Details
+                </CustomText>
+            </View>
             <ProfileHeader />
             <ScrollView
                 style={{ flex: 1, backgroundColor: "#fff" }}
@@ -159,8 +139,8 @@ const ProfilePage = () => {
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={async () => {
-                                const pernr = dataContext.currentUser[0].Pernr;
-                                getPageData(`EmployeeDetails?$filter=Pernr%20eq%20%27${pernr}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails', (data) => {
+                                const plans = dataContext.myMembersMembershipDetails[0].Zzplans;
+                                getPageData(`EmployeeDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails', (data) => {
                                     dataContext.setEmployeeDetails(data);
                                     screenFlowModule.onNavigateToScreen('MyDetailsScreen')
                                 })
@@ -174,8 +154,8 @@ const ProfilePage = () => {
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={async () => {
-                                const pernr = dataContext.currentUser[0].Pernr;
-                                getPageData(`EmployeeDetails?$filter=Pernr%20eq%20%27${pernr}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails', (data) => {
+                                const plans = dataContext.myMembersMembershipDetails[0].Zzplans;
+                                getPageData(`EmployeeDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails', (data) => {
                                     dataContext.setEmployeeDetails(data);
                                     screenFlowModule.onNavigateToScreen('ContactDetailsScreen')
                                 })
@@ -190,7 +170,7 @@ const ProfilePage = () => {
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={async () => {
                                 getPageData(
-                                    `EmployeeAddresses?$filter=Pernr%20eq%20%27${dataContext.currentUser[0].Pernr}%27%20and%20Subty%20eq%20%274%27`,
+                                    `EmployeeAddresses?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Subty%20eq%20%274%27`,
                                     "Z_ESS_MSS_SRV",
                                     "EmployeeAddresses",
                                     (data) => {
@@ -222,11 +202,10 @@ const ProfilePage = () => {
                             onPress={async () => {
                                 appContext.setShowBusyIndicator(true);
                                 appContext.setShowDialog(true);
-                                const pernr = dataContext.currentUser[0].Pernr;
+                    
                                 const requests = [
-                                    dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${pernr}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
-                                    dataHandlerModule.batchGet(`ObjectsOnLoan?$filter=Pernr%20eq%20%27${pernr}%27&$skip=0&$top=100&$filter=CurrentOnly%20eq%20true`, 'Z_ESS_MSS_SRV', 'ObjectsOnLoan'),
-                                    dataHandlerModule.batchGet(`MedalsAwards?$filter=Pernr%20eq%20%27${pernr}%27&$skip=0&$top=100`, 'Z_ESS_MSS_SRV', 'MedalsAwards'),
+                                    dataHandlerModule.batchGet(`ObjectsOnLoan?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${membershipDetails.Zzplans}%27%20and%20Mss%20eq%20true`, 'Z_ESS_MSS_SRV', 'ObjectsOnLoan'),
+                                    dataHandlerModule.batchGet(`MedalsAwards?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27&$skip=0&$top=100`, 'Z_ESS_MSS_SRV', 'MedalsAwards'),
                                 ]
 
                                 try {
@@ -246,9 +225,6 @@ const ProfilePage = () => {
 
                                     for (const x of results) {
                                         switch (x.value.entityName){
-                                            case 'MembershipDetails':
-                                            dataContext.setMembershipDetails(x.value.responseBody.d.results);
-                                            break;
 
                                             case 'MedalsAwards':
                                             dataContext.setMedalsAwards(x.value.responseBody.d.results);
@@ -279,9 +255,9 @@ const ProfilePage = () => {
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={() => {
-                                const pernr = dataContext.currentUser[0].Pernr;
+                                
                                 getPageData(
-                                    `TrainingHistoryDetails?$filter=Pernr%20eq%20%27${pernr}%27`,  
+                                    `TrainingHistoryDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27`, 
                                     'Z_VOL_MEMBER_SRV', 
                                     'TrainingHistoryDetails',
                                     (data) => {
@@ -300,7 +276,7 @@ const ProfilePage = () => {
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={() => {
                                 getPageData(
-                                    `Brigades?$filter=Zzplans%20eq%20%27${dataContext.membershipDetails[0].Zzplans}%27`,
+                                    `Brigades?$filter=Zzplans%20eq%20%27${dataContext.myMembersMembershipDetails[0].Zzplans}%27`,
                                     "Z_VOL_MEMBER_SRV",
                                     "Brigades",
                                     (data) => {
@@ -316,40 +292,7 @@ const ProfilePage = () => {
                 </View>
             </ScrollView>
         </View>
-    );
+    )
 };
 
-const Profile = () => {
-    const Stack = createStackNavigator<ProfileStackParamList>();
-
-    return (
-        <Stack.Navigator
-            initialRouteName="ProfileScreen"
-            screenOptions={{
-                headerShown: false,
-                cardStyle: GlobalStyles.AppBackground,
-                gestureEnabled: true,
-                transitionSpec: {
-                    open: {
-                        animation: "timing",
-                        config: {
-                            duration: 450,
-                            easing: Easing.inOut(Easing.quad),
-                        },
-                    },
-                    close: {
-                        animation: "timing",
-                        config: {
-                            duration: 450,
-                            easing: Easing.inOut(Easing.quad),
-                        },
-                    },
-                },
-            }}
-        >
-            <Stack.Screen name="ProfileScreen" component={ProfilePage} />
-        </Stack.Navigator>
-    );
-};
-
-export default Profile;
+export default MyMembersProfile;

@@ -21,11 +21,9 @@ export class ScreenFlowModule {
     }
 
     onNavigateToScreen (screen : any, data? : any) {
-        console.log(data);
        
         if (this.navigator?.isReady()){
             switch (screen) {
-
                 case 'LoginScreen' :
                     this.navigator?.navigate('LoginScreen');
                     break;
@@ -142,121 +140,70 @@ export class ScreenFlowModule {
                         }
                     );
                     break;
-                
+
                 case 'MyDetailsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'MyDetailsScreen',
-                                params: data
-                            }
-                        }
-                    );
+                        'MyDetailsScreen', data
+                    )
                     break;
 
                 case 'ContactDetailsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'ContactDetailsScreen',
-                                params: data
-                            }
-                        }
-                    );
+                        'ContactDetailsScreen', data
+                    )
                     break;
 
                 case 'EmergencyContactsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'EmergencyContactsScreen',
-                                params: data
-                            }
-                        }
-                    );
+                        'EmergencyContactsScreen', data
+                    )
                     break;
 
                 case 'MyUnitDetailsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'MyUnitDetailsScreen',
-                                params: data
-                            }
-                        }
-                    );
+                        'MyUnitDetailsScreen', data
+                    )
                     break;
 
                 case 'TrainingHistoryScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'TrainingHistoryScreen',
-                                params: data
-                            }
-                        }
-                    );
+                        'TrainingHistoryScreen', data
+                    )
                     break;
 
-                case 'TrainingDetailScreen':
+                case 'TrainingDetailsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'TrainingDetailsScreen',
-                                params: data
-                            }
-                        }
-                    );
+                        'TrainingDetailsScreen', data
+                    )
                     break;
 
                 case 'MembershipDetailsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'MembershipDetailsScreen',
-                                params: data
-                            }
-                        }
+                        'MembershipDetailsScreen', data
                     );
                     break;
 
                 case 'UniformDetailsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'UniformDetailsScreen',
-                                params: data
-                            }
-                        }
+                        'UniformDetailsScreen', data
                     );
                     break;
 
                 case 'MedalsAndAwardsScreen':
                     this.navigator?.navigate(
-                        'MainTabs', 
-                        {
-                            screen: 'MyProfileScreen',
-                            params: {
-                                screen: 'MedalsAndAwardsScreen',
-                                params: data
-                            }
-                        }
+                        'MedalsAndAwardsScreen', data
+                    );
+                    break;
+
+                case 'MyMembers':
+                    this.navigator?.navigate(
+                        'MyMembers', data
+                    );
+                    break;
+
+                case 'MyMembersProfile':
+                    this.navigator?.navigate(
+                        'MyMembersProfile', data
                     );
                     break;
                 

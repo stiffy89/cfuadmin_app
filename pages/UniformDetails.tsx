@@ -6,10 +6,11 @@ import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
-import { ProfileStackParamList } from '../types/AppTypes';
+import { ProfileStackParamList, RootStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
+import { useDataContext } from '../helper/DataContext';
 
-type props = StackScreenProps<ProfileStackParamList, 'UniformDetailsScreen'>; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, 'UniformDetailsScreen'>; //typing the navigation props
 
 const UniformDetails = ({route, navigation} : props) => {
     
@@ -17,12 +18,36 @@ const UniformDetails = ({route, navigation} : props) => {
     const params = route.params ?? {};
 
     const genericFormatter = new GenericFormatter();
+    const dataContext = useDataContext();
+
+    const EditData = (data: any) => {
+        screenFlowModule.onNavigateToScreen("EditScreen", {
+            screenName: "UniformDetails",
+            editData: data,
+        });
+    };
+
 
     return (
         <View style={GlobalStyles.page}>
             <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Uniform Details</CustomText>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1}}>
+                    <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Uniform Details</CustomText>
+                    {
+                        (dataContext.currentProfile == 'MyMembers') && (
+                            <IconButton
+                                style={{marginRight: 20}}
+                                icon={() => (
+                                    <LucideIcons.Pencil color={theme.colors.primary} size={20} />
+                                )}
+                                onPress={() => {
+                                    EditData(params);
+                                }}
+                            />
+                        )
+                    }
+                </View>
             </View>
             <ScrollView style={{paddingHorizontal: 20, paddingBottom: 40}}>
                 <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Object' value={params.ObjectTypesStext}/>

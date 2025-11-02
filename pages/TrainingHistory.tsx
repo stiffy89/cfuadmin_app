@@ -6,12 +6,12 @@ import { screenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
-import { ProfileStackParamList } from '../types/AppTypes';
+import { ProfileStackParamList, RootStackParamList } from '../types/AppTypes';
 import { useDataContext } from '../helper/DataContext';
 
 import GenericFormatter from '../helper/GenericFormatters';
 
-type props = StackScreenProps<ProfileStackParamList, 'TrainingHistoryScreen'>; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, 'TrainingHistoryScreen'>; //typing the navigation props
 
 const TrainingHistory = ({ route, navigation }: props) => {
 
@@ -52,7 +52,7 @@ const TrainingHistory = ({ route, navigation }: props) => {
                     trainingData.slice(from, to).map((item, i) => {
                         return (
                             <DataTable.Row key={i} onPress={() => {
-                                screenFlowModule.onNavigateToScreen('TrainingDetailScreen', item)
+                                screenFlowModule.onNavigateToScreen('TrainingDetailsScreen', item)
                             }}>
                                 <DataTable.Cell style={{ flex: 3.5, marginRight: 10 }}><CustomText style={{ flexWrap: 'wrap' }}>{item.QualificationName}</CustomText></DataTable.Cell>
                                 <DataTable.Cell style={{ flex: 2 }}>{genericFormatter.formatFromEdmDate(item.ValidFrom)}</DataTable.Cell>

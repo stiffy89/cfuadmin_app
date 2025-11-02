@@ -63,8 +63,11 @@ export type ServiceData = {
 }
 
 export type DataContextType = {
-    services: ServiceData[];
-    setServices: (val: ServiceData[]) => void;
+    services: any[];
+    setServices: (val: any[]) => void;
+
+    currentUser: any[];
+    setCurrentUser: (val: any[]) => void;
 
     membershipDetails: any[];
     setMembershipDetails: (val: any[]) => void;
@@ -75,8 +78,8 @@ export type DataContextType = {
     employeeDetails: any[];
     setEmployeeDetails: (val: any[]) => void;
 
-    volunteerDetails: any[];
-    setVolunteerDetails: (val: any[]) => void;
+    volunteerRoles: any[];
+    setVolunteerRoles: (val: any[]) => void;
 
     objectsOnLoan: any[];
     setObjectsOnLoan: (val: any[]) => void;
@@ -86,6 +89,9 @@ export type DataContextType = {
 
     employeeAddresses: any[];
     setEmployeeAddresses: (val: any[]) => void;
+
+    myOrgUnitDetails : any [];
+    setMyOrgUnitDetails : (val : any[]) => void;
 
     addressStates: any[];
     setAddressStates: (val: any[]) => void;
@@ -101,6 +107,24 @@ export type DataContextType = {
 
     cfuPhonebookSuburbs : any[];
     setCfuPhonebookSuburbs: (val: any[]) => void;
+
+    rootOrgUnits : any[];
+    setRootOrgUnits : (val: any[]) => void;
+
+    orgUnitTeamMembers : any[];
+    setOrgUnitTeamMembers : (val : any[]) => void;
+
+    myMembersMembershipDetails : any [];
+    setMyMembersMembershipDetails : (val: any[]) => void;
+
+    myMemberEmployeeDetails : any [];
+    setMyMemberEmployeeDetails : (val : any[]) => void;
+
+    currentProfile : string;
+    setCurrentProfile : (val : string) => void; // this will change based on whether we are editing My Member or Current User
+
+    currentMyMemberZzPlan : string;
+    setCurrentMyMemberZzPlan : (val : string) => void; // setting the Zzplans globally for selected my member
 }
 
 export type OktaLoginResult = {
@@ -119,13 +143,23 @@ export type RootStackParamList = {
     LoginScreen: undefined;
     EditScreen: Record<string, string> | undefined;
     Resources: NavigatorScreenParams<ResourceStackParamList>;
+    MyMembers: Record<string, string> | undefined;
+    MyMembersProfile: Record<string, string> | undefined;
+    MyDetailsScreen: Record<string, string> | undefined;
+    ContactDetailsScreen: Record<string, string> | undefined;
+    EmergencyContactsScreen: Record<string, string> | undefined;
+    MyUnitDetailsScreen: Record<string, string> | undefined;
+    TrainingHistoryScreen: Record<string, string>[] | undefined;
+    TrainingDetailsScreen: Record<string, string> | undefined;
+    MembershipDetailsScreen: Record<string, Record<string, string>[]> | undefined;
+    UniformDetailsScreen: Record<string, string> | undefined;
+    MedalsAndAwardsScreen: Record<string, string> | undefined;
 }
 
 export type TabParamList = {
     HomeScreen: undefined;
     ContactsScreen: NavigatorScreenParams<ContactsStackParamList>;
     MyProfileScreen: NavigatorScreenParams<ProfileStackParamList>;
-    Resources: NavigatorScreenParams<ResourceStackParamList>
     FormService: NavigatorScreenParams<FormServiceStackParamList>;
 }
 
@@ -143,15 +177,6 @@ export type ContactsTabParamList = {
 
 export type ProfileStackParamList = {
     ProfileScreen: undefined;
-    MyDetailsScreen: Record<string, string> | undefined;
-    ContactDetailsScreen: Record<string, string> | undefined;
-    EmergencyContactsScreen: Record<string, string>[] | undefined;
-    MyUnitDetailsScreen: undefined;
-    TrainingHistoryScreen: Record<string, string>[] | undefined;
-    TrainingDetailsScreen: Record<string, string> | undefined;
-    MembershipDetailsScreen: Record<string, Record<string, string>[]> | undefined;
-    UniformDetailsScreen: Record<string, string> | undefined;
-    MedalsAndAwardsScreen: Record<string, string> | undefined;
 }
 
 export type ResourceStackParamList = {
@@ -164,6 +189,7 @@ export type FormServiceStackParamList = {
     FormServicePage: Record<string, string> | undefined;
     FormPage: Record<string, string> | undefined;
 };
+
 
 export type RootStackScreenKeys = keyof RootStackParamList;
 export type ProfileStackScreenKeys = keyof ProfileStackParamList;

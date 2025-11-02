@@ -6,11 +6,12 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 // provider component
 export const DataProvider = ({ children }: { children: ReactNode }) => {
-    const [services, setServices] = useState<ServiceData[]>([])
+    const [services, setServices] = useState<any[]>([])
+    const [currentUser, setCurrentUser] = useState<any[]>([]);
     const [membershipDetails, setMembershipDetails] = useState<any[]>([])
     const [trainingHistoryDetails, setTrainingHistoryDetails] = useState<any[]>([])
     const [employeeDetails, setEmployeeDetails] = useState<any[]>([])
-    const [volunteerDetails, setVolunteerDetails] = useState<any[]>([])
+    const [volunteerRoles, setVolunteerRoles] = useState<any[]>([])
     const [objectsOnLoan, setObjectsOnLoan] = useState<any[]>([])
     const [medalsAwards, setMedalsAwards] = useState<any[]>([])
     const [myUnitContacts, setMyUnitContacts] = useState<any>([]);
@@ -19,18 +20,26 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [addressStates, setAddressStates] = useState<any>([]);
     const [addressRelationships, setAddressRelationships] = useState<any>([]);
     const [brigadeSummary, setBrigadeSummary] = useState<any>([]);
-
+    const [rootOrgUnits, setRootOrgUnits] = useState<any>([]);
+    const [orgUnitTeamMembers, setOrgUnitTeamMembers] = useState<any>([]);
+    const [myOrgUnitDetails, setMyOrgUnitDetails] = useState<any>([]);
+    const [myMembersMembershipDetails, setMyMembersMembershipDetails] = useState<any>([]);
+    const [myMemberEmployeeDetails, setMyMemberEmployeeDetails] = useState<any>([]);
+    const [currentProfile, setCurrentProfile] = useState<string>('');
+    const [currentMyMemberZzPlan, setCurrentMyMemberZzPlan] = useState<string>('');
     const value: DataContextType = {
         services,
         setServices,
+        currentUser,
+        setCurrentUser,
         membershipDetails,
         setMembershipDetails,
         trainingHistoryDetails,
         setTrainingHistoryDetails,
         employeeDetails,
         setEmployeeDetails,
-        volunteerDetails,
-        setVolunteerDetails,
+        volunteerRoles,
+        setVolunteerRoles,
         objectsOnLoan,
         setObjectsOnLoan,
         medalsAwards,
@@ -46,7 +55,21 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         cfuPhonebookSuburbs,
         setCfuPhonebookSuburbs,
         brigadeSummary,
-        setBrigadeSummary
+        setBrigadeSummary,
+        rootOrgUnits,
+        setRootOrgUnits,
+        orgUnitTeamMembers,
+        setOrgUnitTeamMembers,
+        myOrgUnitDetails,
+        setMyOrgUnitDetails,
+        myMembersMembershipDetails,
+        setMyMembersMembershipDetails,
+        myMemberEmployeeDetails,
+        setMyMemberEmployeeDetails,
+        currentProfile,
+        setCurrentProfile,
+        currentMyMemberZzPlan,
+        setCurrentMyMemberZzPlan
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

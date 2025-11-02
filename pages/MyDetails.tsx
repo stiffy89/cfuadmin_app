@@ -6,20 +6,20 @@ import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
-import { ProfileStackParamList } from '../types/AppTypes';
+import { ProfileStackParamList, RootStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { useAppContext } from '../helper/AppContext';
 import { useDataContext } from '../helper/DataContext';
 
-type props = StackScreenProps<ProfileStackParamList, 'MyDetailsScreen'>; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, 'MyDetailsScreen'>; //typing the navigation props
 
 const MyDetails = ({route, navigation} : props) => {
     const appContext = useAppContext();
     const theme = useTheme();
-    //const params = route.params ?? {};
     const genericFormatter = new GenericFormatter();
-    const params = useDataContext().employeeDetails[0];
+    const dataContext = useDataContext();
+    const params = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMemberEmployeeDetails[0] : dataContext.employeeDetails[0];
 
     const EditData = async () => {
         appContext.setShowBusyIndicator(true);

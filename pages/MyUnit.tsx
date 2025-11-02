@@ -6,10 +6,11 @@ import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
 import { StackScreenProps } from '@react-navigation/stack';
-import { ProfileStackParamList } from '../types/AppTypes';
+import { RootStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
+import { useDataContext } from '../helper/DataContext';
 
-type props = StackScreenProps<ProfileStackParamList, 'MyUnitDetailsScreen'>; //typing the navigation props
+type props = StackScreenProps<RootStackParamList, 'MyUnitDetailsScreen'>; //typing the navigation props
 type MyUnitHeaderProps = {
     unitName? : string
 }
@@ -33,8 +34,8 @@ const MyUnit = ({ route, navigation }: props) => {
 
     const theme = useTheme();
     const genericFormatter = new GenericFormatter();
-
-    const UnitData: any = route.params?.[0];
+    const dataContext = useDataContext()
+    const UnitData = dataContext.myOrgUnitDetails[0];
 
     const AddressFormatter = (data: any) => {
         let addressString = '';
@@ -60,18 +61,7 @@ const MyUnit = ({ route, navigation }: props) => {
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} multiline editable={false} mode='flat' underlineColor='transparent' label='Location' value={UnitData ? genericFormatter.formatAddress(UnitData) : ''} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station' value={UnitData ? UnitData.Station : ''} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station Phone' value={UnitData ? UnitData.StationPhone : ''} />
-                    <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station' value={UnitData ? UnitData.Station : ''} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Maintenance Schedule' value={UnitData ? genericFormatter.formatFromEdmDate(UnitData.OpReadyCheckDate) : ''} />
-                </View>
-                <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-                    <CustomText variant='bodyLargeBold'>Other Details</CustomText>
-                    <List.Section style={{ marginTop: 20, backgroundColor: '#f9f9f9ff', ...GlobalStyles.globalBorderRadius }}>
-                        <List.Item style={{ height: 80, justifyContent: 'center' }} onPress={() => { }} title={() => <CustomText variant='bodyLarge'>Membership Details</CustomText>} right={() => <LucideIcons.ChevronRight />} />
-                        <Divider />
-                        <List.Item style={{ height: 80, justifyContent: 'center' }} onPress={() => { }} title={() => <CustomText variant='bodyLarge'>Training History</CustomText>} right={() => <LucideIcons.ChevronRight />} />
-                        <Divider />
-                        <List.Item style={{ height: 80, justifyContent: 'center' }} onPress={() => { }} title={() => <CustomText variant='bodyLarge'>My Unit</CustomText>} right={() => <LucideIcons.ChevronRight />} />
-                    </List.Section>
                 </View>
             </View>
         </ScrollView>
