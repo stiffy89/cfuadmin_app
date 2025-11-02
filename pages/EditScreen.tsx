@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import * as LucideIcons from "lucide-react-native";
 import {
     useTheme,
@@ -19,7 +19,6 @@ import { useAppContext } from "../helper/AppContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 import { useDataContext } from "../helper/DataContext";
 import GenericFormatter from "../helper/GenericFormatters";
-import { MaskedTextInput } from 'react-native-mask-text';
 import { DateTime } from "luxon";
 
 type props = StackScreenProps<RootStackParamList, "EditScreen">; //typing the navigation props
@@ -778,7 +777,9 @@ const EmergencyContactsEdit = (data: any) => {
         })
     }
 
+
     return (
+        
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
             <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}
@@ -797,7 +798,11 @@ const EmergencyContactsEdit = (data: any) => {
                     />
                 }
             </View>
-            <ScrollView style={{ paddingBottom: 40 }}>
+            <ScrollView 
+                contentContainerStyle={{
+                    paddingBottom: 50
+                }}
+            >
                 <TextInput
                     label="Name *"
                     mode="flat"
@@ -955,19 +960,19 @@ const EmergencyContactsEdit = (data: any) => {
                         });
                     }}
                 />
+                <Button
+                    style={{
+                        backgroundColor: theme.colors.primary
+                    }}
+                    mode="elevated"
+                    textColor={theme.colors.background}
+                    onPress={() => saveData()}
+                >
+                    Save
+                </Button>
             </ScrollView>
-            <Button
-                style={{
-                    backgroundColor: theme.colors.primary,
-                    ...GlobalStyles.floatingButtonBottom,
-                }}
-                mode="elevated"
-                textColor={theme.colors.background}
-                onPress={() => saveData()}
-            >
-                Save
-            </Button>
         </View>
+        
     );
 };
 
@@ -980,6 +985,7 @@ const UniformDetailsEdit = (data: any) => {
     const genericFormatter = new GenericFormatter();
 
     const [returnDate, setReturnDate] = useState<string>('');
+    const [showPicker, setShowPicker] = useState(false);
 
     async function saveData() {
         appContext.setShowBusyIndicator(true);
@@ -1049,13 +1055,16 @@ const UniformDetailsEdit = (data: any) => {
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Quantity' value={dataObj.Anzkl} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={dataObj.UnitsEtext} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Reference No.' value={dataObj.Lobnr} />
-                <TextInput
+                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Return Date' value={genericFormatter.formatFromEdmDate(data.ReturnDate)} right={<TextInput.Icon onPress={()=> {
+                    setShowPicker(true)
+                }} icon={() => <LucideIcons.Calendar/>}/>}/>
+            {/*    <TextInput
                     style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
                     editable={true} mode='flat'
                     underlineColor='transparent'
                     label='Return Date'
                     placeholder="DD/MM/YYYY"
-                    value={genericFormatter.formatFromEdmDate(data.ReturnDate)}
+                    value={enericFormatter.formatFromEdmDate(data.ReturnDate)}
                     keyboardType='numeric'
                     render={(props) => {
                         return (
@@ -1069,38 +1078,36 @@ const UniformDetailsEdit = (data: any) => {
                             />
                         )
                     }}
-                />
+                /> */}
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 1' value={dataObj.Text1} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 2' value={dataObj.Text2} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 3' value={dataObj.Text3} />
+                <Button
+                    style={{
+                        marginTop: 20,
+                        backgroundColor: theme.colors.primary
+                    }}
+                    mode="elevated"
+                    textColor={theme.colors.background}
+                    onPress={() => {
+                        if (returnDate == ''){
+                            appContext.setShowDialog(true)
+                            appContext.setDialogMessage('Please add a return date before continuing')
+                            return;
+                        }
+
+                        saveData()
+                    }}
+                >
+                    Save
+                </Button>
             </ScrollView>
-
-            <Button
-                style={{
-                    backgroundColor: theme.colors.primary,
-                    ...GlobalStyles.floatingButtonBottom,
-                }}
-                mode="elevated"
-                textColor={theme.colors.background}
-                onPress={() => {
-                    if (returnDate == ''){
-                        appContext.setShowDialog(true)
-                        appContext.setDialogMessage('Please add a return date before continuing')
-                        return;
-                    }
-
-                    saveData()
-                }}
-            >
-                Save
-            </Button>
         </View>
     );
 }
 
 const EditScreen = ({ route, navigation }: props) => {
     const EditPayload = route.params;
-    console.log(EditPayload);
     let SelectedEditScreen;
 
     switch (EditPayload?.screenName) {
@@ -1113,29 +1120,31 @@ const EditScreen = ({ route, navigation }: props) => {
             break;
 
         case "EmergencyContacts":
-            SelectedEditScreen = (
-                <EmergencyContactsEdit data={EditPayload.editData} />
-            );
+            SelectedEditScreen = <EmergencyContactsEdit data={EditPayload.editData} />
             break;
 
         case "UniformDetails":
-            SelectedEditScreen = (
-                <UniformDetailsEdit data={EditPayload.editData} />
-            );
+            SelectedEditScreen = <UniformDetailsEdit data={EditPayload.editData} />
             break;
     }
 
     return (
-        <View style={GlobalStyles.page}>
-            <View style={{ alignItems: "flex-end" }}>
-                <IconButton
-                    icon={() => <LucideIcons.X />}
-                    onPress={() => screenFlowModule.onGoBack()}
-                />
-            </View>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            keyboardVerticalOffset={100}
+            style={{flex:1}}
+        >
+            <View style={GlobalStyles.page}>
+                <View style={{ alignItems: "flex-end" }}>
+                    <IconButton
+                        icon={() => <LucideIcons.X />}
+                        onPress={() => screenFlowModule.onGoBack()}
+                    />
+                </View>
 
-            {SelectedEditScreen}
-        </View>
+                {SelectedEditScreen}
+            </View>
+        </KeyboardAvoidingView>
     );
 };
 

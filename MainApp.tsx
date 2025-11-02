@@ -441,7 +441,7 @@ export default function MainApp() {
 							<Stack.Screen name='MembershipDetailsScreen' component={MembershipDetails}/>
 							<Stack.Screen name='UniformDetailsScreen' component={UniformDetails}/>
 							<Stack.Screen name='MedalsAndAwardsScreen' component={MedalsAndAwards}/>
-							<Stack.Screen name='EditScreen' component={EditScreen} options={{presentation: 'modal'}}/>
+							<Stack.Screen name='EditScreen' component={EditScreen}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>
