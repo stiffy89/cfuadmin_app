@@ -1073,6 +1073,12 @@ const UniformDetailsEdit = (data: any) => {
                     date={returnDate}
                     visible={showPicker}
                     mode='single'
+                    saveLabel="Select Date"
+                    validRange={{
+                        startDate: undefined,
+                        endDate : new Date(),
+                        disabledDates : undefined
+                    }}
                     onConfirm={(params) => {
                         if (params.date){
                             setReturnDate(params.date)
