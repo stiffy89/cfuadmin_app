@@ -20,6 +20,7 @@ import { dataHandlerModule } from "../helper/DataHandlerModule";
 import { useDataContext } from "../helper/DataContext";
 import GenericFormatter from "../helper/GenericFormatters";
 import { DateTime } from "luxon";
+import { registerTranslation, enGB, DatePickerModal } from 'react-native-paper-dates';
 
 type props = StackScreenProps<RootStackParamList, "EditScreen">; //typing the navigation props
 
@@ -977,6 +978,7 @@ const EmergencyContactsEdit = (data: any) => {
 };
 
 const UniformDetailsEdit = (data: any) => {
+    registerTranslation('en-GB', enGB);
     const theme = useTheme();
     const dataObj = data.data;
 
@@ -984,7 +986,9 @@ const UniformDetailsEdit = (data: any) => {
     const appContext = useAppContext();
     const genericFormatter = new GenericFormatter();
 
-    const [returnDate, setReturnDate] = useState<string>('');
+    const originalReturnDate = (data.ReturnDate === null) ? undefined : genericFormatter.formatFromEdmToJSDate(data.ReturnDate);
+
+    const [returnDate, setReturnDate] = useState<Date | undefined>(originalReturnDate);
     const [showPicker, setShowPicker] = useState(false);
 
     async function saveData() {
@@ -992,7 +996,13 @@ const UniformDetailsEdit = (data: any) => {
         appContext.setShowDialog(true);
 
         //convert DD/MM/YYYY to EDM Date
-        const luxonDate = DateTime.fromFormat(returnDate, 'dd/MM/yyyy');
+        if (!returnDate){
+            appContext.setShowBusyIndicator(false);
+            appContext.setDialogMessage('Please select a return date before continuing');
+            return;
+        }
+
+        const luxonDate = DateTime.fromJSDate(returnDate);
 
         if (!luxonDate.isValid){
             appContext.setShowBusyIndicator(false);
@@ -1055,30 +1065,23 @@ const UniformDetailsEdit = (data: any) => {
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Quantity' value={dataObj.Anzkl} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={dataObj.UnitsEtext} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Reference No.' value={dataObj.Lobnr} />
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Return Date' value={genericFormatter.formatFromEdmDate(data.ReturnDate)} right={<TextInput.Icon onPress={()=> {
-                    setShowPicker(true)
+                <TextInput style={{ marginTop: 20 }} editable={false} mode='flat' underlineColor='transparent' label='Return Date' value={genericFormatter.formatJSDateToFormat(returnDate)} right={<TextInput.Icon onPress={()=> {
+                    setShowPicker(!showPicker)
                 }} icon={() => <LucideIcons.Calendar/>}/>}/>
-            {/*    <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    editable={true} mode='flat'
-                    underlineColor='transparent'
-                    label='Return Date'
-                    placeholder="DD/MM/YYYY"
-                    value={enericFormatter.formatFromEdmDate(data.ReturnDate)}
-                    keyboardType='numeric'
-                    render={(props) => {
-                        return (
-                            <MaskedTextInput
-                                {...props}
-                                mask="99/99/9999"
-                                value={returnDate}
-                                onChangeText={(text, rawText) => {
-                                    setReturnDate(text);
-                                }}
-                            />
-                        )
+                <DatePickerModal
+                    locale='en-GB'
+                    date={returnDate}
+                    visible={showPicker}
+                    mode='single'
+                    onConfirm={(params) => {
+                        if (params.date){
+                            setReturnDate(params.date)
+                        }
+
+                        setShowPicker(!showPicker)
                     }}
-                /> */}
+                    onDismiss={() => setShowPicker(!showPicker)}
+                />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 1' value={dataObj.Text1} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 2' value={dataObj.Text2} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Comment 3' value={dataObj.Text3} />
@@ -1090,7 +1093,7 @@ const UniformDetailsEdit = (data: any) => {
                     mode="elevated"
                     textColor={theme.colors.background}
                     onPress={() => {
-                        if (returnDate == ''){
+                        if (returnDate == undefined){
                             appContext.setShowDialog(true)
                             appContext.setDialogMessage('Please add a return date before continuing')
                             return;

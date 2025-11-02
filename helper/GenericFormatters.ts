@@ -23,6 +23,31 @@ export default class GenericFormatter {
         return addressString;
     }
 
+    formatJSDateToFormat(date : Date | undefined | null, format? : string){
+        let selectedFormat = 'dd/MM/yyyy';
+
+        if (format){
+            selectedFormat = format;
+        }
+
+        if (date == undefined || date == null){
+            return ''
+        }
+
+        const luxonDate = DateTime.fromJSDate(date);
+        return luxonDate.toFormat(selectedFormat);
+    }
+
+    formatFromEdmToJSDate(edmString: string){
+        if (!edmString) {
+            return undefined;
+        }
+
+        const timestamp = parseInt(edmString.replace(/\D/g, ""), 10);
+        const luxonDate = DateTime.fromMillis(timestamp);
+        return luxonDate.toJSDate();
+    }
+
     formatFromEdmDate(edmString: string, format?: string) {
         if (!edmString) {
             return '';
