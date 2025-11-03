@@ -25,7 +25,9 @@ export type AppContextType = {
     authenticationMode: AuthenticationMode;
     setAuthenticationMode: (val: AuthenticationMode) => void;
     cardModalVisible: boolean,
-    setCardModalVisible: (val: boolean) => void
+    setCardModalVisible: (val: boolean) => void,
+    feedbackModalVisible : boolean,
+    setFeedbackModalVisible: (val:boolean) => void
 };
 
 export type batchGETResponse = {
@@ -154,6 +156,7 @@ export type RootStackParamList = {
     MembershipDetailsScreen: Record<string, Record<string, string>[]> | undefined;
     UniformDetailsScreen: Record<string, string> | undefined;
     MedalsAndAwardsScreen: Record<string, string> | undefined;
+    SkillsMaintenance: NavigatorScreenParams<SkillsMaintenanceStackParamList>
 }
 
 export type TabParamList = {
@@ -190,6 +193,11 @@ export type FormServiceStackParamList = {
     FormPage: Record<string, string> | undefined;
 };
 
+export type SkillsMaintenanceStackParamList = {
+    SkillsMaintenancePage: Record<string, string> | undefined;
+    DrillPage: Record<string, string> | undefined;
+    DrillCardPage: Record<string, string> | undefined;
+}
 
 export type RootStackScreenKeys = keyof RootStackParamList;
 export type ProfileStackScreenKeys = keyof ProfileStackParamList;

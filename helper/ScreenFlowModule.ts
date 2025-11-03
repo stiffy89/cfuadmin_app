@@ -65,6 +65,36 @@ export class ScreenFlowModule {
                     )
                     break;
 
+                case 'SkillsMaintenancePage' : 
+                    this.navigator?.navigate(
+                        'SkillsMaintenance', 
+                        {
+                            screen: 'SkillsMaintenancePage',
+                            params: data
+                        }
+                    );
+                    break;
+
+                case 'DrillPage' : 
+                    this.navigator?.navigate(
+                        'SkillsMaintenance', 
+                        {
+                            screen: 'DrillPage',
+                            params: data
+                        }
+                    );
+                    break;
+
+                case 'DrillCardPage':
+                    this.navigator?.navigate(
+                        'SkillsMaintenance',
+                        {
+                            screen: 'DrillCardPage',
+                            params: data
+                        }
+                    )
+                    break;
+
                 
                 case 'HomeScreen' :
                     this.navigator?.navigate(

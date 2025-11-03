@@ -21,6 +21,7 @@ import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
+import SkillsMaintenanceStack from './pages/SkillsMaintenance/SkillsMaintenance';
 import SplashScreen from './pages/SplashScreen';
 import MyMembers from './pages/MyMembers';
 import MyMembersProfile from './pages/MyMembersProfile';
@@ -33,6 +34,7 @@ import TrainingDetails from './pages/TrainingDetails';
 import MyUnit from './pages/MyUnit';
 import UniformDetails from './pages/UniformDetails';
 import MedalsAndAwards from './pages/MedalsAndAwards';
+import FeedbackModal from './assets/FeedbackModal';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -152,7 +154,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode } = useAppContext();
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, feedbackModalVisible, setFeedbackModalVisible } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -417,6 +419,7 @@ export default function MainApp() {
 								)
 							}
 						</Dialog>
+						<FeedbackModal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}/>
 					</Portal>
 					<NavigationContainer
 						ref={navigatorRef}
@@ -429,6 +432,7 @@ export default function MainApp() {
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
+							<Stack.Screen name="SkillsMaintenance" component={SkillsMaintenanceStack}/>
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
