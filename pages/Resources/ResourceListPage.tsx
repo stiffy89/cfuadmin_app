@@ -5,7 +5,7 @@ import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
 
 import { StackScreenProps} from "@react-navigation/stack";
-import { ResourceStackParamList} from "../../types/AppTypes";
+import { DocumentResources, ResourceStackParamList} from "../../types/AppTypes";
 
 import {resourceDataHandlerModule} from "../../helper/ResourcesDataHandlerModule"
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
@@ -34,7 +34,7 @@ type props = StackScreenProps<
 
 const ResourceListPage = ({ route, navigation }: props) => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();
-  const [resourceList, setResourceList] = useState([]);
+  const [resourceList, setResourceList] = useState<DocumentResources[]>([]);
 
   const theme = useTheme();
   const params = route.params ?? {};

@@ -8,7 +8,7 @@ import CustomIcon from "../../assets/CustomIcon"
 import * as Linking from 'expo-linking';
 
 import { StackScreenProps } from "@react-navigation/stack";
-import { FormServiceStackParamList} from "../../types/AppTypes";
+import { FormServiceStackParamList, FormsLauncherSet} from "../../types/AppTypes";
 
 import { useAppContext } from "../../helper/AppContext";
 
@@ -29,11 +29,11 @@ const FormPage = ({ route, navigation }: props) => {
 
     const theme = useTheme();
     const params = route.params ?? {};
-    const formServiceName = params.title
+    const formsLaunchSet = params as unknown as FormsLauncherSet;
 
     useEffect(() => {
-        setUri(params.formUrl)
-        setCurrentUri(params.formUrl)
+        setUri(formsLaunchSet.TargetUrl)
+        setCurrentUri(formsLaunchSet.TargetUrl)
     }, []);
 
     const webViewRefresh = () => {
@@ -110,7 +110,7 @@ const FormPage = ({ route, navigation }: props) => {
                 <Button contentStyle={{height: 50}} mode="text" onPress={() => screenFlowModule.onGoBack()} >
                     <CustomText style={{color: theme.colors.primary}} variant='titleMediumBold'>Done</CustomText>
                 </Button>
-                <CustomText variant='titleLargeBold'>{formServiceName}</CustomText>
+                <CustomText variant='titleLargeBold'>{formsLaunchSet.Title}</CustomText>
                 <IconButton icon={() => <CustomIcon name="RotateCcw" color={theme.colors.primary} size={25}/>} size={20} onPress={webViewRefresh} />
             </View>
             <View style={{flex: 1, marginBottom: 100, marginHorizontal: 20}}>

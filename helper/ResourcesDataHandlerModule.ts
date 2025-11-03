@@ -77,6 +77,30 @@ class ResourcesDataHandlerModule {
         }
     }
 
+    async getFormsLauncherSet(formLaunchId:string) : Promise<AxiosResponse>{
+        try {
+            const encodedFormLaunchId = encodeURIComponent(formLaunchId);
+
+            const filters = `FormLaunchId='${encodedFormLaunchId}'`;
+            const odataServiceUrl = `/Z_MOB2_SRV/FormsLauncherSet(${filters})`;
+
+            const response = await this.axiosInstance?.get(odataServiceUrl, {
+                headers: {
+                    Authorization: `Basic ${this.credentials}`,
+                },
+            })
+            
+            if (!response){
+                throw new Error ('cannot get entity, no response')
+            }
+
+
+            return response;    
+        }catch(error){
+            throw error
+        }
+    }
+
     async getSkillsMaintenanceCategories (): Promise<AxiosResponse> {
         try {
             const odataServiceUrl = "/Z_CFU_FLASHCARDS_SRV/$batch";

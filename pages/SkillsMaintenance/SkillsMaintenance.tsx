@@ -7,7 +7,7 @@ import { useDataContext } from "../../helper/DataContext";
 import GlobalStyles from "../../style/GlobalStyles";
 
 import { createStackNavigator, StackScreenProps } from "@react-navigation/stack";
-import { FormServiceStackParamList, ProfileStackParamList, SkillsMaintenanceStackParamList } from "../../types/AppTypes";
+import { FormServiceStackParamList, ProfileStackParamList, SkillsMaintenanceCategory, SkillsMaintenanceDrillCard, SkillsMaintenanceStackParamList } from "../../types/AppTypes";
 
 import { useAppContext } from "../../helper/AppContext";
 import { dataHandlerModule } from "../../helper/DataHandlerModule";
@@ -34,32 +34,10 @@ const loadSkillsMaintenanceCategories = async () => {
 }
 
 type skillsMaintenanceProps = StackScreenProps<SkillsMaintenanceStackParamList, "SkillsMaintenancePage">;
-type SkillsMaintenaceCategory = {
-    __metadata: {
-        id: string,
-        uri: string,
-        type: string
-    },
-    Id: string,
-    Name: string,
-    ParentCategoryId: string,
-    Active: string,
-    IsPool: boolean,
-    AvailableForPools: string,
-    InstructionLink: string,
-    QuestionImg: string,
-    AnswerImg: string,
-    BlurbText: string,
-    CardsShown: string,
-    CompletionText: string,
-    CompletionImg: string,
-    AnswerButtonText: string,
-    QuestionButtonText: string,
-}
 
 const SkillsMaintenancePage = ({ route, navigation }: skillsMaintenanceProps) => {
     const { setShowDialog, setShowBusyIndicator } = useAppContext();
-    const [categories, setCategories] = useState<SkillsMaintenaceCategory[]>([])
+    const [categories, setCategories] = useState<SkillsMaintenanceCategory[]>([])
 
     const theme = useTheme();
     const params = route.params ?? {};
@@ -73,7 +51,7 @@ const SkillsMaintenancePage = ({ route, navigation }: skillsMaintenanceProps) =>
         });
       }, []);
 
-    const navigate = (category:SkillsMaintenaceCategory) => {
+    const navigate = (category:SkillsMaintenanceCategory) => {
         setShowBusyIndicator(true);
         setShowDialog(true);
             
@@ -95,7 +73,7 @@ const SkillsMaintenancePage = ({ route, navigation }: skillsMaintenanceProps) =>
                 <View style={{ marginVertical: 20 }}>
                     <View style={{flexDirection: "row", flexWrap:"wrap", justifyContent: "center", gap: 20}}>
                     {
-                        categories.map((category:SkillsMaintenaceCategory, index) => {
+                        categories.map((category:SkillsMaintenanceCategory, index) => {
                         return (
                             <TouchableOpacity
                                 key={index}
@@ -199,23 +177,6 @@ const loadDrillRandomCards = async (categoryId:string) => {
 }
 
 type drillCardProps = StackScreenProps<SkillsMaintenanceStackParamList, "DrillCardPage">;
-type SkillsMaintenanceDrillCard = {
-    __metadata: {
-        id: string,
-        uri: string,
-        type: string
-    },
-    Id: string,
-    Name: string,
-    CategoryId: string,
-    Question: string,
-    Answer: string,
-    QuestionImg: string,
-    AnswerImg: string,
-    AnswerLinkUrl: string,
-    QuestionLinkUrl: string,
-    Active: boolean
-}
 
 const DrillCardsPage = ({ route, navigation }: drillCardProps) => {
     const { setShowDialog, setShowBusyIndicator } = useAppContext();
