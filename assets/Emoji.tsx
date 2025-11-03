@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import {Image, TouchableOpacity, Animated, ColorValue, Pressable} from 'react-native';
+import {Image, Animated, ColorValue, Pressable} from 'react-native';
 
 
 type EmojiType = "very happy" | "happy" | "neutral" | "unamused" | "unhappy"

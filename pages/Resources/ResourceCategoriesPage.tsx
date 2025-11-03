@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ScrollView, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
+import { View, ScrollView, Pressable, StyleProp, ViewStyle } from "react-native";
 import { useTheme, Button, IconButton} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
@@ -76,9 +76,9 @@ const ResourceCategoriesPage = () => {
             {
               categories.map((category, index) => {
                 return (
-                  <TouchableOpacity
+                  <Pressable
                     key={index}
-                    style={{ alignItems: "center", width:120 }}
+                    style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { alignItems: "center", width:120 }]}
                     onPress={() => navigate(category)}
                   >
                     <View style={{borderWidth: 1, borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center"}}>
@@ -90,7 +90,7 @@ const ResourceCategoriesPage = () => {
                     >
                       {category.ParentRid}
                     </CustomText>
-                  </TouchableOpacity>
+                  </Pressable>
                 );
               })
             }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import { useTheme, IconButton, List, Divider } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
@@ -72,7 +72,7 @@ const ResourceListPage = ({ route, navigation }: props) => {
               return (
                 <React.Fragment key={`resource_${i}`}>
                   <Divider />
-                  <TouchableOpacity style={{flexDirection: "row", justifyContent: "space-between", alignItems:"center", marginHorizontal: 20, paddingVertical: 10}} onPress={() => navigate(resource)}>
+                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, {flexDirection: "row", justifyContent: "space-between", alignItems:"center", marginHorizontal: 20, paddingVertical: 10}]} onPress={() => navigate(resource)}>
                     <View
                         style={{
                           padding: 5,
@@ -86,7 +86,7 @@ const ResourceListPage = ({ route, navigation }: props) => {
                       </View>
                     <CustomText style={{width: "75%", flexWrap: "wrap"}}variant='bodyLarge'>{resource.DisplayName}</CustomText>
                     <LucideIcons.ChevronRight color={theme.colors.outline} />
-                  </TouchableOpacity>
+                  </Pressable>
                   <Divider />
                 </React.Fragment>
               );

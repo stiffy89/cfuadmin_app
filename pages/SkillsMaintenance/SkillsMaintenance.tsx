@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Easing, Dimensions, TouchableOpacity, Image } from "react-native";
+import { View, ScrollView, Easing, Dimensions,Pressable, Image } from "react-native";
 import { useTheme, Button, List, Divider, IconButton, ProgressBar} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
@@ -75,9 +75,9 @@ const SkillsMaintenancePage = ({ route, navigation }: skillsMaintenanceProps) =>
                     {
                         categories.map((category:SkillsMaintenanceCategory, index) => {
                         return (
-                            <TouchableOpacity
+                            <Pressable
                                 key={index}
-                                style={{ alignItems: "center"}}
+                                style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { alignItems: "center"}]}
                                 onPress={() => navigate(category)}
                             >
                                 <View style={{borderWidth: 1, borderTopLeftRadius: 5, borderTopRightRadius: 5, width: 175, height: 90, alignItems: "center", justifyContent: "center"}}>
@@ -101,7 +101,7 @@ const SkillsMaintenancePage = ({ route, navigation }: skillsMaintenanceProps) =>
                                         </CustomText>
                                     </View>
                                 </View>
-                            </TouchableOpacity>
+                            </Pressable>
                         );
                         })
                     }
