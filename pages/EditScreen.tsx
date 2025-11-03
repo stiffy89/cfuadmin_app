@@ -1139,7 +1139,7 @@ const EditScreen = ({ route, navigation }: props) => {
 
     return (
         <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            behavior={Platform.OS === 'ios' ? 'padding' : "height"}
             keyboardVerticalOffset={100}
             style={{flex:1}}
         >

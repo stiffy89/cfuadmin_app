@@ -39,7 +39,6 @@ const Services = () => {
 
     //map our services into an array of tiles
     const Tiles = services.map((x) => {
-        
         const iconMapping : any = {
             'menu-skills-maint.png' : skillsMaintIcon,
             'menu-resources.png' : resourcesIcon,
@@ -84,7 +83,8 @@ const Services = () => {
                 </Pressable>
             )
         }
-        else if (x.title == 'Skills Maintenance'){
+        else if (x.MenuId == 'CFU-1001'){
+            console.log("Hello")
             return (
                 <Pressable
                     onPress={() => {
@@ -92,8 +92,11 @@ const Services = () => {
                     }}
                 >
                     <View style={{alignItems: 'center', padding: 10}}>
-                        <LucideIcons.Image style={{width: '100%'}} size={24}/>
-                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.title}</CustomText>
+                        <Image
+                            source={imageIcon}
+                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                        />
+                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
                     </View>
                 </Pressable>
             )
