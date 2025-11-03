@@ -66,6 +66,23 @@ const Services = () => {
                 </Pressable>
             )
         }
+        else if (x.MenuId == 'CFU-1004'){
+            return (
+                <Pressable
+                    onPress={() => {
+                        screenFlowModule.onNavigateToScreen('TrainingMain');
+                    }}
+                >
+                    <View style={{alignItems: 'center', padding: 10}}>
+                        <Image
+                            source={imageIcon}
+                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                        />
+                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
+                    </View>
+                </Pressable>
+            )
+        }
         else if (x.MenuId == 'CFU-1002'){
             return (
                 <Pressable
@@ -84,7 +101,6 @@ const Services = () => {
             )
         }
         else if (x.MenuId == 'CFU-1001'){
-            console.log("Hello")
             return (
                 <Pressable
                     onPress={() => {

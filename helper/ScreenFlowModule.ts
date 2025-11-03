@@ -249,6 +249,26 @@ export class ScreenFlowModule {
                       }
                     );
                     break;
+                
+                case 'TrainingMain':
+                    this.navigator?.navigate(
+                        'TrainingMain'
+                    );
+                    break;
+
+                case 'TrainingListByDrill':
+                    this.navigator?.navigate(
+                        'TrainingListByDrill',
+                        data
+                    );
+                    break;
+
+                case 'TrainingListByUser':
+                    this.navigator?.navigate(
+                        'TrainingListByUser',
+                        data
+                    );
+                    break;
             }
         }
     }

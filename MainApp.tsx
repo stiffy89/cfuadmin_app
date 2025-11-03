@@ -35,6 +35,9 @@ import MyUnit from './pages/MyUnit';
 import UniformDetails from './pages/UniformDetails';
 import MedalsAndAwards from './pages/MedalsAndAwards';
 import FeedbackModal from './assets/FeedbackModal';
+import TrainingMain from './pages/Training/TrainingMain';
+import TrainingListByDrill from './pages/Training/TrainingListByDrill';
+import TrainingListByUser from './pages/Training/TrainingListByUser';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -446,6 +449,9 @@ export default function MainApp() {
 							<Stack.Screen name='UniformDetailsScreen' component={UniformDetails}/>
 							<Stack.Screen name='MedalsAndAwardsScreen' component={MedalsAndAwards}/>
 							<Stack.Screen name='EditScreen' component={EditScreen}/>
+							<Stack.Screen name='TrainingMain' component={TrainingMain}/>
+							<Stack.Screen name='TrainingListByDrill' component={TrainingListByDrill}/>
+							<Stack.Screen name='TrainingListByUser' component={TrainingListByUser}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>

@@ -115,7 +115,7 @@ const MyMembersProfile = ({ route }: props) => {
                     onPress={() => screenFlowModule.onGoBack()}
                 />
                 <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
-                    Contact Details
+                    My Member Details
                 </CustomText>
             </View>
             <ProfileHeader />

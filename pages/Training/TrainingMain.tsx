@@ -1,16 +1,52 @@
-//landing page for my members - single & multi units
-import React, { useState, useEffect } from "react";
-import { View, ScrollView } from "react-native";
-import { Searchbar, List, Divider, Menu, TextInput, IconButton, useTheme } from "react-native-paper";
-import CustomText from "../assets/CustomText";
-import { useDataContext } from "../helper/DataContext";
-import { useAppContext } from "../helper/AppContext";
-import * as LucideIcons from "lucide-react-native";
-import { screenFlowModule } from "../helper/ScreenFlowModule";
-import GlobalStyles from "../style/GlobalStyles";
-import { dataHandlerModule } from "../helper/DataHandlerModule";
+import React, {useState, useEffect} from 'react';
+import { ScrollView, View } from 'react-native';
+import CustomText from '../../assets/CustomText';
+import { useTheme, List, Divider, IconButton, TextInput, Searchbar } from 'react-native-paper';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useDataContext } from '../../helper/DataContext';
+import { useAppContext } from '../../helper/AppContext';
+import { screenFlowModule } from '../../helper/ScreenFlowModule';
+import { dataHandlerModule } from '../../helper/DataHandlerModule';
+import * as LucideIcons from 'lucide-react-native';
+import GlobalStyles from '../../style/GlobalStyles';
 
-const MyMembers = () => {
+const ByDrill = () => {
+    const dataContext = useDataContext();
+    const [trainingDrillList, setTrainingDrillList] = useState<any[]>([]);
+
+    const theme = useTheme();
+
+    return (
+        <ScrollView style={{paddingBottom: 40, backgroundColor: theme.colors.background}}>
+            {
+                (trainingDrillList.length > 0) && (
+                    <List.Section>
+                        {
+                            trainingDrillList.map((drill : any, i : number) => {
+                                return (
+                                    <React.Fragment key={`drill_${i}`}>
+                                        <Divider/>
+                                        <List.Item onPress={() => {
+                                            screenFlowModule.onNavigateToScreen('MyUnitContactDetail', drill)
+                                            }} right={() => <LucideIcons.ChevronRight color={theme.colors.outline}/>} left={() => <View style={{backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50}}><LucideIcons.User color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} title={`${contact.Vorna} ${contact.Nachn}`}/>
+                                        <Divider/>
+                                    </React.Fragment>
+                                )
+                            })
+                        }
+                    </List.Section>
+                )
+            }
+            {
+                (trainingDrillList.length == 0) && (
+                    <CustomText>No training drills</CustomText>
+                )
+            }
+        </ScrollView>
+    )
+}
+
+const ByTeamMember = () => {
     const dataContext = useDataContext();
     const appContext = useAppContext();
 
@@ -75,11 +111,6 @@ const MyMembers = () => {
 
     return (
         <View style={GlobalStyles.page}>
-            <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
-                <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>My Members</CustomText>
-            </View>
-            
             {orgUnitList.length === 1 && (
                 <View style={{paddingVertical: 20, paddingLeft: 20, borderBottomColor: theme.colors.onSurfaceDisabled, borderBottomWidth: 1}}>
                     <CustomText variant="bodyLargeBold">{orgUnitList[0].Short}</CustomText>
@@ -229,6 +260,55 @@ const MyMembers = () => {
             </ScrollView>
         </View>
     );
-};
+}
 
-export default MyMembers;
+
+const TrainingMain = () => {
+    const Tab = createMaterialTopTabNavigator();
+    const theme = useTheme();
+
+    const isTeamManager = true;
+
+    return (
+        <>
+           <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
+                <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
+                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Training</CustomText>
+            </View>
+            <Tab.Navigator
+                screenOptions={({ route }) => ({
+                    tabBarIndicatorStyle: {
+                        backgroundColor: theme.colors.primary
+                    },
+                    tabBarLabel: ({ focused }) => {
+
+                        let formattedRouteName;
+
+                        switch (route.name) {
+                            case 'TrainingListByUser':
+                                formattedRouteName = 'By Team Member';
+                                break;
+                            case 'TrainingListByDrill':
+                                formattedRouteName = 'By Drill';
+                                break;
+                        }
+
+                        let iconColor = focused ? theme.colors.primary : theme.colors.outline;
+                        return <CustomText variant='bodyLarge' style={{ color: iconColor }}>{formattedRouteName}</CustomText>
+                    }
+                })}
+            >
+                <Tab.Screen
+                    name='TrainingListByUser'
+                    component={ByTeamMember}
+                />
+                <Tab.Screen
+                    name='TrainingListByDrill'
+                    component={ByDrill}
+                />
+            </Tab.Navigator>
+        </>
+    )
+}
+
+export default TrainingMain;
