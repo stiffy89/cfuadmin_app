@@ -26,6 +26,13 @@ const FormPage = ({ route, navigation }: props) => {
     const [currentTitle, setCurrentTitle] = useState("")
     const [canGoBack, setCanGoBack] = useState(false);
     const [canGoForward, setCanGoForward] = useState(false)
+    const [features, setFeatures] = useState({
+            nav: false,
+            share: false,
+            launch: false,
+            refresh: false
+        }  
+    )
 
     const theme = useTheme();
     const params = route.params ?? {};
@@ -34,6 +41,14 @@ const FormPage = ({ route, navigation }: props) => {
     useEffect(() => {
         setUri(formsLaunchSet.TargetUrl)
         setCurrentUri(formsLaunchSet.TargetUrl)
+        
+        const featureSet = {
+            nav: formsLaunchSet.Features.includes("nav"),
+            share: formsLaunchSet.Features.includes("share"),
+            launch: formsLaunchSet.Features.includes("launch"),
+            refresh: formsLaunchSet.Features.includes("refresh")
+        }
+        setFeatures(featureSet)
     }, []);
 
     const webViewRefresh = () => {
@@ -111,7 +126,7 @@ const FormPage = ({ route, navigation }: props) => {
                     <CustomText style={{color: theme.colors.primary}} variant='titleMediumBold'>Done</CustomText>
                 </Button>
                 <CustomText variant='titleLargeBold'>{formsLaunchSet.Title}</CustomText>
-                <IconButton icon={() => <CustomIcon name="RotateCcw" color={theme.colors.primary} size={25}/>} size={20} onPress={webViewRefresh} />
+                <IconButton icon={() => <CustomIcon name="RotateCcw" color={theme.colors.primary} size={25}/>} style={{opacity: features.refresh ? 1 : 0}} disabled={!features.refresh} size={20} onPress={webViewRefresh} />
             </View>
             <View style={{flex: 1, marginBottom: 100, marginHorizontal: 20}}>
                 <WebView
@@ -131,15 +146,15 @@ const FormPage = ({ route, navigation }: props) => {
                     }}
                 />
             </View>
-            <View style={{position: "absolute", bottom: 10, width: "100%", boxShadow: "0px -2px 5px rgba(0, 0, 0, 0.3)"}}>
+            <View style={{position: "absolute", bottom: 10, width: "100%", boxShadow: "0px -2px 5px rgba(0, 0, 0, 0.3)", paddingBottom: features.nav || features.share || features.launch ? 0:10}}>
                 <View style={{backgroundColor: "#f1f1f1ff", height: 20, borderRadius: 5, marginTop: 10, marginHorizontal: 25, justifyContent: "center", alignItems: "center"}}>
                     <CustomText style={{color: "grey", textAlign: "center"}} variant='labelSmall'>{currentUri}</CustomText>
                 </View>
                 <View style={{flexDirection: "row", justifyContent: "space-around"}}>
-                    <IconButton icon={() => <CustomIcon name="ChevronLeft" color={canGoBack ? theme.colors.primary : theme.colors.surfaceDisabled} size={25}/>} disabled={!canGoBack} size={25} onPress={webViewBack} />
-                    <IconButton icon={() => <CustomIcon name="ChevronRight" color={canGoForward ? theme.colors.primary : theme.colors.surfaceDisabled} size={25}/>} disabled={!canGoForward} size={25} onPress={webViewForward} />
-                    <IconButton icon={() => <CustomIcon name="Share" color={theme.colors.primary} size={25}/>} size={25} onPress={webViewShare} />
-                  <IconButton icon={() => <CustomIcon name="LogOut" color={theme.colors.primary} size={25}/>} size={25} onPress={webViewExit} />
+                    {features.nav && <IconButton icon={() => <CustomIcon name="ChevronLeft" color={canGoBack ? theme.colors.primary : theme.colors.surfaceDisabled} size={25}/>} disabled={!canGoBack} size={25} onPress={webViewBack} />}
+                    {features.nav && <IconButton icon={() => <CustomIcon name="ChevronRight" color={canGoForward ? theme.colors.primary : theme.colors.surfaceDisabled} size={25}/>} disabled={!canGoForward} size={25} onPress={webViewForward} />}
+                    {features.share && <IconButton icon={() => <CustomIcon name="Share" color={theme.colors.primary} size={25}/>} size={25} onPress={webViewShare} />}
+                    {features.launch && <IconButton icon={() => <CustomIcon name="LogOut" color={theme.colors.primary} size={25}/>} size={25} onPress={webViewExit} />}
                 </View>
             </View>
         </View>

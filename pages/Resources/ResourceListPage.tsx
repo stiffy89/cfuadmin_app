@@ -59,13 +59,13 @@ const ResourceListPage = ({ route, navigation }: props) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+      <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
+        <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
+        <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
+      </View>
       <ScrollView
         style={{ paddingBottom: 40, backgroundColor: "#fff" }}
       >
-        <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
-          <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-          <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
-        </View>
         {resourceList && (
           <List.Section>
             {resourceList.map((resource: any, i) => {
