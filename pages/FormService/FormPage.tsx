@@ -125,7 +125,7 @@ const FormPage = ({ route, navigation }: props) => {
                 <Button contentStyle={{height: 50}} mode="text" onPress={() => screenFlowModule.onGoBack()} >
                     <CustomText style={{color: theme.colors.primary}} variant='titleMediumBold'>Done</CustomText>
                 </Button>
-                <CustomText variant='titleLargeBold'>{formsLaunchSet.Title}</CustomText>
+                <CustomText variant='titleLargeBold'>{formsLaunchSet.Title.length < 20 ? formsLaunchSet.Title : formsLaunchSet.Title.substring(0, 15) + "..."}</CustomText>
                 <IconButton icon={() => <CustomIcon name="RotateCcw" color={theme.colors.primary} size={25}/>} style={{opacity: features.refresh ? 1 : 0}} disabled={!features.refresh} size={20} onPress={webViewRefresh} />
             </View>
             <View style={{flex: 1, marginBottom: 100, marginHorizontal: 20}}>

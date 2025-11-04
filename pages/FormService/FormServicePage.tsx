@@ -85,7 +85,7 @@ const FormServicePage = ({ route, navigation }: props) => {
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>{formsLauncherSet?.Title}</CustomText>
+                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>{formsLauncherSet?.Title && formsLauncherSet.Title.length <= 25 ? formsLauncherSet.Title : formsLauncherSet?.Title && formsLauncherSet.Title.substring(0, 25) + "..."}</CustomText>
             </View>
             <View style={{flex: 1, marginBottom: 70, marginHorizontal: 20}}>
                 {htmlContent && 

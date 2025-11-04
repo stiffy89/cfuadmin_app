@@ -99,11 +99,11 @@ const Services = () => {
                     </View>
                 </Pressable>
             )
-        }else if(x.MenuId == 'CFU-1007'){
+        }else if(x.TargetPath.includes("/forms-launcher")){
             return (
                 <Pressable
                     onPress={() => {
-                        screenFlowModule.onNavigateToScreen('FormServicePage', {formLaunchId: "ANNUAL-INVENTORY"});
+                        screenFlowModule.onNavigateToScreen('FormServicePage', {formLaunchId: x.TargetPath.substring(x.TargetPath.lastIndexOf("/") + 1)});
                     }}
                 >
                     <View style={{alignItems: 'center', padding: 10}}>
