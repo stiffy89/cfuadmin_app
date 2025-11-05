@@ -218,7 +218,7 @@ export default function MainApp() {
 		//set up the data handler module
 		try {
 			await dataHandlerModule.init();
-			resourceDataHandlerModule.init();
+			await resourceDataHandlerModule.init();
 		}
 		catch (error) {
 			setDialogMessage('An error occurred during data handler initialisation');
@@ -377,6 +377,8 @@ export default function MainApp() {
 				<StatusBar hidden={false} />
 				<PaperProvider theme={{ ...appTheme, fonts }}>
 					<Portal>
+						<CardModal visible={cardModalVisible} setVisible={setCardModalVisible}/>
+						<FeedbackModal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}/>
 						<Dialog
 							visible={showDialog}
 						>
@@ -421,8 +423,6 @@ export default function MainApp() {
 								)
 							}
 						</Dialog>
-						<CardModal visible={cardModalVisible} setVisible={setCardModalVisible}/>
-						<FeedbackModal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}/>
 					</Portal>
 					<NavigationContainer
 						ref={navigatorRef}
