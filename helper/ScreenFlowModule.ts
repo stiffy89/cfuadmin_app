@@ -256,16 +256,16 @@ export class ScreenFlowModule {
                     );
                     break;
 
-                case 'TrainingListByDrill':
+                case 'TrainingCompletionByDrill':
                     this.navigator?.navigate(
-                        'TrainingListByDrill',
+                        'TrainingCompletionByDrill',
                         data
                     );
                     break;
 
-                case 'TrainingListByUser':
+                case 'TrainingCompletionByUser':
                     this.navigator?.navigate(
-                        'TrainingListByUser',
+                        'TrainingCompletionByUser',
                         data
                     );
                     break;

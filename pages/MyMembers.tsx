@@ -35,10 +35,7 @@ const MyMembers = () => {
 
         if (query) {
             filteredList = dataContext.orgUnitTeamMembers.filter((x) => {
-                if (
-                    x.Stext.toLowerCase().includes(query.toLowerCase()) ||
-                    x.Stext.toLowerCase().includes(query.toLowerCase())
-                ) {
+                if ( x.Stext.toLowerCase().includes(query.toLowerCase())) {
                     return x;
                 }
             });
@@ -151,7 +148,6 @@ const MyMembers = () => {
                                                     //do a read and update the employeeDetails & myMembersMembershipDetails
                                                     appContext.setShowDialog(true);
                                                     appContext.setShowBusyIndicator(true);
-                                                    dataContext.setCurrentMyMemberZzPlan(member.Zzplans);
 
                                                     try {
                                                         const membershipDetails = await dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails');

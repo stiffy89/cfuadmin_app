@@ -125,8 +125,14 @@ export type DataContextType = {
     currentProfile : string;
     setCurrentProfile : (val : string) => void; // this will change based on whether we are editing My Member or Current User
 
-    currentMyMemberZzPlan : string;
-    setCurrentMyMemberZzPlan : (val : string) => void; // setting the Zzplans globally for selected my member
+    drillDetails: any[];
+    setDrillDetails: (val: any[]) => void; //sets the drill details per org unit, select the first org unit IF we have multiple because thats the one that will render first
+
+    memberDrillCompletion: any[];
+    setMemberDrillCompletion: (val: any[]) => void; //sets the drill completion from members per org
+
+    trainingSelectedOrgUnit: any;
+    setTrainingSelectedOrgUnit: (val: any[]) => void;//sets the selected org unit for training
 }
 
 export type OktaLoginResult = {
@@ -138,6 +144,18 @@ export type TokenError = {
 }
 
 export type ScreenState = 'auth' | 'home';
+
+interface DrillData {
+    drillObj : Record<string, any>;
+    drillCompletions: Record<string, string>[];
+}
+
+interface MemberData {
+    memberData : Record<string, string>;
+    brigades: Record<string, string>[];
+    trainingDetails : Record<string, string>[];
+    volunteerStatuses : Record<string, string>[];
+}
 
 export type RootStackParamList = {
     SplashScreen: undefined;
@@ -157,6 +175,9 @@ export type RootStackParamList = {
     UniformDetailsScreen: Record<string, string> | undefined;
     MedalsAndAwardsScreen: Record<string, string> | undefined;
     SkillsMaintenance: NavigatorScreenParams<SkillsMaintenanceStackParamList>
+    TrainingMain: undefined;
+    TrainingCompletionByDrill: DrillData | undefined;
+    TrainingCompletionByUser: MemberData | undefined;
 }
 
 export type TabParamList = {

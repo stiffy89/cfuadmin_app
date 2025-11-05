@@ -36,8 +36,8 @@ import UniformDetails from './pages/UniformDetails';
 import MedalsAndAwards from './pages/MedalsAndAwards';
 import FeedbackModal from './assets/FeedbackModal';
 import TrainingMain from './pages/Training/TrainingMain';
-import TrainingListByDrill from './pages/Training/TrainingListByDrill';
-import TrainingListByUser from './pages/Training/TrainingListByUser';
+import TrainingCompletionByDrill from './pages/Training/TrainingCompletionByDrill';
+import TrainingCompletionByUser from './pages/Training/TrainingCompletionByUser';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -227,24 +227,44 @@ export default function MainApp() {
 			return;
 		}
 
-		const DummyObj = new DummyData();
+		let user;
 
-		//get profile information
-	//	const ServiceInfo = DummyObj.getServices();
-	//	dataContext.setServices(ServiceInfo);
-		
-		const requests = [
+		try {
+			const userInfo = await dataHandlerModule.batchGet('Users','Z_ESS_MSS_SRV', 'Users');
+			if (userInfo.responseBody.error){
+				//TODO handle SAP error
+				console.log('SAP Error')
+				return;
+			}
+			else {
+				dataContext.setCurrentUser(userInfo.responseBody.d.results);
+				user = userInfo.responseBody.d.results[0]
+			}
+		}
+		catch (error){
+			//TODO handle error
+			console.log(error);
+			return;
+		}
+
+		let requests = [
 			dataHandlerModule.batchGet('MenuSet?$format=json', 'Z_MOB2_SRV', 'MenuSet', undefined, true),
-			dataHandlerModule.batchGet('Users','Z_ESS_MSS_SRV', 'Users'),
 			dataHandlerModule.batchGet('EmployeeDetails', 'Z_ESS_MSS_SRV', 'EmployeeDetails'),
 			dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
 			dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'),
 			dataHandlerModule.batchGet('AddressStates?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressStates'),
-			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships'),
-			dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'),
-			dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs'),
-			dataHandlerModule.batchGet('RootOrgUnits', 'Z_VOL_MANAGER_SRV', 'RootOrgUnits') 
+			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships')
 		]
+
+		//add the extra calls for mymembers and training
+		if (user.TeamCoordinator){
+			requests = [...requests, 
+				dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'), 
+				dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs'), 
+				dataHandlerModule.batchGet('RootOrgUnits', 'Z_VOL_MANAGER_SRV', 'RootOrgUnits')
+			]
+		}
+		
 
 		const results = await Promise.allSettled(requests);
 		//if we have any fails - its a critical error
@@ -258,15 +278,14 @@ export default function MainApp() {
 		}
 
 		//check to see if we have any read errors from server
-		const readErrors = results.every(x => x.value.responseBody.error);
-		if (readErrors){
+		const readErrors = results.filter(x => x.value.responseBody.error);
+		if (readErrors.length > 0){
 			//TODO handle read errors somewhere
 			setShowDialog(true);
 			setDialogMessage('Read error on initialisation');
 		}
 
 		for (const x of results) {
-			
 			switch (x.value.entityName){
 				case 'MenuSet':
 					dataContext.setServices(x.value.responseBody.d.results);
@@ -314,14 +333,22 @@ export default function MainApp() {
 
 				case 'RootOrgUnits':
 					dataContext.setRootOrgUnits(x.value.responseBody.d.results);
+					dataContext.setTrainingSelectedOrgUnit(x.value.responseBody.d.results[0]);
+
 					if (x.value.responseBody.d.results.length > 0){
 						const firstRootOrgUnit = x.value.responseBody.d.results[0];
 						const plans = firstRootOrgUnit.Plans;
 						try {
 							const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
-							dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results)
+							const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
+							const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%2751004306%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
+							
+							dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results);
+							dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
+							dataContext.setDrillDetails(drillDetails.responseBody.d.results)
 						}
 						catch (error) {
+							//TODO handle error
 							console.log(error)
 						}
 					}
@@ -329,7 +356,6 @@ export default function MainApp() {
 			}
 		}
 					
-
 		screenFlowModule.onNavigateToScreen('HomeScreen');
 	}
 
@@ -450,8 +476,8 @@ export default function MainApp() {
 							<Stack.Screen name='MedalsAndAwardsScreen' component={MedalsAndAwards}/>
 							<Stack.Screen name='EditScreen' component={EditScreen}/>
 							<Stack.Screen name='TrainingMain' component={TrainingMain}/>
-							<Stack.Screen name='TrainingListByDrill' component={TrainingListByDrill}/>
-							<Stack.Screen name='TrainingListByUser' component={TrainingListByUser}/>
+							<Stack.Screen name='TrainingCompletionByDrill' component={TrainingCompletionByDrill}/>
+							<Stack.Screen name='TrainingCompletionByUser' component={TrainingCompletionByUser}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>

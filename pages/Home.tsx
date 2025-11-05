@@ -35,7 +35,7 @@ const NameBanner = () => {
 
 const Services = () => {
     const theme = useTheme();
-    const {services, setCurrentProfile} = useDataContext();
+    const {services, setCurrentProfile, currentUser} = useDataContext();
 
     //map our services into an array of tiles
     const Tiles = services.map((x) => {

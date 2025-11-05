@@ -986,6 +986,9 @@ const UniformDetailsEdit = (data: any) => {
     const appContext = useAppContext();
     const genericFormatter = new GenericFormatter();
 
+    const today = new Date();
+    const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
     const originalReturnDate = (data.ReturnDate === null) ? undefined : genericFormatter.formatFromEdmToJSDate(data.ReturnDate);
 
     const [returnDate, setReturnDate] = useState<Date | undefined>(originalReturnDate);
@@ -1076,7 +1079,7 @@ const UniformDetailsEdit = (data: any) => {
                     saveLabel="Select Date"
                     validRange={{
                         startDate: undefined,
-                        endDate : new Date(),
+                        endDate : endOfToday,
                         disabledDates : undefined
                     }}
                     onConfirm={(params) => {
