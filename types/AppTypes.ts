@@ -174,7 +174,8 @@ export type RootStackParamList = {
     MembershipDetailsScreen: Record<string, Record<string, string>[]> | undefined;
     UniformDetailsScreen: Record<string, string> | undefined;
     MedalsAndAwardsScreen: Record<string, string> | undefined;
-    SkillsMaintenance: NavigatorScreenParams<SkillsMaintenanceStackParamList>
+    SkillsMaintenance: NavigatorScreenParams<SkillsMaintenanceStackParamList>;
+    FormService:NavigatorScreenParams<FormServiceStackParamList>;
     TrainingMain: undefined;
     TrainingCompletionByDrill: DrillData | undefined;
     TrainingCompletionByUser: MemberData | undefined;
@@ -218,6 +219,83 @@ export type SkillsMaintenanceStackParamList = {
     SkillsMaintenancePage: Record<string, string> | undefined;
     DrillPage: Record<string, string> | undefined;
     DrillCardPage: Record<string, string> | undefined;
+}
+
+export type DocumentResources = {
+    __metadata: {
+        id: string,
+        uri: string,
+        type: string
+    },
+    AccessRid: string,
+    Desktop: boolean,
+    DisplayName: string,
+    ParentRid: string,
+    FilePath: string,
+    FileType: string,
+    Ui5Icon: string,
+    LastModDec15: string,
+    LastModDate: string,
+    LastModTime: string,
+    SizeBytes: number,
+    SizeText: string,
+}
+
+export type FormsLauncherSet = {
+    __metadata: {
+        id: string,
+        uri: string,
+        type: string
+    },
+    ButtonLabel: string,
+    Features: string,
+    FormLaunchId: string,
+    HtmlString: string,
+    ImageFileName: string,
+    LaunchMode: string,
+    TargetUrl: string,
+    Title: string,
+}
+
+export type SkillsMaintenanceCategory = {
+    __metadata: {
+        id: string,
+        uri: string,
+        type: string
+    },
+    Id: string,
+    Name: string,
+    ParentCategoryId: string,
+    Active: string,
+    IsPool: boolean,
+    AvailableForPools: string,
+    InstructionLink: string,
+    QuestionImg: string,
+    AnswerImg: string,
+    BlurbText: string,
+    CardsShown: string,
+    CompletionText: string,
+    CompletionImg: string,
+    AnswerButtonText: string,
+    QuestionButtonText: string,
+}
+
+export type SkillsMaintenanceDrillCard = {
+    __metadata: {
+        id: string,
+        uri: string,
+        type: string
+    },
+    Id: string,
+    Name: string,
+    CategoryId: string,
+    Question: string,
+    Answer: string,
+    QuestionImg: string,
+    AnswerImg: string,
+    AnswerLinkUrl: string,
+    QuestionLinkUrl: string,
+    Active: boolean
 }
 
 export type RootStackScreenKeys = keyof RootStackParamList;

@@ -116,6 +116,22 @@ const Services = () => {
                     </View>
                 </Pressable>
             )
+        }else if(x.TargetPath.includes("/forms-launcher")){
+            return (
+                <Pressable
+                    onPress={() => {
+                        screenFlowModule.onNavigateToScreen('FormServicePage', {formLaunchId: x.TargetPath.substring(x.TargetPath.lastIndexOf("/") + 1)});
+                    }}
+                >
+                    <View style={{alignItems: 'center', padding: 10}}>
+                        <Image
+                            source={imageIcon}
+                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                        />
+                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
+                    </View>
+                </Pressable>
+            )
         }
         else {
             return (

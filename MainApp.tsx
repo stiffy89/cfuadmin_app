@@ -21,6 +21,7 @@ import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
 import EditScreen from './pages/EditScreen';
 import ResourceStack from './pages/Resources/Resources';
+import FormServiceStack from './pages/FormService/Forms';
 import SkillsMaintenanceStack from './pages/SkillsMaintenance/SkillsMaintenance';
 import SplashScreen from './pages/SplashScreen';
 import MyMembers from './pages/MyMembers';
@@ -34,6 +35,7 @@ import TrainingDetails from './pages/TrainingDetails';
 import MyUnit from './pages/MyUnit';
 import UniformDetails from './pages/UniformDetails';
 import MedalsAndAwards from './pages/MedalsAndAwards';
+import CardModal from './assets/CardModal';
 import FeedbackModal from './assets/FeedbackModal';
 import TrainingMain from './pages/Training/TrainingMain';
 import TrainingCompletionByDrill from './pages/Training/TrainingCompletionByDrill';
@@ -157,7 +159,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, feedbackModalVisible, setFeedbackModalVisible } = useAppContext();
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, cardModalVisible, setCardModalVisible, feedbackModalVisible, setFeedbackModalVisible } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -219,7 +221,7 @@ export default function MainApp() {
 		//set up the data handler module
 		try {
 			await dataHandlerModule.init();
-			resourceDataHandlerModule.init();
+			await resourceDataHandlerModule.init();
 		}
 		catch (error) {
 			setDialogMessage('An error occurred during data handler initialisation');
@@ -404,6 +406,8 @@ export default function MainApp() {
 				<StatusBar hidden={false} />
 				<PaperProvider theme={{ ...appTheme, fonts }}>
 					<Portal>
+						<CardModal visible={cardModalVisible} setVisible={setCardModalVisible}/>
+						<FeedbackModal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}/>
 						<Dialog
 							visible={showDialog}
 						>
@@ -448,7 +452,6 @@ export default function MainApp() {
 								)
 							}
 						</Dialog>
-						<FeedbackModal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}/>
 					</Portal>
 					<NavigationContainer
 						ref={navigatorRef}
@@ -461,6 +464,7 @@ export default function MainApp() {
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
+							<Stack.Screen name='FormService' component={FormServiceStack}/>
 							<Stack.Screen name="SkillsMaintenance" component={SkillsMaintenanceStack}/>
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='MainTabs' component={TabNavigator} />

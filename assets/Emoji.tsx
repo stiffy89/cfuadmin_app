@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
-import {Image, TouchableOpacity, Animated, ColorValue, Pressable} from 'react-native';
+import {Image, Animated, ColorValue, Pressable} from 'react-native';
 
 
-type EmojiType = "very happy" | "happy" | "neutral" | "unamused" | "unhappy"
+export type EmojiType = "very happy" | "happy" | "neutral" | "unamused" | "unhappy"
 
-const Emoji = ({rating, size = 50, pressed, onPress}:{rating : EmojiType, size?: number, pressed:boolean, onPress:any}) => {
+const Emoji = ({type, size = 50, pressed, onPress}:{type : EmojiType, size?: number, pressed:boolean, onPress:any}) => {
     const [isPlaying, setIsPlaying] = useState(false)
     const [gifSource, setGifSource] = useState(require(`../assets/emojis/very-happy/emoji.gif`))
     const [imgSource, setImgSource] = useState(require(`../assets/emojis/very-happy/emoji.png`))
@@ -61,7 +61,7 @@ const Emoji = ({rating, size = 50, pressed, onPress}:{rating : EmojiType, size?:
     }) as unknown as ColorValue;
 
     useEffect(() => {
-        switch(rating) {
+        switch(type) {
             case "very happy":
                 setGifSource(require(`../assets/emojis/very-happy/emoji.gif`))
                 setImgSource(require(`../assets/emojis/very-happy/emoji.png`))
@@ -90,8 +90,9 @@ const Emoji = ({rating, size = 50, pressed, onPress}:{rating : EmojiType, size?:
     }, [])
 
     const handlePress = () => {
+        //callback with the new state
+        onPress(!isPlaying)
         setIsPlaying(!isPlaying)
-        onPress()
     }
     
     return (

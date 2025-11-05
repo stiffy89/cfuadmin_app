@@ -237,16 +237,23 @@ export class ScreenFlowModule {
                     );
                     break;
                 
+                case 'FormServicePage':
+                   this.navigator?.navigate(
+                        'FormService', 
+                        {
+                            screen: 'FormServicePage',
+                            params: data
+                        }
+                    );
+                    break;
+
                 case 'FormPage':
                     this.navigator?.navigate(
-                      'MainTabs', 
-                      {
-                          screen: 'FormService',
-                          params: {
+                      'FormService', 
+                        {
                             screen: 'FormPage',
-                            params: data,
-                          }
-                      }
+                            params: data
+                        }
                     );
                     break;
                 

@@ -6,17 +6,47 @@ class ResourcesDataHandlerModule {
 
     private axiosInstance : AxiosInstance | null = null;
     private credentials : string | null = null;
+    private csrfToken: string | null = null;
 
-    init () {
-        this.axiosInstance = axios.create({baseURL: "https://portal.uat.rfs.nsw.gov.au/sap/opu/odata/sap"})
+    async init () {
+        this.axiosInstance = axios.create({baseURL: "https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap"})
 
         const username = process.env.EXPO_PUBLIC_BASIC_USERNAME;
         const password = process.env.EXPO_PUBLIC_BASIC_PASSWORD;
         this.credentials = btoa(`${username}:${password}`);
+
+        try {
+            const csrfResponse = await this.fetchCsrfToken()
+            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+            this.csrfToken = newCsrfToken
+        }
+        catch (error) {
+            console.log('csrf token init error')
+        }
     }
 
     oDataInstanceInitialised () {
         return (this.axiosInstance !== null)
+    }
+
+    async fetchCsrfToken(): Promise<AxiosResponse> {
+        try {
+            const response = await this.axiosInstance?.get('/Z_VOL_MEMBER_SRV/MembershipDetails', {
+                headers: {
+                    Authorization: `Basic ${this.credentials}`,
+                    'x-csrf-token': 'Fetch'
+                }
+            });
+
+            if (response)
+                return response;
+
+            else
+                throw new Error('no csrf token response')
+        }
+        catch (error) {
+            throw error
+        }
     }
 
     async getResourceList (path: string) : Promise<AxiosResponse> {
@@ -65,6 +95,30 @@ class ResourcesDataHandlerModule {
                 },
                 responseType: fileType == "application/pdf" ? "arraybuffer" : "json",
                 })
+            
+            if (!response){
+                throw new Error ('cannot get entity, no response')
+            }
+
+
+            return response;    
+        }catch(error){
+            throw error
+        }
+    }
+
+    async getFormsLauncherSet(formLaunchId:string) : Promise<AxiosResponse>{
+        try {
+            const encodedFormLaunchId = encodeURIComponent(formLaunchId);
+
+            const filters = `FormLaunchId='${encodedFormLaunchId}'`;
+            const odataServiceUrl = `/Z_MOB2_SRV/FormsLauncherSet(${filters})`;
+
+            const response = await this.axiosInstance?.get(odataServiceUrl, {
+                headers: {
+                    Authorization: `Basic ${this.credentials}`,
+                },
+            })
             
             if (!response){
                 throw new Error ('cannot get entity, no response')
@@ -133,6 +187,38 @@ class ResourcesDataHandlerModule {
             }
 
             return response; 
+        }catch(error){
+            throw error
+        }
+    }
+
+    async postFeedbackSet(rating: string, comment: string) : Promise<AxiosResponse> {
+        try {
+            const odataServiceUrl = `/Z_MOB2_SRV/FeedbackSet`;
+
+            const postBody = {
+                "FeedbackId" : "",
+                "FeedbackDate" :   "",
+                "FeedbackTime" : "",
+                "FeedbackBy" : "",
+                "FeedbackText" : comment,
+                "FeedbackRating" : rating,
+                "FeedbackFullname" : ""
+            }
+
+            const response = await this.axiosInstance?.post(odataServiceUrl, postBody, {
+                headers: {
+                    "x-csrf-token": this.csrfToken,
+                    "Content-Type": "application/json"
+                },
+            })
+            
+            if (!response){
+                throw new Error ('cannot get entity, no response')
+            }
+
+
+            return response;    
         }catch(error){
             throw error
         }
