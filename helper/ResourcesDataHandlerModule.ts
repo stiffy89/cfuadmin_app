@@ -11,8 +11,8 @@ class ResourcesDataHandlerModule {
     async init () {
         this.axiosInstance = axios.create({baseURL: "https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap"})
 
-        const username = process.env.EXPO_PUBLIC_BASIC_USERNAME;
-        const password = process.env.EXPO_PUBLIC_BASIC_PASSWORD;
+        const username = 'WAK816316';
+        const password = 'BUTTERbar1!';
         this.credentials = btoa(`${username}:${password}`);
 
         try {

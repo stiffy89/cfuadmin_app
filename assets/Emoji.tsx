@@ -6,8 +6,8 @@ export type EmojiType = "very happy" | "happy" | "neutral" | "unamused" | "unhap
 
 const Emoji = ({type, size = 50, pressed, onPress}:{type : EmojiType, size?: number, pressed:boolean, onPress:any}) => {
     const [isPlaying, setIsPlaying] = useState(false)
-    const [gifSource, setGifSource] = useState(require(`../assets/emojis/very-happy/emoji.gif`))
-    const [imgSource, setImgSource] = useState(require(`../assets/emojis/very-happy/emoji.png`))
+    const [gifSource, setGifSource] = useState(require(`../assets/emojis/very-happy/very-happy.gif`))
+    const [imgSource, setImgSource] = useState(require(`../assets/emojis/very-happy/0-very-happy.png`))
     
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const bgColorAnim = useRef(new Animated.Value(0)).current
@@ -63,28 +63,28 @@ const Emoji = ({type, size = 50, pressed, onPress}:{type : EmojiType, size?: num
     useEffect(() => {
         switch(type) {
             case "very happy":
-                setGifSource(require(`../assets/emojis/very-happy/emoji.gif`))
-                setImgSource(require(`../assets/emojis/very-happy/emoji.png`))
+                setGifSource(require(`../assets/emojis/very-happy/very-happy.gif`))
+                setImgSource(require(`../assets/emojis/very-happy/0-very-happy.png`))
                 break;
 
             case "happy":
-                setGifSource(require(`../assets/emojis/happy/emoji.gif`))
-                setImgSource(require(`../assets/emojis/happy/emoji.png`))
+                setGifSource(require(`../assets/emojis/happy/happy.gif`))
+                setImgSource(require(`../assets/emojis/happy/0-happy.png`))
                 break;
 
             case "neutral":
-                setGifSource(require(`../assets/emojis/neutral/emoji.gif`))
-                setImgSource(require(`../assets/emojis/neutral/emoji.png`))
+                setGifSource(require(`../assets/emojis/neutral/neutral.gif`))
+                setImgSource(require(`../assets/emojis/neutral/0-neutral.png`))
                 break;
 
             case "unamused":
-                setGifSource(require(`../assets/emojis/unamused/emoji.gif`))
-                setImgSource(require(`../assets/emojis/unamused/emoji.png`))
+                setGifSource(require(`../assets/emojis/unamused/unamused.gif`))
+                setImgSource(require(`../assets/emojis/unamused/0-unamused.png`))
                 break;
 
             case "unhappy":
-                setGifSource(require(`../assets/emojis/unhappy/emoji.gif`))
-                setImgSource(require(`../assets/emojis/unhappy/emoji.png`))
+                setGifSource(require(`../assets/emojis/unhappy/unhappy.gif`))
+                setImgSource(require(`../assets/emojis/unhappy/0-unhappy.png`))
                 break;
         }
     }, [])
