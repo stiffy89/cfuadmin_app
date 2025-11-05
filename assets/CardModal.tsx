@@ -115,10 +115,15 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
                     width: "95%", 
                     height: "100%",
                     transform: [{ translateY: slideAnim }],
-                    opacity: fadeAnim
+                    opacity: fadeAnim,
                 }}
+				theme={{
+					colors: {
+						backdrop: "#818181e0"
+					}
+				}}
                 >
-                <View style={{ height: "80%",backgroundColor: "#0d5183", borderRadius: 20, }}>
+                <View style={{ height: "80%",backgroundColor: "#0d5183", borderRadius: 20,borderColor: "#fff", borderWidth: 3 }}>
                     <View style={{backgroundColor: "#cdc6c0", flex: 2, flexDirection: "row", gap: 10, marginTop: 25, justifyContent: "center" }}>
                         <Image
                             style={{ width: 100, height: "100%", resizeMode: "contain" }}
