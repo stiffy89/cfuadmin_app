@@ -75,14 +75,13 @@ const SkillsMaintenancePage = ({ route, navigation }: props) => {
                                 style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { alignItems: "center"}]}
                                 onPress={() => navigate(category)}
                             >
-                                <View style={{borderWidth: 1, borderTopLeftRadius: 5, borderTopRightRadius: 5, width: 175, height: 90, alignItems: "center", justifyContent: "center"}}>
-                                    {/* <CustomIcon style={{ width: "100%" }} size={48} name={"Info"} color={theme.colors.primary} /> */}
-                                    <Image source={{uri: `data:image/png;base64,${category.QuestionImg}`}} style={{height: "100%", width: "100%"}} resizeMode="cover"/>
+                                <View style={{borderTopLeftRadius: 5, borderTopRightRadius: 5, width: 175, height: 90, alignItems: "center", justifyContent: "center"}}>
+                                    <Image source={{uri: `data:image/png;base64,${category.QuestionImg}`}} style={{height: "100%", width: "100%", borderTopLeftRadius: 5, borderTopRightRadius: 5}} resizeMode="cover"/>
                                 </View>
-                                <View style={{flex: 0, flexDirection: "row", borderWidth: 1, borderTopWidth: 0, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, padding: 5, width: 175, height: 50, alignItems: "center", justifyContent: "center"}}>
+                                <View style={{backgroundColor: "#fff",flex: 0, flexDirection: "row", borderBottomLeftRadius: 5, borderBottomRightRadius: 5, padding: 5, width: 175, height: 50, alignItems: "center", justifyContent: "center"}}>
                                     <View style={{flex: 5, height:"100%" }}>
                                         <CustomText
-                                            variant="bodySmall"
+                                            variant="bodyMedium"
                                             style={{}}
                                         >
                                             {category.Name}

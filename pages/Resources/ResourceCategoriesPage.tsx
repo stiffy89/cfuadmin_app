@@ -77,7 +77,7 @@ const ResourceCategoriesPage = () => {
                     style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { alignItems: "center", width:120 }]}
                     onPress={() => navigate(category)}
                   >
-                    <View style={{borderWidth: 1, borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center", backgroundColor: "#fff"}}>
+                    <View style={{borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center", backgroundColor: "#fff"}}>
                       <CustomIcon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
                     </View>
                     <CustomText

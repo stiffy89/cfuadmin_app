@@ -223,6 +223,30 @@ class ResourcesDataHandlerModule {
             throw error
         }
     }
+
+    async getIdCardPhoto (pernr: string) : Promise<AxiosResponse>{
+        try {
+            const encodedPernr = encodeURIComponent(pernr);
+
+            const filters = `'${encodedPernr}'`;
+            const odataServiceUrl = `/Z_MOB2_SRV/IdCardPhotoSet(${filters})/$value`;
+
+            const response = await this.axiosInstance?.get(odataServiceUrl, {
+                headers: {
+                    Authorization: `Basic ${this.credentials}`,
+                },
+                responseType: "arraybuffer"
+                })
+            
+            if (!response){
+                throw new Error ('cannot get entity, no response')
+            }
+
+            return response;    
+        }catch(error){
+            throw error
+        }
+    }
 }
 
 export const resourceDataHandlerModule = new ResourcesDataHandlerModule ();
