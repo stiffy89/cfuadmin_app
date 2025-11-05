@@ -63,35 +63,33 @@ const ResourceCategoriesPage = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-        <View style={{ marginVertical: 20 }}>
-          <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
-            <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-            <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
-          </View>
-          <View style={{flexDirection: "row", flexWrap:"wrap", height: "100%",justifyContent: "center", gap: 20, paddingTop: 10, backgroundColor: theme.colors.background, }}>
-            {
-              categories.map((category, index) => {
-                return (
-                  <Pressable
-                    key={index}
-                    style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { alignItems: "center", width:120 }]}
-                    onPress={() => navigate(category)}
-                  >
-                    <View style={{borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center", backgroundColor: "#fff"}}>
-                      <CustomIcon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
-                    </View>
-                    <CustomText
-                      variant="bodySmall"
-                      style={{ marginTop: 10, textAlign: "center" }}
-                    >
-                      {category.ParentRid}
-                    </CustomText>
-                  </Pressable>
-                );
-              })
-            }
-          </View>
-        </View>
+      <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
+        <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
+        <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
+      </View>
+      <View style={{flex: 1, flexDirection: "row", flexWrap:"wrap",justifyContent: "center", gap: 20, paddingTop: 10, backgroundColor: theme.colors.background, }}>
+        {
+          categories.map((category, index) => {
+            return (
+              <Pressable
+                key={index}
+                style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { alignItems: "center", width:120 }]}
+                onPress={() => navigate(category)}
+              >
+                <View style={{borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center", backgroundColor: "#fff"}}>
+                  <CustomIcon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
+                </View>
+                <CustomText
+                  variant="bodySmall"
+                  style={{ marginTop: 10, textAlign: "center" }}
+                >
+                  {category.ParentRid}
+                </CustomText>
+              </Pressable>
+            );
+          })
+        }
+      </View>
     </View>
   );
 };

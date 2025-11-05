@@ -169,7 +169,7 @@ const FeedbackModal = ({visible, setVisible}:{visible: boolean, setVisible: (val
 
     return (
         <>  
-            <Modal visible={visible} onDismiss={() => setVisible(false)} style={{ width: "100%", height: "100%" }} contentContainerStyle={{ height: "80%", opacity: fadeAnim }}>
+            <Modal visible={visible} onDismiss={() => setVisible(false)} style={{ width: "100%", height: "100%" }} contentContainerStyle={{flex: 0.8, opacity: fadeAnim }}>
                 <Animated.View style={{ transform: [{ translateY: modalPos}],flex: 1, backgroundColor: "#fff", borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
                     <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
                         <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => setVisible(false)} />
@@ -192,7 +192,9 @@ const FeedbackModal = ({visible, setVisible}:{visible: boolean, setVisible: (val
                                 })
                             }
                         </View>
-                        <TextInput multiline={true} placeholder='Add a comment...' value={comment} onChangeText={text => setComment(text)} style={{marginHorizontal: 20, marginTop: 20, height: 275}} mode='outlined'/>
+                        <View style={{marginHorizontal: 20, marginTop: 20, height: "40%"}}>
+                            <TextInput multiline={true} placeholder='Add a comment...' value={comment} onChangeText={text => setComment(text)} style={{flex: 1, paddingTop: 10}} mode='outlined'/>
+                        </View>
                         <View style={{ marginTop: 20, width: "100%" }}>
                             <Button style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} disabled={(comment.length < 1 && !rating) || submitting} onPress={onSubmit} >
                                 <CustomText style={{marginLeft: 20, color: "#fff"}} variant='titleMediumBold'>Submit</CustomText>

@@ -42,15 +42,10 @@ const DrillPage = ({ route, navigation }: props) => {
             <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
             </View>
-            <ScrollView
-                style={{ flex: 1, backgroundColor: "#fff", marginBottom:75 }}
-                contentContainerStyle={{ }}
-            >
-                <View>
-                    {drillNum && <CustomText style={{marginHorizontal: 20}} variant='titleLarge'>{drillNum}</CustomText>}
-                    <CustomText style={{marginHorizontal: 20}} variant='titleLargeBold'>{drillName}</CustomText>
-                    <CustomText style={{marginHorizontal: 20, marginTop: 20}} variant='bodyLarge'>{category.BlurbText}</CustomText>
-                </View>
+            <ScrollView style={{ flex: 1, backgroundColor: "#fff", marginBottom:150 }}>
+                {drillNum && <CustomText style={{marginHorizontal: 20}} variant='titleLarge'>{drillNum}</CustomText>}
+                <CustomText style={{marginHorizontal: 20}} variant='titleLargeBold'>{drillName}</CustomText>
+                <CustomText style={{marginHorizontal: 20, marginTop: 20}} variant='bodyLarge'>{category.BlurbText}</CustomText>
             </ScrollView>
             <View style={{position: "absolute", bottom: 10, width: "100%", gap: 10 }}>
                 <Button icon={() => <CustomIcon name="File" color={theme.colors.primary} size={20}/>}style={{marginHorizontal: 20, borderRadius: 10, borderColor: theme.colors.primary}} contentStyle={{height: 50}} mode="outlined"  onPress={() => console.log("Open Instructions")} >
