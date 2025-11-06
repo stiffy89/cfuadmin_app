@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Dimensions, Platform } from "react-native";
+import { View, Dimensions } from "react-native";
 import { useTheme, IconButton} from "react-native-paper";
-import {WebView} from "react-native-webview"
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
 
 import { File, Paths } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { SkillsMaintenanceStackParamList } from "../../types/AppTypes";
@@ -16,6 +16,7 @@ import { useAppContext } from '../../helper/AppContext';
 
 import Pdf from "react-native-pdf";
 import { Buffer } from "buffer";
+import CustomIcon from "../../assets/CustomIcon";
 
 const loadInstructions = async (Path: string, FileType: string) => {
   const response = await resourceDataHandlerModule.getResource(Path, FileType)
@@ -28,6 +29,7 @@ const storeInstructions = async (contentString: string, filename:string) => {
     const src = new File(Paths.document, filename);
     const bytes = Buffer.from(contentString, "base64")
     src.write(bytes)
+    return src.uri
   } catch (error) {
     console.error('Error saving file from Base64:', error);
   }
@@ -39,6 +41,7 @@ const DrillInstructionsPage = ({ route, navigation }: props) => {
     const { setShowDialog, setShowBusyIndicator } = useAppContext();
     const [instructions, setInstructions] = useState<any>();
     const [pdfSource, setPdfSource] = useState("")
+    const [localFilePath, setLocalFilePath] = useState<string | undefined>()
 
     const theme = useTheme();
     const params = route.params ?? {};
@@ -52,6 +55,7 @@ const DrillInstructionsPage = ({ route, navigation }: props) => {
         const file = new File(Paths.document, displayName);
 
         if(file.exists){
+            setLocalFilePath(file.uri)
             setPdfSource(file.uri)
         }else {
             loadInstructions(filePath, fileType).then((res) => setInstructions(res));
@@ -61,16 +65,23 @@ const DrillInstructionsPage = ({ route, navigation }: props) => {
     useEffect(() => {
         if(instructions){
             const base64String = Buffer.from(instructions as any, "binary").toString("base64");
-            storeInstructions(base64String, displayName)
             setPdfSource(`data:application/pdf;base64,${base64String}`)
+            storeInstructions(base64String, displayName).then(res => setLocalFilePath(res))
         }
     }, [instructions])
 
+    const shareFile = async () => {
+        if(localFilePath){
+            Sharing.shareAsync(localFilePath)
+        }
+    };
+
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
+            <View style={{flexDirection: 'row', justifyContent: "space-around", alignItems: 'center', marginTop: 20, marginBottom: 10}}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 <CustomText style={{marginLeft: 20, marginRight: 60}} variant='titleMediumBold'>{displayName}</CustomText>
+                <IconButton icon={() => <CustomIcon name="Share" color={!localFilePath ? theme.colors.surfaceDisabled : theme.colors.primary} size={25}/>} disabled={!localFilePath} size={20} onPress={shareFile} />
             </View>
             {pdfSource && 
             (<Pdf 
@@ -78,8 +89,8 @@ const DrillInstructionsPage = ({ route, navigation }: props) => {
                 style={{flex: 1, width: Dimensions.get("window").width, height: Dimensions.get("window").height}} 
                 trustAllCerts={false}
                 onLoadComplete={() => {
-                setShowBusyIndicator(false);
-                setShowDialog(false);
+                    setShowBusyIndicator(false);
+                    setShowDialog(false);
                 }}
             />)}
         </View>
