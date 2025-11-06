@@ -3,6 +3,7 @@ import { ScrollView, View } from 'react-native';
 import CustomText from '../../assets/CustomText';
 import { useTheme } from 'react-native-paper';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useDataContext } from '../../helper/DataContext';
 
 //screens
 import ContactsMyUnit from '.././ContactsTab/ContactsMyUnit';
@@ -12,8 +13,9 @@ import ContactsCFUPhoneBook from '.././ContactsTab/ContactsCFUPhonebook';
 const ContactsMain = () => {
     const Tab = createMaterialTopTabNavigator();
     const theme = useTheme();
+    const dataContext = useDataContext();
 
-    const isTeamManager = true;
+    const isTeamManager = dataContext.currentUser[0].TeamCoordinator;
 
     return (
         <>

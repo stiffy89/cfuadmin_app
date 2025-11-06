@@ -24,6 +24,18 @@ export class ScreenFlowModule {
        
         if (this.navigator?.isReady()){
             switch (screen) {
+                case 'Users':
+                    const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking').default; 
+                    RCTNetworking.clearCookies((result : any) => {
+                        console.log('cookies cleared');
+                        this.navigator?.navigate('Users');
+                    });
+                    break;
+
+                case 'SplashScreen':
+                    this.navigator?.navigate('SplashScreen');
+                    break;
+
                 case 'LoginScreen' :
                     this.navigator?.navigate('LoginScreen');
                     break;

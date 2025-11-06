@@ -40,6 +40,7 @@ import FeedbackModal from './assets/FeedbackModal';
 import TrainingMain from './pages/Training/TrainingMain';
 import TrainingCompletionByDrill from './pages/Training/TrainingCompletionByDrill';
 import TrainingCompletionByUser from './pages/Training/TrainingCompletionByUser';
+import Users from './pages/Users';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -217,7 +218,7 @@ export default function MainApp() {
 		AsyncStorage.setItem('last_active', currentTimeStamp);
 	}
 
-	const onGetInitialLoad = async () => {
+	const onAppInitLoad = async () => {
 		//set up the data handler module
 		try {
 			await dataHandlerModule.init();
@@ -228,11 +229,16 @@ export default function MainApp() {
 			setShowDialog(true);
 			return;
 		}
+	}
+
+	//IMPORTANT, TEMPORARILY MOVED TO USERS SCREEN FOR TESTING
+/*	const onGetInitialLoad = async () => {
 
 		let user;
-
+		
 		try {
 			const userInfo = await dataHandlerModule.batchGet('Users','Z_ESS_MSS_SRV', 'Users');
+
 			if (userInfo.responseBody.error){
 				//TODO handle SAP error
 				console.log('SAP Error')
@@ -254,6 +260,7 @@ export default function MainApp() {
 			dataHandlerModule.batchGet('EmployeeDetails', 'Z_ESS_MSS_SRV', 'EmployeeDetails'),
 			dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
 			dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'),
+			dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'), 
 			dataHandlerModule.batchGet('AddressStates?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressStates'),
 			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships')
 		]
@@ -261,7 +268,6 @@ export default function MainApp() {
 		//add the extra calls for mymembers and training
 		if (user.TeamCoordinator){
 			requests = [...requests, 
-				dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'), 
 				dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs'), 
 				dataHandlerModule.batchGet('RootOrgUnits', 'Z_VOL_MANAGER_SRV', 'RootOrgUnits')
 			]
@@ -343,7 +349,7 @@ export default function MainApp() {
 						try {
 							const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
 							const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
-							const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%2751004306%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
+							const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
 							
 							dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results);
 							dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
@@ -360,10 +366,12 @@ export default function MainApp() {
 					
 		screenFlowModule.onNavigateToScreen('HomeScreen');
 	}
+*/
 
 	useEffect(() => {
 
-		onGetInitialLoad();
+		onAppInitLoad();
+
 
 		if (authenticationMode == 'bypass') {
 			return;
@@ -460,7 +468,7 @@ export default function MainApp() {
 							screenFlowModule.onInitRootNavigator(navigatorRef)
 						}}
 					>
-						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+						<Stack.Navigator initialRouteName='Users' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
@@ -482,6 +490,7 @@ export default function MainApp() {
 							<Stack.Screen name='TrainingMain' component={TrainingMain}/>
 							<Stack.Screen name='TrainingCompletionByDrill' component={TrainingCompletionByDrill}/>
 							<Stack.Screen name='TrainingCompletionByUser' component={TrainingCompletionByUser}/>
+							<Stack.Screen name='Users' component={Users}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>

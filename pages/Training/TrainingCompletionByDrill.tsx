@@ -51,8 +51,10 @@ const TrainingCompletionByDrill = ({ route }: props) => {
     today.getDate()
   );
 
+  let drillCompletions = route.params!.drillCompletions;
+
   useEffect(() => {
-    setTrainingCompletions(route.params!.drillCompletions);
+    setTrainingCompletions(drillCompletions);
   }, []);
 
   const genericFormatter = new GenericFormatter();
@@ -108,7 +110,7 @@ const TrainingCompletionByDrill = ({ route }: props) => {
             <Button onPress={() => {
               setIsEditing(false);
               setShowCancelDialog(false);
-              setTrainingCompletions(route.params!.drillCompletions)
+              setTrainingCompletions(drillCompletions)
               updatedRecords.current = [];
             }}>Discard</Button>
           </Dialog.Actions>
@@ -331,7 +333,21 @@ const TrainingCompletionByDrill = ({ route }: props) => {
                     //TODO handle error
                   }
 
-                  setTrainingCompletions(memberDrillCompletions.responseBody.d.results);
+                  const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
+                  if (memberDrillCompletions.responseBody.error) {
+                    console.log(
+                      "drill details read error,",
+                      memberDrillCompletions.responseBody.error
+                    );
+                    return;
+                    //TODO handle error
+                  }
+
+                  drillCompletions = memberDrillCompletions.responseBody.d.results
+                  setTrainingCompletions(drillCompletions);
+
+                  dataContext.setDrillDetails(drillDetails.responseBody.d.results)
+
                   setIsEditing(false);
                   appContext.setShowBusyIndicator(false);
                   appContext.setShowDialog(false);

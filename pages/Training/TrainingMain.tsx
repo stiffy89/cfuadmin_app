@@ -28,7 +28,7 @@ const ByDrill = () => {
 
   useEffect(() => {
     setTrainingDrillList(dataContext.drillDetails);
-  }, []);
+  }, [dataContext.drillDetails]);
 
   return (
     <ScrollView
@@ -142,7 +142,7 @@ const ByTeamMember = () => {
   useEffect(() => {
     const initialMembersList = filterAndFormatList("");
     setMembersList(initialMembersList);
-  }, []);
+  }, [dataContext.memberDrillCompletion]);
 
   const filterAndFormatList = (query: string) => {
     let filteredList;

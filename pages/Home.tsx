@@ -15,6 +15,8 @@ import * as LucideIcons from 'lucide-react-native';
 import { useDataContext } from '../helper/DataContext';
 import { ServiceData } from '../types/AppTypes';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 //menu icons
 import defaultIcon from '../assets/menuicons/menu-default.png';
 import formIcon from '../assets/menuicons/menu-forms.png';
@@ -27,8 +29,16 @@ const NameBanner = () => {
     const user = useDataContext().currentUser[0];
 
     return (
-        <View style={{paddingHorizontal: 20, paddingVertical: 20, backgroundColor: theme.colors.secondary}}>
-            <CustomText variant='displaySmallBold' style={{color: '#fff'}}>Hi {user.Vorna}</CustomText>
+        <View style={{paddingHorizontal: 20, paddingVertical: 20, backgroundColor: theme.colors.secondary, flexDirection: 'row', justifyContent: 'space-between'}}>
+            <CustomText variant='displaySmallBold' style={{color: theme.colors.background}}>Hi {user.Vorna}</CustomText>
+            <Button 
+                textColor={theme.colors.background} 
+                mode='outlined'
+                onPress={async () => {
+                    await AsyncStorage.removeItem('localAuthToken');
+                    screenFlowModule.onNavigateToScreen('Users');
+                }}
+            >Log Out</Button>
         </View>
     )
 }

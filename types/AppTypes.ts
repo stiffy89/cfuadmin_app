@@ -14,6 +14,8 @@ export type AppContextType = {
     setDialogActionButtonText: (val: string) => void;
     dialogActionFunction? : () => void;
     setDialogActionFunction: (fn: (() => void) | undefined) => void;
+    initLoad? : () => void;
+    setInitLoad: (fn: (() => void) | undefined) => void;
     showDialog: boolean;
     setShowDialog: (val: boolean) => void;
     showBusyIndicator: boolean;
@@ -179,6 +181,7 @@ export type RootStackParamList = {
     TrainingMain: undefined;
     TrainingCompletionByDrill: DrillData | undefined;
     TrainingCompletionByUser: MemberData | undefined;
+    Users: undefined;
 }
 
 export type TabParamList = {
