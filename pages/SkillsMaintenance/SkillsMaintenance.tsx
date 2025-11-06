@@ -9,6 +9,7 @@ import { SkillsMaintenanceStackParamList } from "../../types/AppTypes";
 import SkillsMaintenancePage from "./SkillsMaintenancePage";
 import DrillPage from "./DrillPage";
 import DrillCardsPage from "./DrillCardsPage";
+import DrillInstructionsPage from "./DrillInstructionsPage";
 
 
 const SkillsMaintenanceStack = () => {
@@ -43,6 +44,7 @@ const SkillsMaintenanceStack = () => {
             >
                 <Stack.Screen name="SkillsMaintenancePage" component={SkillsMaintenancePage} />
                 <Stack.Screen name="DrillPage" component={DrillPage}/>
+                <Stack.Screen name="DrillInstructionsPage" component={DrillInstructionsPage} />
                 <Stack.Screen name="DrillCardPage" component={DrillCardsPage}/>
             </Stack.Navigator>
         </View>

@@ -218,6 +218,7 @@ export type FormServiceStackParamList = {
 export type SkillsMaintenanceStackParamList = {
     SkillsMaintenancePage: Record<string, string> | undefined;
     DrillPage: Record<string, string> | undefined;
+    DrillInstructionsPage: Record<string, string> | undefined;
     DrillCardPage: Record<string, string> | undefined;
 }
 

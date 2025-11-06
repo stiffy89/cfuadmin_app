@@ -28,12 +28,21 @@ const DrillPage = ({ route, navigation }: props) => {
         setShowDialog(false);
     }, [])
 
-    const navigate = () => {
+    const navigateToDrillCards = () => {
         setShowBusyIndicator(true);
         setShowDialog(true);
             
         setTimeout(() => {    
           screenFlowModule.onNavigateToScreen("DrillCardPage", category);
+        }, 500);
+    };
+
+    const navigateToDrillInstructions = () => {
+        setShowBusyIndicator(true);
+        setShowDialog(true);
+            
+        setTimeout(() => {    
+          screenFlowModule.onNavigateToScreen("DrillInstructionsPage", category);
         }, 500);
     };
 
@@ -48,10 +57,10 @@ const DrillPage = ({ route, navigation }: props) => {
                 <CustomText style={{marginHorizontal: 20, marginTop: 20}} variant='bodyLarge'>{category.BlurbText}</CustomText>
             </ScrollView>
             <View style={{position: "absolute", bottom: 10, width: "100%", gap: 10 }}>
-                <Button icon={() => <CustomIcon name="File" color={theme.colors.primary} size={20}/>}style={{marginHorizontal: 20, borderRadius: 10, borderColor: theme.colors.primary}} contentStyle={{height: 50}} mode="outlined"  onPress={() => console.log("Open Instructions")} >
-                    <CustomText style={{marginLeft: 20, color: theme.colors.primary}} variant='titleMediumBold'>Open instructions</CustomText>
+                <Button icon={() => <CustomIcon name="File" color={category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled} size={20}/>}style={{marginHorizontal: 20, borderRadius: 10, borderColor: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} contentStyle={{height: 50}} mode="outlined" disabled={!category.InstructionLink} onPress={navigateToDrillInstructions} >
+                    <CustomText style={{marginLeft: 20, color: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} variant='titleMediumBold'>Open instructions</CustomText>
                 </Button>
-                <Button style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} onPress={navigate} >
+                <Button style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} onPress={navigateToDrillCards} >
                     <CustomText style={{marginLeft: 20, color: "#fff"}} variant='titleMediumBold'>Begin group discussion</CustomText>
                 </Button>
             </View>
