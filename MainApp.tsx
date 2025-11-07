@@ -36,11 +36,11 @@ import MyUnit from './pages/MyUnit';
 import UniformDetails from './pages/UniformDetails';
 import MedalsAndAwards from './pages/MedalsAndAwards';
 import CardModal from './assets/CardModal';
-import FeedbackModal from './assets/FeedbackModal';
 import TrainingMain from './pages/Training/TrainingMain';
 import TrainingCompletionByDrill from './pages/Training/TrainingCompletionByDrill';
 import TrainingCompletionByUser from './pages/Training/TrainingCompletionByUser';
 import Users from './pages/Users';
+import FeedbackScreen from './pages/FeedbackScreen';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -159,7 +159,7 @@ export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, cardModalVisible, setCardModalVisible, feedbackModalVisible, setFeedbackModalVisible } = useAppContext();
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, cardModalVisible, setCardModalVisible } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -413,7 +413,6 @@ export default function MainApp() {
 				<PaperProvider theme={{ ...appTheme, fonts }}>
 					<Portal>
 						<CardModal visible={cardModalVisible} setVisible={setCardModalVisible}/>
-						<FeedbackModal visible={feedbackModalVisible} setVisible={setFeedbackModalVisible}/>
 						<Dialog
 							visible={showDialog}
 						>
@@ -489,6 +488,7 @@ export default function MainApp() {
 							<Stack.Screen name='TrainingCompletionByDrill' component={TrainingCompletionByDrill}/>
 							<Stack.Screen name='TrainingCompletionByUser' component={TrainingCompletionByUser}/>
 							<Stack.Screen name='Users' component={Users}/>
+							<Stack.Screen name='FeedbackScreen' component={FeedbackScreen} options={{animation: "fade",presentation:"transparentModal", cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>
