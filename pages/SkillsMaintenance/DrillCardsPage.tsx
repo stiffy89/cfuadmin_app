@@ -11,10 +11,10 @@ import { useAppContext } from "../../helper/AppContext";
 
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import CustomIcon from "../../assets/CustomIcon";
-import { resourceDataHandlerModule } from "../../helper/ResourcesDataHandlerModule";
+import { dataHandlerModule } from "../../helper/DataHandlerModule";
 
 const loadDrillRandomCards = async (categoryId:string) => {
-    const randomCards = await resourceDataHandlerModule.getSkillsMaintenanceRandomCards(categoryId)
+    const randomCards = await dataHandlerModule.getSkillsMaintenanceRandomCards(categoryId)
 
     const responseText = randomCards.data;
     const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];

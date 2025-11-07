@@ -10,11 +10,11 @@ import { SkillsMaintenanceCategory, SkillsMaintenanceStackParamList } from "../.
 import { useAppContext } from "../../helper/AppContext";
 
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
-import { resourceDataHandlerModule } from "../../helper/ResourcesDataHandlerModule";
+import { dataHandlerModule } from "../../helper/DataHandlerModule";
 
 
 const loadSkillsMaintenanceCategories = async () => {
-    const skillsMaitenanceCategories = await resourceDataHandlerModule.getSkillsMaintenanceCategories()
+    const skillsMaitenanceCategories = await dataHandlerModule.getSkillsMaintenanceCategories()
 
     const responseText = skillsMaitenanceCategories.data;
     const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];

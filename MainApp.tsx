@@ -67,7 +67,6 @@ import { authModule } from './helper/AuthModule';
 import { screenFlowModule } from './helper/ScreenFlowModule';
 import { dataHandlerModule } from './helper/DataHandlerModule';
 import { DummyData } from './data/DummyData';
-import { resourceDataHandlerModule } from './helper/ResourcesDataHandlerModule';
 
 //set up custom themes
 const customLightTheme = {
@@ -222,7 +221,6 @@ export default function MainApp() {
 		//set up the data handler module
 		try {
 			await dataHandlerModule.init();
-			await resourceDataHandlerModule.init();
 		}
 		catch (error) {
 			setDialogMessage('An error occurred during data handler initialisation');

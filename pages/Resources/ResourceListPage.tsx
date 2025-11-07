@@ -7,13 +7,13 @@ import CustomText from "../../assets/CustomText";
 import { StackScreenProps} from "@react-navigation/stack";
 import { DocumentResources, ResourceStackParamList} from "../../types/AppTypes";
 
-import {resourceDataHandlerModule} from "../../helper/ResourcesDataHandlerModule"
+import {dataHandlerModule} from "../../helper/DataHandlerModule"
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
 
 
 const loadResourceList = async (Path: string) => {
-    const resourceList = await resourceDataHandlerModule.getResourceList(Path)
+    const resourceList = await dataHandlerModule.getResourceList(Path)
 
     const responseText = resourceList.data;
     const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];

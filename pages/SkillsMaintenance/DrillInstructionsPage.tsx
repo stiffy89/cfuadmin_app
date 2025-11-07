@@ -10,7 +10,7 @@ import * as Sharing from 'expo-sharing';
 import { StackScreenProps } from "@react-navigation/stack";
 import { SkillsMaintenanceStackParamList } from "../../types/AppTypes";
 
-import { resourceDataHandlerModule } from "../../helper/ResourcesDataHandlerModule";
+import { dataHandlerModule } from "../../helper/DataHandlerModule";
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
 
@@ -19,7 +19,7 @@ import { Buffer } from "buffer";
 import CustomIcon from "../../assets/CustomIcon";
 
 const loadInstructions = async (Path: string, FileType: string) => {
-  const response = await resourceDataHandlerModule.getResource(Path, FileType)
+  const response = await dataHandlerModule.getResource(Path, FileType)
 
   return response.data;
 };

@@ -14,10 +14,10 @@ import { FormServiceStackParamList, FormsLauncherSet} from "../../types/AppTypes
 import { useAppContext } from "../../helper/AppContext";
 
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
-import { resourceDataHandlerModule } from "../../helper/ResourcesDataHandlerModule";
+import { dataHandlerModule } from "../../helper/DataHandlerModule";
 
 const loadFormsLauncherSet = async(formLaunchId:string) => {
-    const formInfo = await resourceDataHandlerModule.getFormsLauncherSet(formLaunchId)
+    const formInfo = await dataHandlerModule.getFormsLauncherSet(formLaunchId)
 
     return formInfo.data.d;
 }

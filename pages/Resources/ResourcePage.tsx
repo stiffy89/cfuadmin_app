@@ -10,7 +10,7 @@ import { File, Paths } from 'expo-file-system';
 import {StackScreenProps} from "@react-navigation/stack";
 import { ResourceStackParamList} from "../../types/AppTypes";
 
-import { resourceDataHandlerModule } from "../../helper/ResourcesDataHandlerModule";
+import { dataHandlerModule } from "../../helper/DataHandlerModule";
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
 
@@ -18,7 +18,7 @@ import Pdf from "react-native-pdf";
 import { Buffer } from "buffer";
 
 const loadResource = async (Path: string, FileType: string) => {
-  const response = await resourceDataHandlerModule.getResource(Path, FileType)
+  const response = await dataHandlerModule.getResource(Path, FileType)
 
   return response.data;
 };

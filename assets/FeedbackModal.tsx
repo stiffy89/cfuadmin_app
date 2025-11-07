@@ -6,7 +6,7 @@ import CustomText from '../assets/CustomText';
 
 import * as LucideIcons from "lucide-react-native";
 import Emoji, { EmojiType } from './Emoji';
-import { resourceDataHandlerModule } from '../helper/ResourcesDataHandlerModule';
+import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { useAppContext } from '../helper/AppContext';
 
 type FeedbackRating = {
@@ -150,7 +150,7 @@ const FeedbackModal = ({visible, setVisible}:{visible: boolean, setVisible: (val
             setShowDialog(false);
         }else{
             setTimeout(async () => {
-                await resourceDataHandlerModule.postFeedbackSet(rating ? rating.ratingValue : "", comment).then((res)=>{
+                await dataHandlerModule.postFeedbackSet(rating ? rating.ratingValue : "", comment).then((res)=>{
                     setSubmitting(false)
                     setShowBusyIndicator(false);
                     setShowDialog(false);

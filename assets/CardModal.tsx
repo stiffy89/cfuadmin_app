@@ -5,10 +5,10 @@ import { Modal, IconButton } from 'react-native-paper';
 import CustomText from '../assets/CustomText';
 import CustomIcon from "../assets/CustomIcon"
 import { useDataContext } from '../helper/DataContext';
-import { resourceDataHandlerModule } from '../helper/ResourcesDataHandlerModule';
+import { dataHandlerModule } from '../helper/DataHandlerModule';
 
 const loadPhoto = async (pernr: string) => {
-    const photo = await resourceDataHandlerModule.getIdCardPhoto(pernr)
+    const photo = await dataHandlerModule.getIdCardPhoto(pernr)
 
 	return photo
 }
