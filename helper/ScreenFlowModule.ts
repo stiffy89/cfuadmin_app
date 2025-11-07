@@ -96,6 +96,16 @@ export class ScreenFlowModule {
                         }
                     );
                     break;
+                
+                case 'DrillInstructionsPage' : 
+                    this.navigator?.navigate(
+                        'SkillsMaintenance', 
+                        {
+                            screen: 'DrillInstructionsPage',
+                            params: data
+                        }
+                    );
+                    break;
 
                 case 'DrillCardPage':
                     this.navigator?.navigate(

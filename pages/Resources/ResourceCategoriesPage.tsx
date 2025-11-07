@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, ScrollView, Pressable, StyleProp, ViewStyle } from "react-native";
 import { useTheme, Button, IconButton} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
@@ -10,6 +10,7 @@ import { useAppContext } from '../../helper/AppContext';
 
 const ResourceCategoriesPage = () => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();
+  const [maxWidth, setMaxWidth] = useState<number>()
   const theme = useTheme();
   
   interface CategoryIcons {
@@ -63,35 +64,38 @@ const ResourceCategoriesPage = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-        <View style={{ marginVertical: 20 }}>
-          <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
-            <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-            <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
-          </View>
-          <View style={{flexDirection: "row", flexWrap:"wrap", height: "100%",justifyContent: "center", gap: 20, paddingTop: 10, backgroundColor: theme.colors.background, }}>
-            {
-              categories.map((category, index) => {
-                return (
-                  <Pressable
-                    key={index}
-                    style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { alignItems: "center", width:120 }]}
-                    onPress={() => navigate(category)}
-                  >
-                    <View style={{borderWidth: 1, borderRadius: 5, width: 100, height: 100, alignItems: "center", justifyContent: "center", backgroundColor: "#fff"}}>
-                      <CustomIcon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
-                    </View>
-                    <CustomText
-                      variant="bodySmall"
-                      style={{ marginTop: 10, textAlign: "center" }}
-                    >
-                      {category.ParentRid}
-                    </CustomText>
-                  </Pressable>
-                );
-              })
-            }
-          </View>
-        </View>
+      <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
+        <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
+        <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
+      </View>
+      <ScrollView style={{ flex: 1, width:"100%", backgroundColor: theme.colors.background }} contentContainerStyle={{flexDirection: "row", flexWrap:"wrap", justifyContent: "flex-start", gap: 20, margin: 20}}>
+        {
+          categories.map((category, index) => {
+            return (
+              <Pressable
+                key={index}
+                style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { flexGrow: 1, maxWidth:maxWidth, alignItems: "center", height: 120,  aspectRatio: 1, marginBottom: 50 }]}
+                onPress={() => navigate(category)}
+                onLayout={(e) => {
+                    if(index == 0){
+                        setMaxWidth(e.nativeEvent.layout.width)
+                    }
+                }}
+              >
+                <View style={{borderRadius: 5, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", height: "100%", width: "100%"}}>
+                  <CustomIcon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
+                </View>
+                <CustomText
+                  variant="bodySmall"
+                  style={{ marginTop: 10, textAlign: "center" }}
+                >
+                  {category.ParentRid}
+                </CustomText>
+              </Pressable>
+            );
+          })
+        }
+      </ScrollView>
     </View>
   );
 };

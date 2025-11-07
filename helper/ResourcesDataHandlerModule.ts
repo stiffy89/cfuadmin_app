@@ -11,8 +11,8 @@ class ResourcesDataHandlerModule {
     async init () {
         this.axiosInstance = axios.create({baseURL: "https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap"})
 
-        const username = process.env.EXPO_PUBLIC_BASIC_USERNAME;
-        const password = process.env.EXPO_PUBLIC_BASIC_PASSWORD;
+        const username = 'WAK816316';
+        const password = 'BUTTERbar1!';
         this.credentials = btoa(`${username}:${password}`);
 
         try {
@@ -217,6 +217,30 @@ class ResourcesDataHandlerModule {
                 throw new Error ('cannot get entity, no response')
             }
 
+
+            return response;    
+        }catch(error){
+            throw error
+        }
+    }
+
+    async getIdCardPhoto (pernr: string) : Promise<AxiosResponse>{
+        try {
+            const encodedPernr = encodeURIComponent(pernr);
+
+            const filters = `'${encodedPernr}'`;
+            const odataServiceUrl = `/Z_MOB2_SRV/IdCardPhotoSet(${filters})/$value`;
+
+            const response = await this.axiosInstance?.get(odataServiceUrl, {
+                headers: {
+                    Authorization: `Basic ${this.credentials}`,
+                },
+                responseType: "arraybuffer"
+                })
+            
+            if (!response){
+                throw new Error ('cannot get entity, no response')
+            }
 
             return response;    
         }catch(error){

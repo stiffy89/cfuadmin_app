@@ -1,14 +1,28 @@
-import { useEffect, useRef} from 'react';
+import { useEffect, useRef, useState} from 'react';
 import { View, Image, Animated } from 'react-native';
 import { Modal, IconButton } from 'react-native-paper';
 
 import CustomText from '../assets/CustomText';
 import CustomIcon from "../assets/CustomIcon"
+import { useDataContext } from '../helper/DataContext';
+import { resourceDataHandlerModule } from '../helper/ResourcesDataHandlerModule';
+
+const loadPhoto = async (pernr: string) => {
+    const photo = await resourceDataHandlerModule.getIdCardPhoto(pernr)
+
+	return photo
+}
 
 const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: boolean) => void}) => {
+	const user = useDataContext().currentUser[0];
+	const membership = useDataContext().membershipDetails[0];
+	const [photoType, setPhotoType] = useState("")
+	const [photo, setPhoto] = useState("")
+
 	const slideAnim = useRef(new Animated.Value(-1000)).current;
 	const fadeAnim = useRef(new Animated.Value(0)).current;
     const closeFadeAnim = useRef(new Animated.Value(0)).current;
+	const imageFadeAnim = useRef(new Animated.Value(0)).current
 
 	const slideIn = () => {
       	Animated.timing(slideAnim, {
@@ -27,7 +41,8 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
 	const fadeIn = () => {
 		Animated.timing(fadeAnim, {
         	toValue: 1,
-        	duration: 500, 
+			delay: 100,
+        	duration: 400, 
         	useNativeDriver: true,
       	}).start();
 	}
@@ -35,6 +50,21 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
 		Animated.timing(fadeAnim, {
         	toValue: 0,
         	duration: 500, 
+        	useNativeDriver: true,
+      	}).start();
+	}
+	const imageFadeIn = () => {
+		Animated.timing(imageFadeAnim, {
+        	toValue: 1,
+			delay: 200,
+        	duration: 500, 
+        	useNativeDriver: true,
+      	}).start();
+	}
+	const imageFadeOut = () => {
+		Animated.timing(imageFadeAnim, {
+        	toValue: 0,
+        	duration: 100, 
         	useNativeDriver: true,
       	}).start();
 	}
@@ -54,14 +84,25 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
       	}).start();
 	}
 
+	useEffect(() => {
+		if(user){
+			loadPhoto(user.Pernr).then(res => {
+				setPhotoType(res.headers['content-type'])
+				setPhoto(res.request._response)
+			})
+		}
+	}, [user])
+
 	useEffect(()=> {
 		if(visible){
 			slideIn()
 			fadeIn()
+			imageFadeIn()
             closeFadeIn()
 		}else {
 			slideOut()
 			fadeOut()
+			imageFadeOut()
             closeFadeOut()
 		}
 	}, [visible])
@@ -74,15 +115,20 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
                     width: "95%", 
                     height: "100%",
                     transform: [{ translateY: slideAnim }],
-                    opacity: fadeAnim
+                    opacity: fadeAnim,
                 }}
+				theme={{
+					colors: {
+						backdrop: "#818181e0"
+					}
+				}}
                 >
-                <View style={{ height: "80%",backgroundColor: "#0d5183", borderRadius: 20, }}>
+                <View style={{ height: "80%",backgroundColor: "#0d5183", borderRadius: 20,borderColor: "#fff", borderWidth: 3 }}>
                     <View style={{backgroundColor: "#cdc6c0", flex: 2, flexDirection: "row", gap: 10, marginTop: 25, justifyContent: "center" }}>
                         <Image
                             style={{ width: 100, height: "100%", resizeMode: "contain" }}
                             source={{
-                                uri: 'https://www.fire.nsw.gov.au/images/content/FRNSW-logo.png',
+								uri: 'https://www.fire.nsw.gov.au/images/content/FRNSW-logo.png',
                             }}
                         />
                         <View style={{marginTop: 25}}>
@@ -92,13 +138,13 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
                         </View>
                     </View>
                     <View style={{backgroundColor: "#fff", flex: 5, alignItems: "center", justifyContent: "center" }}>
-                        <Image
-                            style={{ width: 175, height: 225, borderRadius: 10 }}
-                            source={require('../assets/images/ai_card_pic.png')}
+                        <Animated.Image
+                            style={{ width: 175, height: 225, borderRadius: 10, opacity: imageFadeAnim }}
+                            source={{ uri: `data:${photoType};base64,${photo}`}}
                         />
-                        <CustomText variant='headlineSmallBold'>First Name Last Name</CustomText>
-                        <CustomText variant='headlineSmallBold'>123456</CustomText>
-                        <CustomText variant='headlineSmallBold'>MHP/FHP-999</CustomText>
+                        <CustomText variant='headlineSmallBold'>{user?.Vorna} {user?.Nachn}</CustomText>
+                        <CustomText variant='headlineSmallBold'>{parseInt(user?.Pernr)}</CustomText>
+                        <CustomText variant='headlineSmallBold'>{membership?.Otext}</CustomText>
                     </View>
                     <View style={{flex: 1, alignItems: "center", justifyContent: "center" }}>
                         <CustomText style={{ color: "#cdc6c0"}} variant='displayMediumBold'>VOLUNTEER</CustomText>
