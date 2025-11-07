@@ -32,6 +32,7 @@ class DataHandlerModule {
         try {
             const csrfResponse = await this.fetchCsrfToken()
             const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+            this.csrfToken = newCsrfToken
             await AsyncStorage.setItem('csrf-token', newCsrfToken);
         }
         catch (error) {

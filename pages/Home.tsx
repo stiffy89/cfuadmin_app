@@ -4,6 +4,8 @@ import CustomText from '../assets/CustomText';
 import { View, Pressable } from 'react-native';
 import GlobalStyles from '../style/GlobalStyles';
 
+import * as Linking from "expo-linking"
+
 import { useSecurityContext } from '../helper/SecurityContext';
 import { useAppContext } from '../helper/AppContext';
 import { authModule } from '../helper/AuthModule';
@@ -171,22 +173,20 @@ const ContactUs = () => {
     return (
         <View style={{marginVertical: 20, paddingHorizontal: 15}}>
             <CustomText style={{marginVertical: 15, color: theme.colors.primary}} variant='titleLargeBold'>Contact Us</CustomText>
-            <CustomText style={{marginVertical: 15}}>You can get in touch with the CFU Admin team through the following</CustomText>
+            <CustomText style={{marginVertical: 15}}>If you need assistance please reach out to the CFU Team</CustomText>
             <View style={{paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#d3d3d3ff', ...GlobalStyles.globalBorderRadius}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <LucideIcons.Phone style={{marginRight: 20}}/>
-                    <View>
-                        <CustomText style={{marginBottom: 10}}>Contact Number</CustomText>
-                        <CustomText>(02) 9700 1234</CustomText>
-                    </View>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
-                    <LucideIcons.Mail style={{marginRight: 20}}/>
-                    <View>
-                        <CustomText style={{marginBottom: 10}}>Email Address</CustomText>
-                        <CustomText>testemail@fire.nsw.gov.au</CustomText>
-                    </View>
-                </View>
+                <Pressable style={({pressed})=> [pressed ? {opacity: 0.3}:{opacity: 1},{flexDirection: 'row', alignItems: 'center'}]} onPress={() => Linking.openURL(`tel:1300 238 238`)}>
+                    <LucideIcons.Phone style={{marginRight: 20}} color={theme.colors.primary}/>
+                    <CustomText variant='bodyLarge'>1300 CFU CFU (1300 238 238)</CustomText>
+                </Pressable>
+                <Pressable style={({pressed})=> [pressed ? {opacity: 0.3}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', marginTop: 20}]} onPress={() => Linking.openURL(`mailTo:cfu@fire.nsw.gov.au`)}>
+                    <LucideIcons.Mail style={{marginRight: 20}} color={theme.colors.primary}/>
+                    <CustomText variant='bodyLarge'>cfu@fire.nsw.gov.au</CustomText>
+                </Pressable>
+                <Pressable style={({pressed})=> [pressed ? {opacity: 0.3}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', marginTop: 20}]} onPress={() => screenFlowModule.onNavigateToScreen("FeedbackScreen")}>
+                    <LucideIcons.Heart style={{marginRight: 20}} color={theme.colors.primary}/>
+                    <CustomText variant='bodyLarge'>Rate this app</CustomText>
+                </Pressable>
             </View>
         </View>
     )
