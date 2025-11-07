@@ -14,7 +14,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [showDialogCancelButton, setShowDialogCancelButton] = useState(false);
   const [dialogActionButtonText, setDialogActionButtonText] = useState('OK');
   const [dialogActionFunction, setDialogActionFunction] = useState<(() => void) | undefined>(undefined);
-  const [initLoad, setInitLoad] = useState<(() => void) | undefined>(undefined);
   
   const [lastAppState, setLastAppState] = useState<string>('none');
   const [authenticationMode, setAuthenticationMode] = useState<AuthenticationMode>('bypass');
@@ -42,9 +41,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     cardModalVisible,
     setCardModalVisible,
     feedbackModalVisible,
-    setFeedbackModalVisible,
-    initLoad,
-    setInitLoad
+    setFeedbackModalVisible
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

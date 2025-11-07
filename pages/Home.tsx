@@ -57,7 +57,7 @@ const Services = () => {
         }
 
         const imageIcon = iconMapping[x.IconFilename];
-
+        console.log(x);
         if (x.MenuId == 'CFU-1005'){
             return (
                 <Pressable

@@ -60,7 +60,7 @@ class DataHandlerModule {
                 throw new Error("Token refresh or retry failed: " + error);
             } */
 
-        /*        const accessToken = await AsyncStorage.getItem('access-token');
+        /*        const accessToken = await AsyncStorage.getItem('access-token's);
         
                 if (!accessToken) {
                     //go get auth token
