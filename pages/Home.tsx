@@ -174,15 +174,15 @@ const ContactUs = () => {
             <CustomText style={{marginVertical: 15, color: theme.colors.primary}} variant='titleLargeBold'>Contact Us</CustomText>
             <CustomText style={{marginVertical: 15}}>If you need assistance please reach out to the CFU Team</CustomText>
             <View style={{paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#d3d3d3ff', ...GlobalStyles.globalBorderRadius}}>
-                <Pressable style={({pressed})=> [pressed ? {opacity: 0.3}:{opacity: 1},{flexDirection: 'row', alignItems: 'center'}]} onPress={() => Linking.openURL(`tel:1300 238 238`)}>
+                <Pressable style={({pressed})=> [pressed ? {opacity: 0.6}:{opacity: 1},{flexDirection: 'row', alignItems: 'center'}]} onPress={() => Linking.openURL(`tel:1300 238 238`)}>
                     <LucideIcons.Phone style={{marginRight: 20}} color={theme.colors.primary}/>
                     <CustomText variant='bodyLarge'>1300 CFU CFU (1300 238 238)</CustomText>
                 </Pressable>
-                <Pressable style={({pressed})=> [pressed ? {opacity: 0.3}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', marginTop: 20}]} onPress={() => Linking.openURL(`mailTo:cfu@fire.nsw.gov.au`)}>
+                <Pressable style={({pressed})=> [pressed ? {opacity: 0.6}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', marginTop: 20}]} onPress={() => Linking.openURL(`mailTo:cfu@fire.nsw.gov.au`)}>
                     <LucideIcons.Mail style={{marginRight: 20}} color={theme.colors.primary}/>
                     <CustomText variant='bodyLarge'>cfu@fire.nsw.gov.au</CustomText>
                 </Pressable>
-                <Pressable style={({pressed})=> [pressed ? {opacity: 0.3}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', marginTop: 20}]} onPress={() => screenFlowModule.onNavigateToScreen("FeedbackScreen")}>
+                <Pressable style={({pressed})=> [pressed ? {opacity: 0.6}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', marginTop: 20}]} onPress={() => screenFlowModule.onNavigateToScreen("FeedbackScreen")}>
                     <LucideIcons.Heart style={{marginRight: 20}} color={theme.colors.primary}/>
                     <CustomText variant='bodyLarge'>Rate this app</CustomText>
                 </Pressable>
