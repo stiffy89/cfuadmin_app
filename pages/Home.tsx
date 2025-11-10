@@ -53,12 +53,13 @@ const Services = () => {
             'menu-skills-maint.png' : skillsMaintIcon,
             'menu-resources.png' : resourcesIcon,
             'menu-default.png' : defaultIcon,
-            'menu-forms.png' : formIcon
+            'menu-forms.png' : formIcon,
+            'menu-training.png' : trainingIcon
         }
 
         const imageIcon = iconMapping[x.IconFilename];
-        console.log(x);
-        if (x.MenuId == 'CFU-1005'){
+        
+        if (x.TargetPath == '/cfu-my-members'){
             return (
                 <Pressable
                     onPress={() => {
@@ -76,7 +77,7 @@ const Services = () => {
                 </Pressable>
             )
         }
-        else if (x.MenuId == 'CFU-1004'){
+        else if (x.TargetPath == '/cfu-training'){
             return (
                 <Pressable
                     onPress={() => {
@@ -93,7 +94,7 @@ const Services = () => {
                 </Pressable>
             )
         }
-        else if (x.MenuId == 'CFU-1002'){
+        else if (x.TargetPath == '/cfu-resources'){
             return (
                 <Pressable
                     onPress={() => {
@@ -110,7 +111,7 @@ const Services = () => {
                 </Pressable>
             )
         }
-        else if (x.MenuId == 'CFU-1001'){
+        else if (x.TargetPath == '/cfu-skills-maint'){
             return (
                 <Pressable
                     onPress={() => {

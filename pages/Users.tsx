@@ -153,7 +153,7 @@ const Users = () => {
                 onPress={async () => {
                     await AsyncStorage.removeItem('localAuthToken');
                     const username = 'HOL825004';
-                    const password = 'flanJIG1!';
+                    const password = 'Wary-hess-CARE-1!';
                     const token = btoa(`${username}:${password}`);
                     await AsyncStorage.setItem('localAuthToken', token)
                     screenFlowModule.onNavigateToScreen('SplashScreen');
@@ -168,7 +168,7 @@ const Users = () => {
                 onPress={async () => {
                     await AsyncStorage.removeItem('localAuthToken');
                     const username = 'WAK816316';
-                    const password = 'BUTTERbar1!';
+                    const password = 'Wary-hess-CARE-1!';
                     const token = btoa(`${username}:${password}`);
                     await AsyncStorage.setItem('localAuthToken', token)
                     screenFlowModule.onNavigateToScreen('SplashScreen');
@@ -183,7 +183,7 @@ const Users = () => {
                 onPress={async () => {
                     await AsyncStorage.removeItem('localAuthToken');
                     const username = 'CAM823299';
-                    const password = 'PIANISTpen1!';
+                    const password = 'Wary-hess-CARE-1!';
                     const token = btoa(`${username}:${password}`);
                     await AsyncStorage.setItem('localAuthToken', token)
                     screenFlowModule.onNavigateToScreen('SplashScreen');
@@ -191,6 +191,21 @@ const Users = () => {
                 }}
             >
                 Secondary contact - CAM823299
+            </Button>
+			<Button 
+                style={{marginBottom: 20}} 
+                mode='outlined'
+                onPress={async () => {
+                    await AsyncStorage.removeItem('localAuthToken');
+                    const username = 'BRO823198';
+                    const password = 'Wary-hess-CARE-1!';
+                    const token = btoa(`${username}:${password}`);
+                    await AsyncStorage.setItem('localAuthToken', token)
+                    screenFlowModule.onNavigateToScreen('SplashScreen');
+                    onGetInitialLoad();
+                }}
+            >
+                Member of 10 units - BRO823198
             </Button>
         </View>
     )

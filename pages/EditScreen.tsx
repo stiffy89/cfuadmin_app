@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, ScrollView, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
 import * as LucideIcons from "lucide-react-native";
 import {
     useTheme,
@@ -49,6 +49,7 @@ const MyDetailsEdit = (data: any) => {
                 }}
             />
             {hasError && <HelperText type="error">{errorMsg}</HelperText>}
+            <View style={{flex: 1}}></View>
             <Button
                 style={{
                     backgroundColor: theme.colors.primary,
@@ -57,6 +58,12 @@ const MyDetailsEdit = (data: any) => {
                 mode="elevated"
                 textColor={theme.colors.background}
                 onPress={async () => {
+                    //check to see if keyboard is open, if it is, close it
+                    const keyboardIsVisible = Keyboard.isVisible();
+                    if (keyboardIsVisible){
+                        Keyboard.dismiss();
+                    }
+
                     //check to see if we have an value
                     if (preferredName === "") {
                         setErrorMsg(
@@ -509,7 +516,7 @@ const ContactDetailsEdit = (data: any) => {
                 </View>
             )}
             {key == "mailing_address" && (
-                <View>
+                <ScrollView>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                         <CustomText variant="titleSmallBold">
                             Mailing Address
@@ -612,7 +619,6 @@ const ContactDetailsEdit = (data: any) => {
                     <TextInput
                         label="Postcode *"
                         mode="flat"
-                        style={{ marginBottom: 20 }}
                         value={contactDetails.mail_postcode}
                         onChangeText={(text) => {
                             setContactDetails({
@@ -621,16 +627,24 @@ const ContactDetailsEdit = (data: any) => {
                             });
                         }}
                     />
-                </View>
+                </ScrollView>
             )}
+            <View style={{flex: 1}}></View>
             <Button
                 style={{
                     backgroundColor: theme.colors.primary,
                     ...GlobalStyles.floatingButtonBottom,
+                    marginTop: 20
                 }}
                 mode="elevated"
                 textColor={theme.colors.background}
                 onPress={() => {
+                    //check to see if keyboard is open, if it is, close it
+                    const keyboardIsVisible = Keyboard.isVisible();
+                    if (keyboardIsVisible){
+                        Keyboard.dismiss();
+                    }
+
                     saveData();
                 }}
             >
@@ -961,17 +975,26 @@ const EmergencyContactsEdit = (data: any) => {
                         });
                     }}
                 />
-                <Button
-                    style={{
-                        backgroundColor: theme.colors.primary
-                    }}
-                    mode="elevated"
-                    textColor={theme.colors.background}
-                    onPress={() => saveData()}
-                >
-                    Save
-                </Button>
             </ScrollView>
+            <Button
+                style={{
+                    backgroundColor: theme.colors.primary,
+                    marginTop: 20
+                }}
+                mode="elevated"
+                textColor={theme.colors.background}
+                onPress={() => {
+                    //check to see if keyboard is open, if it is, close it
+                    const keyboardIsVisible = Keyboard.isVisible();
+                    if (keyboardIsVisible){
+                        Keyboard.dismiss();
+                    }
+
+                    saveData();
+                }}
+            >
+                Save
+            </Button>
         </View>
         
     );
@@ -1108,6 +1131,12 @@ const UniformDetailsEdit = (data: any) => {
                             return;
                         }
 
+                        //check to see if keyboard is open, if it is, close it
+                        const keyboardIsVisible = Keyboard.isVisible();
+                        if (keyboardIsVisible){
+                            Keyboard.dismiss();
+                        }
+
                         saveData()
                     }}
                 >
@@ -1121,6 +1150,23 @@ const UniformDetailsEdit = (data: any) => {
 const EditScreen = ({ route, navigation }: props) => {
     const EditPayload = route.params;
     let SelectedEditScreen;
+
+    const [keyboardIsShowing, setKeyboardIsShowing] = useState(false);
+
+    useEffect(() => {
+        const showSubscription = Keyboard.addListener('keyboardWillShow', () => {
+            setKeyboardIsShowing(true);
+        });
+
+        const hideSubscription = Keyboard.addListener('keyboardWillHide', () => {
+            setKeyboardIsShowing(false);
+        });
+
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        }
+    }, [])
 
     switch (EditPayload?.screenName) {
         case "MyDetails":
@@ -1143,7 +1189,7 @@ const EditScreen = ({ route, navigation }: props) => {
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : "height"}
-            keyboardVerticalOffset={100}
+            keyboardVerticalOffset={75}
             style={{flex:1}}
         >
             <View style={GlobalStyles.page}>
@@ -1153,8 +1199,8 @@ const EditScreen = ({ route, navigation }: props) => {
                         onPress={() => screenFlowModule.onGoBack()}
                     />
                 </View>
-
                 {SelectedEditScreen}
+                <View style={{marginBottom: keyboardIsShowing ? 0 : 30}}/>
             </View>
         </KeyboardAvoidingView>
     );

@@ -108,7 +108,7 @@ const ContactsCFUPhoneBook = () => {
                                                         <Divider/>
                                                         <List.Item onPress={() => {
                                                             onBrigadeSelect(suburb.SuburbName)
-                                                            }} right={() => <View style={{flexDirection: 'row', alignItems: 'center'}}><CustomText style={{marginRight: 20}}>{suburb.ContactsCount}</CustomText><LucideIcons.ChevronRight color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} title={suburb.SuburbName} />
+                                                            }} right={() => <View style={{flexDirection: 'row', alignItems: 'center'}}><CustomText style={{marginRight: 20}}>{suburb.ContactsCount}</CustomText><LucideIcons.ChevronRight color={theme.colors.primary}/></View>} style={{marginLeft: 20}} key={'item_' + ii} title={suburb.SuburbName} />
                                                         <Divider/>
                                                     </React.Fragment>
                                                 )

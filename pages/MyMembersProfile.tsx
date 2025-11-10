@@ -148,7 +148,7 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">My Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight />}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
                         />
                         <Divider />
                         <List.Item
@@ -163,7 +163,7 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Contact Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight />}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
                         />
                         <Divider />
                         <List.Item
@@ -182,7 +182,7 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Emergency Contacts</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight />}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
                         />
                     </List.Section>
                     <CustomText
@@ -249,7 +249,7 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Membership Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight />}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
                         />
                         <Divider />
                         <List.Item
@@ -269,7 +269,7 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Training History</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight />}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
                         />
                         <Divider />
                         <List.Item
@@ -286,7 +286,7 @@ const MyMembersProfile = ({ route }: props) => {
                                 )
                             }}
                             title={() => <CustomText variant="bodyLarge">My Unit</CustomText>}
-                            right={() => <LucideIcons.ChevronRight />}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
                         />
                     </List.Section>
                 </View>
