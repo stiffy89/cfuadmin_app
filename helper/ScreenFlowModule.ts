@@ -32,6 +32,10 @@ export class ScreenFlowModule {
                     });
                     break;
 
+                case 'FeedbackScreen' :
+                    this.navigator?.navigate('FeedbackScreen');
+                    break;
+                    
                 case 'SplashScreen':
                     this.navigator?.navigate('SplashScreen');
                     break;

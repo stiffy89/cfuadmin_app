@@ -26,8 +26,6 @@ export type AppContextType = {
     setAuthenticationMode: (val: AuthenticationMode) => void;
     cardModalVisible: boolean,
     setCardModalVisible: (val: boolean) => void,
-    feedbackModalVisible : boolean,
-    setFeedbackModalVisible: (val:boolean) => void
 };
 
 export type batchGETResponse = {
@@ -180,6 +178,7 @@ export type RootStackParamList = {
     TrainingCompletionByDrill: DrillData | undefined;
     TrainingCompletionByUser: MemberData | undefined;
     Users: undefined;
+    FeedbackScreen: Record<string, string> | undefined;
 }
 
 export type TabParamList = {
