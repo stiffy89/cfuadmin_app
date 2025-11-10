@@ -25,17 +25,10 @@ const ProfileHeader = () => {
     const membership = useDataContext().membershipDetails[0];
 
     return (
-        <View style={{ margin: 20 }}>
+        <View style={{ padding: 20, backgroundColor: theme.colors.background }}>
             <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
                 <Button
-                    onPress={() => {
-                        authModule.onClearAllDevTokens();
-                    }}
-                >
-                    Clear Tokens
-                </Button>
-                <Button
-                    mode="outlined"
+                    mode="contained"
                     onPress={async () => {
                         setCardModalVisible(true)
                         if (!dataHandlerModule.securityInstanceInitialised()) {
@@ -115,12 +108,12 @@ const ProfilePage = () => {
 
     const theme = useTheme();
 
-    async function getPageData (url : string, service : string, entity : string, callback : (val : any) => void) {
+    async function getPageData(url: string, service: string, entity: string, callback: (val: any) => void) {
         setShowDialog(true);
         setShowBusyIndicator(true);
         try {
             const responseData = await dataHandlerModule.batchGet(url, service, entity);
-            if (responseData.responseBody.error){
+            if (responseData.responseBody.error) {
                 setDialogMessage('There was an error reading ' + entity);
                 setShowBusyIndicator(false);
                 return;
@@ -130,19 +123,19 @@ const ProfilePage = () => {
             setShowDialog(false);
             callback(responseData.responseBody.d.results);
         }
-        catch (error){
+        catch (error) {
             console.log(error);
             throw error;
         }
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-            <ProfileHeader />
-            <ScrollView
-                style={{ flex: 1, backgroundColor: "#fff" }}
-                contentContainerStyle={{ paddingBottom: 0 }}
-            >
+        <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ paddingBottom: 50, backgroundColor: theme.colors.onPrimary }}
+        >
+            <View style={{ flex: 1, backgroundColor: theme.colors.onPrimary }}>
+                <ProfileHeader />
                 <View style={{ marginVertical: 40, paddingHorizontal: 20 }}>
                     <CustomText
                         variant="titleLargeBold"
@@ -166,9 +159,9 @@ const ProfilePage = () => {
                                 })
                             }}
                             title={() => (
-                                <CustomText variant="bodyLarge">My Details</CustomText>
+                                <CustomText variant="bodyLarge">Personal Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
                         <List.Item
@@ -183,7 +176,7 @@ const ProfilePage = () => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Contact Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
                         <List.Item
@@ -202,7 +195,7 @@ const ProfilePage = () => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Emergency Contacts</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                     </List.Section>
                     <CustomText
@@ -232,31 +225,31 @@ const ProfilePage = () => {
                                 try {
                                     const results = await Promise.allSettled(requests);
                                     const passed = results.every(x => x.status == 'fulfilled');
-                                    if (!passed){
+                                    if (!passed) {
                                         //TODO take them to a critical error page
                                         appContext.setDialogMessage('Critical error occurred during the initial GET');
                                         return;
                                     }
 
                                     const readErrors = results.filter(x => x.value.responseBody.error);
-                                    if (readErrors.length > 0){
+                                    if (readErrors.length > 0) {
                                         //TODO handle read errors somewhere
-			                            appContext.setDialogMessage('Read error on initialisation');
+                                        appContext.setDialogMessage('Read error on initialisation');
                                     }
 
                                     for (const x of results) {
-                                        switch (x.value.entityName){
+                                        switch (x.value.entityName) {
                                             case 'MembershipDetails':
-                                            dataContext.setMembershipDetails(x.value.responseBody.d.results);
-                                            break;
+                                                dataContext.setMembershipDetails(x.value.responseBody.d.results);
+                                                break;
 
                                             case 'MedalsAwards':
-                                            dataContext.setMedalsAwards(x.value.responseBody.d.results);
-                                            break;
+                                                dataContext.setMedalsAwards(x.value.responseBody.d.results);
+                                                break;
 
                                             case 'ObjectsOnLoan':
-                                            dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
-                                            break;
+                                                dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
+                                                break;
                                         }
                                     }
 
@@ -273,7 +266,7 @@ const ProfilePage = () => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Membership Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
                         <List.Item
@@ -281,8 +274,8 @@ const ProfilePage = () => {
                             onPress={() => {
                                 const pernr = dataContext.currentUser[0].Pernr;
                                 getPageData(
-                                    `TrainingHistoryDetails?$filter=Pernr%20eq%20%27${pernr}%27`,  
-                                    'Z_VOL_MEMBER_SRV', 
+                                    `TrainingHistoryDetails?$filter=Pernr%20eq%20%27${pernr}%27`,
+                                    'Z_VOL_MEMBER_SRV',
                                     'TrainingHistoryDetails',
                                     (data) => {
                                         dataContext.setTrainingHistoryDetails(data);
@@ -293,7 +286,7 @@ const ProfilePage = () => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Training History</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
                         <List.Item
@@ -310,12 +303,12 @@ const ProfilePage = () => {
                                 )
                             }}
                             title={() => <CustomText variant="bodyLarge">My Unit</CustomText>}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                     </List.Section>
                 </View>
-            </ScrollView>
-        </View>
+            </View>
+        </ScrollView>
     );
 };
 

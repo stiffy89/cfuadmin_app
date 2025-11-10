@@ -43,7 +43,7 @@ const MyDetails = ({route, navigation} : props) => {
         <View style={GlobalStyles.page}>
             <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>My Details</CustomText>
+                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Personal Details</CustomText>
             </View>
             <View style={{paddingHorizontal: 20}}>
                 <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Name' value={`${params.Vorna} ${params.Nachn}`}/>
