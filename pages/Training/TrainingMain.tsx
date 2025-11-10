@@ -13,7 +13,7 @@ import {
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useDataContext } from "../../helper/DataContext";
 import { useAppContext } from "../../helper/AppContext";
-import { ScreenFlowModule, screenFlowModule } from "../../helper/ScreenFlowModule";
+import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { dataHandlerModule } from "../../helper/DataHandlerModule";
 import * as LucideIcons from "lucide-react-native";
 import GlobalStyles from "../../style/GlobalStyles";
@@ -144,17 +144,18 @@ const ByTeamMember = () => {
     setMembersList(initialMembersList);
   }, [dataContext.memberDrillCompletion]);
 
-  const filterAndFormatList = (query: string) => {
+  const filterAndFormatList = (query: string, results?: any[]) => {
     let filteredList;
+    let dataList = results ? results : dataContext.memberDrillCompletion;
 
     if (query) {
-      filteredList = dataContext.memberDrillCompletion.filter((x) => {
+      filteredList = dataList.filter((x) => {
         if (x.FirstName.toLowerCase().includes(query.toLowerCase()) || x.LastName.toLowerCase().includes(query.toLowerCase())) {
           return x;
         }
       });
     } else {
-      filteredList = dataContext.memberDrillCompletion;
+      filteredList = dataList;
     }
 
     const sortedList = [...filteredList].sort((a, b) =>
@@ -190,7 +191,7 @@ const ByTeamMember = () => {
         style={{
           marginVertical: 20,
           marginHorizontal: 20,
-          backgroundColor: theme.colors.surfaceDisabled,
+          backgroundColor: theme.colors.surfaceVariant,
         }}
         placeholder="Search Members"
         value={searchValue}
@@ -253,14 +254,14 @@ const ByTeamMember = () => {
                               }
 
                               const memberTrainingDataObj = {
-                                memberData : member,
-                                brigades : [],
-                                volunteerStatuses : [],
-                                trainingDetails : []
+                                memberData: member,
+                                brigades: [],
+                                volunteerStatuses: [],
+                                trainingDetails: []
                               }
 
-                              for (const x of results){
-                                switch (x.value.entityName){
+                              for (const x of results) {
+                                switch (x.value.entityName) {
                                   case 'Brigades':
                                     memberTrainingDataObj.brigades = x.value.responseBody.d.results;
                                     break;
@@ -327,6 +328,8 @@ const TrainingMain = () => {
   const Tab = createMaterialTopTabNavigator();
   const theme = useTheme();
   const dataContext = useDataContext();
+  const appContext = useAppContext();
+
   const orgUnitList = dataContext.rootOrgUnits;
 
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
@@ -350,6 +353,9 @@ const TrainingMain = () => {
         <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
           Training
         </CustomText>
+      </View>
+      <View style={{marginLeft: 20}}>
+        <CustomText variant='bodyLargeBold'>{dataContext.trainingSelectedOrgUnit.Stext}</CustomText>
       </View>
       <View style={{ marginBottom: 20 }}>
         {orgUnitList.length === 1 && (
@@ -397,14 +403,52 @@ const TrainingMain = () => {
               >
                 {orgUnitList.map((x, i) => {
                   return (
+                    <>
                     <List.Item
+                      style={{
+                        backgroundColor : (x.Plans === dataContext.trainingSelectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                      }}
                       key={i}
                       title={x.Short}
-                      onPress={() => {
+                      onPress={async () => {
                         dataContext.setTrainingSelectedOrgUnit(x);
                         setShowDropDown(!showDropDown);
+
+                        appContext.setShowBusyIndicator(true);
+                        appContext.setShowDialog(true);
+
+                        //do a read on both memberdrill details and drill completion
+                        const plans = x.Plans;
+
+                        try {
+                          const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
+                          const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
+                          appContext.setShowBusyIndicator(false);
+
+                          if (memberDrillDownCompletion.responseBody.error || drillDetails.responseBody.error) {
+                            let sMessage = '';
+                            memberDrillDownCompletion.responseBody.error ? sMessage += (memberDrillDownCompletion.responseBody.error.message.value + `/n`) : '';
+                            drillDetails.responseBody.error ? sMessage += (drillDetails.responseBody.error.message.value + `/n`) : '';
+
+                            appContext.setDialogMessage(sMessage);
+                            return;
+                          }
+
+                          dataContext.setDrillDetails(drillDetails.responseBody.d.results);
+                          dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
+                          appContext.setShowDialog(false);
+                        }
+                        catch (error) {
+                          //TODO handle error
+                          console.log(error);
+                          appContext.setShowBusyIndicator(false);
+                          appContext.setShowDialog(false);
+                        }
+
                       }}
                     />
+                    <Divider key={'divider' + i}/>
+                    </>
                   );
                 })}
               </List.Section>

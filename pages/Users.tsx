@@ -127,7 +127,7 @@ const Users = () => {
 							const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
 							const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
 							const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
-							
+
 							dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results);
 							dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
 							dataContext.setDrillDetails(drillDetails.responseBody.d.results)
@@ -206,6 +206,21 @@ const Users = () => {
                 }}
             >
                 Member of 10 units - BRO823198
+            </Button>
+			<Button 
+                style={{marginBottom: 20}} 
+                mode='outlined'
+                onPress={async () => {
+                    await AsyncStorage.removeItem('localAuthToken');
+                    const username = 'CUR822107';
+                    const password = 'Wary-hess-CARE-1!';
+                    const token = btoa(`${username}:${password}`);
+                    await AsyncStorage.setItem('localAuthToken', token)
+                    screenFlowModule.onNavigateToScreen('SplashScreen');
+                    onGetInitialLoad();
+                }}
+            >
+                Multi-unit but TC for only 1 unit - CUR822107
             </Button>
         </View>
     )
