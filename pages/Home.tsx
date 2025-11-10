@@ -1,10 +1,8 @@
 import { Button, TextInput, Surface, Text } from 'react-native-paper';
-import { ScrollView, Image } from 'react-native';
+import { ScrollView, Image, Linking } from 'react-native';
 import CustomText from '../assets/CustomText';
 import { View, Pressable } from 'react-native';
 import GlobalStyles from '../style/GlobalStyles';
-
-import * as Linking from "expo-linking"
 
 import { useSecurityContext } from '../helper/SecurityContext';
 import { useAppContext } from '../helper/AppContext';
