@@ -151,19 +151,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let mobNumber= `tel:${params.Telnr}`;
-                                    Linking.canOpenURL(mobNumber)
-                                        .then((supported) => {
-                                            if (!supported) {
-                                                //TODO HANDLE CANNOT HOME
-                                                console.log('cannot handle email send')
-                                            } else {
-                                                return Linking.openURL(mobNumber);
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            //TODO HANDLE CANNOT HOME
-                                            console.log(error)
-                                        })
+                                    Linking.openURL(mobNumber);
                                 }}
                                 style={{
                                     position: "absolute",
@@ -216,19 +204,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let homeNumber = `tel:${params.Zznum01}`;
-                                    Linking.canOpenURL(homeNumber)
-                                        .then((supported) => {
-                                            if (!supported) {
-                                                //TODO HANDLE CANNOT HOME
-                                                console.log('cannot handle email send')
-                                            } else {
-                                                return Linking.openURL(homeNumber);
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            //TODO HANDLE CANNOT HOME
-                                            console.log(error)
-                                        })
+                                    Linking.openURL(homeNumber);
                                 }}
                                 style={{
                                     position: "absolute",
@@ -281,19 +257,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let workNumber = `tel:${params.Zznum02}`;
-                                    Linking.canOpenURL(workNumber)
-                                        .then((supported) => {
-                                            if (!supported) {
-                                                //TODO HANDLE CANNOT WORK NUMBER
-                                                console.log('cannot handle email send')
-                                            } else {
-                                                return Linking.openURL(workNumber);
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            //TODO HANDLE CANNOT EMAIL
-                                            console.log(error)
-                                        })
+                                    Linking.openURL(workNumber);
                                 }}
                                 style={{
                                     position: "absolute",
@@ -353,19 +317,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let emailAddress = `mailto:${params.Email}`;
-                                    Linking.canOpenURL(emailAddress)
-                                        .then((supported) => {
-                                            if (!supported) {
-                                                //TODO HANDLE CANNOT EMAIL
-                                                console.log('cannot handle email send')
-                                            } else {
-                                                return Linking.openURL(emailAddress);
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            //TODO HANDLE CANNOT EMAIL
-                                            console.log(error)
-                                        })
+                                    Linking.openURL(emailAddress);
                                 }}
                                 style={{
                                     position: "absolute",
