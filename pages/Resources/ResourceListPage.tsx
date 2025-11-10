@@ -5,12 +5,27 @@ import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
 
 import { StackScreenProps} from "@react-navigation/stack";
-import { DocumentResources, ResourceStackParamList} from "../../types/AppTypes";
+import { ResourceFile, ResourceFolder, ResourceStackParamList} from "../../types/AppTypes";
 
 import {dataHandlerModule} from "../../helper/DataHandlerModule"
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
 
+
+const loadResourceFolderList = async (Path: string) => {
+    const resourceList = await dataHandlerModule.getResourceFolderList(Path)
+
+    const responseText = resourceList.data;
+    const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];
+    const parts = responseText.split(boundary);
+    const jsonPart = parts.find((p: string | string[]) =>
+        p.includes("application/json")
+      );
+    const jsonBody = jsonPart.split("\r\n\r\n").pop();
+    const data = JSON.parse(jsonBody);
+    
+    return data.d.results;
+};
 
 const loadResourceList = async (Path: string) => {
     const resourceList = await dataHandlerModule.getResourceList(Path)
@@ -34,21 +49,41 @@ type props = StackScreenProps<
 
 const ResourceListPage = ({ route, navigation }: props) => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();
-  const [resourceList, setResourceList] = useState<DocumentResources[]>([]);
+  const [folderList, setFolderList] = useState<ResourceFolder[]>([])
+  const [fileList, setFileList] = useState<ResourceFile[]>([]);
+  const [isLoading, setIsLoading] = useState(true)
 
   const theme = useTheme();
   const params = route.params ?? {};
 
   useEffect(() => {
-    loadResourceList(params.Path).then((res) => {
-      setResourceList(res)
+    Promise.all([loadResourceFolderList(params.Path), loadResourceList(params.Path)]).then((values) => {
+      const folders = values[0]
+      const files = values[1]
+
+      //parent folder (current folder) is part of list of folders, so remove that
+      const filteredFolders = folders.filter((folder : ResourceFolder) => folder.AccessRid != params.Path)
+
+      setFolderList(filteredFolders)
+      setFileList(files)
 
       setShowBusyIndicator(false);
       setShowDialog(false);
-    });
+
+      setIsLoading(false)
+    })
   }, []);
 
-  const navigate = (resource: any) => {
+  const navigateToFolder = (folder: ResourceFolder) => {
+    setShowBusyIndicator(true);
+    setShowDialog(true);
+    
+    setTimeout(() => {  
+      navigation.push("ResourceList", {ParentRid: folder.DisplayName, Path: folder.AccessRid});
+    }, 500);
+  }
+
+  const navigateToFile = (resource: ResourceFile) => {
     setShowBusyIndicator(true);
     setShowDialog(true);
     
@@ -61,41 +96,53 @@ const ResourceListPage = ({ route, navigation }: props) => {
     <View style={{ flex: 1, backgroundColor: "#fff", }}>
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
         <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-        <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
+        <CustomText style={{marginLeft: 20, marginRight: 80}} numberOfLines={1} ellipsizeMode="tail" variant='titleLargeBold'>{params.ParentRid}</CustomText>
       </View>
       <ScrollView
         style={{ paddingBottom: 40, backgroundColor: theme.colors.background }}
       >
-        {resourceList && (
-          <List.Section>
-            {resourceList.map((resource: any, i) => {
+        {folderList && (
+          <>
+            {folderList.map((folder: ResourceFolder, i) => {
               return (
-                <React.Fragment key={`resource_${i}`}>
+                <React.Fragment key={`folder_${i}`}>
                   <Divider />
-                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, {flexDirection: "row", justifyContent: "space-between", alignItems:"center", marginHorizontal: 20, paddingVertical: 10}]} onPress={() => navigate(resource)}>
+                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexDirection: "row", gap: 15, justifyContent: "space-between", alignItems:"center", marginHorizontal: 20, paddingVertical: 10}]} onPress={() => navigateToFolder(folder)}>
                     <View
                         style={{
                           padding: 5,
                         }}
                       >
-                        {resource.FileType.includes("pdf") ? (
-                          <LucideIcons.File color={theme.colors.outline} size={30}/>
-                        ) : (
-                          <LucideIcons.CodeXml color={theme.colors.outline} size={30}/>
-                        )}
-                      </View>
-                    <CustomText style={{width: "75%", flexWrap: "wrap"}}variant='bodyLarge'>{resource.DisplayName}</CustomText>
+                      <LucideIcons.Folder color={theme.colors.primary} size={30}/>
+                    </View>
+                    <CustomText style={{flex: 1, flexWrap: "wrap"}}variant='bodyLarge'>{folder.DisplayName}</CustomText>
                     <LucideIcons.ChevronRight color={theme.colors.primary} />
                   </Pressable>
                   <Divider />
                 </React.Fragment>
               );
             })}
-          </List.Section>
+          </>
         )}
-        {resourceList && resourceList.length < 1 && (
-          <View style={{ paddingHorizontal: 20 }}>
-            <CustomText variant="bodyMedium" style={{ marginVertical: 15 }}>
+        {fileList && (
+          <>
+            {fileList.map((file: ResourceFile, i) => {
+              return (
+                <React.Fragment key={`file_${i}`}>
+                  <Divider />
+                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexDirection: "row", gap: 15, justifyContent: "space-between", alignItems:"center", marginHorizontal: 25, paddingVertical: 10, height: 65}]} onPress={() => navigateToFile(file)}>
+                    <CustomText style={{flex: 1, flexWrap: "wrap"}}variant='bodyLarge'>{file.DisplayName}</CustomText>
+                    <CustomText style={{flexWrap: "wrap"}}variant='bodySmall'>{file.SizeText}</CustomText>
+                  </Pressable>
+                  <Divider />
+                </React.Fragment>
+              );
+            })}
+          </>
+        )}
+        {!isLoading && (folderList.length < 1 && fileList.length < 1) && (
+          <View style={{ margin: "auto" }}>
+            <CustomText variant="bodyLarge" style={{ marginVertical: 15 }}>
               No Resources found.
             </CustomText>
           </View>

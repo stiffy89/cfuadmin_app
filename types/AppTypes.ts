@@ -222,7 +222,22 @@ export type SkillsMaintenanceStackParamList = {
     DrillCardPage: Record<string, string> | undefined;
 }
 
-export type DocumentResources = {
+export type ResourceFolder = {
+    __metadata: {
+        id: string,
+        uri: string,
+        type: string
+    },
+    AccessRid: string,
+    ContainsFolders: boolean,
+    IsCollation: boolean,
+    DisplayName: string,
+    ParentRid: string,
+    Ui5Icon: string,
+    FileCount: number
+}
+
+export type ResourceFile = {
     __metadata: {
         id: string,
         uri: string,

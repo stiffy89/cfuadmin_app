@@ -74,7 +74,7 @@ const ResourceCategoriesPage = () => {
             return (
               <Pressable
                 key={index}
-                style={({ pressed }) => [pressed ? {opacity: 0.3} : {opacity: 1}, { flexGrow: 1, maxWidth:maxWidth, alignItems: "center", height: 120,  aspectRatio: 1, marginBottom: 50 }]}
+                style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, { flexGrow: 1, maxWidth:maxWidth, alignItems: "center", height: 120,  aspectRatio: 1, marginBottom: 50 }]}
                 onPress={() => navigate(category)}
                 onLayout={(e) => {
                     if(index == 0){
