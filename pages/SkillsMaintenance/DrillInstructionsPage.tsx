@@ -4,7 +4,7 @@ import { useTheme, IconButton} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
 
-import { File, Paths } from 'expo-file-system';
+import { File, Paths, Directory } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 
 import { StackScreenProps } from "@react-navigation/stack";
@@ -24,10 +24,32 @@ const loadInstructions = async (Path: string, FileType: string) => {
   return response.data;
 };
 
-const storeInstructions = async (contentString: string, filename:string) => {
+/*const storeInstructions = async (contentString: string, filename:string) => {
   try {
     const src = new File(Paths.document, filename);
     const bytes = Buffer.from(contentString, "base64")
+    src.write(bytes)
+    return src.uri 
+  } catch (error) {
+    console.error('Error saving file from Base64:', error);
+  }
+}*/
+
+const base64ToUint8Array = (base64: string) => {
+        const binaryStr = atob(base64);
+        const len = binaryStr.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryStr.charCodeAt(i);
+        }
+        return bytes;
+    };
+
+const storeInstructions = async (contentString: string, filename:string) => {
+  try {
+    //console.log('Paths cache', Paths.cache)
+    const src = new File(Paths.cache, filename);
+    const bytes = base64ToUint8Array(contentString);
     src.write(bytes)
     return src.uri 
   } catch (error) {
@@ -52,7 +74,7 @@ const DrillInstructionsPage = ({ route, navigation }: props) => {
     const fileType = "application/pdf";
 
     useEffect(() => {
-        const file = new File(Paths.document, displayName);
+        const file = new File(Paths.cache, displayName);
 
         if(file.exists){
             setLocalFilePath(file.uri)
