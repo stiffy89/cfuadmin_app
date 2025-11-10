@@ -25,15 +25,24 @@ const loadResource = async (Path: string, FileType: string) => {
 
 const storeResource = async (contentString: string, filename:string, fileType: string) => {
   try {
-    const src = new File(Paths.document, filename);
-    const bytes = fileType == "application/pdf" ? Buffer.from(contentString, "base64") : new TextEncoder().encode(contentString)
+    const src = new File(Paths.cache, filename);
+    const bytes = fileType == "application/pdf" ? base64ToUint8Array(contentString) : new TextEncoder().encode(contentString)
     src.write(bytes)
-    
-    // console.log('File saved successfully:', src);
+    return src.uri
   } catch (error) {
     console.error('Error saving file from Base64:', error);
   }
 }
+
+const base64ToUint8Array = (base64: string) => {
+    const binaryStr = atob(base64);
+    const len = binaryStr.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binaryStr.charCodeAt(i);
+    }
+    return bytes;
+};
 
 type props = StackScreenProps<ResourceStackParamList, "Resource">;
 
@@ -50,7 +59,7 @@ const ResourcePage = ({ route, navigation }: props) => {
   const fileType = params.FileType;
 
   useEffect(() => {
-    const file = new File(Paths.document, displayName);
+    const file = new File(Paths.cache, displayName);
 
     if(file.exists){
       if(fileType == "application/pdf"){
