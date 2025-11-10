@@ -89,7 +89,7 @@ const ContactsMyUnit = () => {
                                                             }
                                                             
                                                             screenFlowModule.onNavigateToScreen('MyUnitContactDetail', contactInfo)
-                                                            }} right={() => <LucideIcons.ChevronRight color={theme.colors.outline}/>} left={() => <View style={{backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50}}><LucideIcons.User color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} title={`${contact.Vorna} ${contact.Nachn}`}/>
+                                                            }} right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} left={() => <View style={{backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50}}><LucideIcons.User color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} title={`${contact.Vorna} ${contact.Nachn}`}/>
                                                         <Divider/>
                                                     </React.Fragment>
                                                 )

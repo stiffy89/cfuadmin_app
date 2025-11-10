@@ -192,6 +192,21 @@ const Users = () => {
             >
                 Secondary contact - CAM823299
             </Button>
+			<Button 
+                style={{marginBottom: 20}} 
+                mode='outlined'
+                onPress={async () => {
+                    await AsyncStorage.removeItem('localAuthToken');
+                    const username = 'BRO823198';
+                    const password = 'Wary-hess-CARE-1!';
+                    const token = btoa(`${username}:${password}`);
+                    await AsyncStorage.setItem('localAuthToken', token)
+                    screenFlowModule.onNavigateToScreen('SplashScreen');
+                    onGetInitialLoad();
+                }}
+            >
+                Member of 10 units - BRO823198
+            </Button>
         </View>
     )
 }

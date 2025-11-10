@@ -151,7 +151,7 @@ const MyMembers = () => {
 
                                                     try {
                                                         const membershipDetails = await dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails');
-                                                        const employeeDetails = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_ESS_MSS_SRV', 'Users');
+                                                        const employeeDetails = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails');
 
                                                         if (!membershipDetails.responseBody.error){
                                                             dataContext.setMyMembersMembershipDetails(membershipDetails.responseBody.d.results);
@@ -192,7 +192,7 @@ const MyMembers = () => {
                                                 }}
                                                 right={() => (
                                                     <LucideIcons.ChevronRight
-                                                        color={theme.colors.outline}
+                                                        color={theme.colors.primary}
                                                     />
                                                 )}
                                                 left={() => (

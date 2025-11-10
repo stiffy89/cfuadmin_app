@@ -29,7 +29,7 @@ const storeInstructions = async (contentString: string, filename:string) => {
     const src = new File(Paths.document, filename);
     const bytes = Buffer.from(contentString, "base64")
     src.write(bytes)
-    return src.uri
+    return src.uri 
   } catch (error) {
     console.error('Error saving file from Base64:', error);
   }

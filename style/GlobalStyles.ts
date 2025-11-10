@@ -43,9 +43,7 @@ const GlobalStyles = StyleSheet.create({
         backgroundColor: '#efefef'
     },
     floatingButtonBottom: {
-        position: 'absolute',
-        bottom: 50,
-        left: 20,
+        position: 'relative',
         width: '100%'
     }
 });

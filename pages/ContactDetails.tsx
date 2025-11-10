@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { View } from "react-native";
+import { View, Pressable, Linking } from "react-native";
 import { useTheme, IconButton, TextInput } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import { screenFlowModule, ScreenFlowModule } from "../helper/ScreenFlowModule";
@@ -111,145 +111,225 @@ const ContactDetails = ({ route, navigation }: props) => {
             </View>
             <View style={{ paddingHorizontal: 20 }}>
                 <CustomText variant="bodyLargeBold">Phone Numbers</CustomText>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    editable={false}
-                    mode="flat"
-                    underlineColor="transparent"
-                    label="Primary Mobile"
-                    value={params.Telnr}
-                    right={
-                        <TextInput.Icon
-                            icon={() => (
-                                <LucideIcons.Pencil color={theme.colors.primary} size={20} />
-                            )}
-                            onPress={async () => {
-                                setBusyDialog(true);
-                                try {
-                                    const pernr = params.Pernr;
-                                    getData(
-                                        `EmployeePhoneNumbers?$filter=Pernr%20eq%20%27${pernr}%27`,
-                                        "Z_ESS_MSS_SRV",
-                                        "EmployeePhoneNumbers",
-                                        function (response) {
-                                            const phoneNumbers = response.responseBody.d.results[0];
-                                            EditData({ primarymobile: phoneNumbers });
-                                            setBusyDialog(false);
-                                        }
-                                    );
-                                } catch (error) {
-                                    setErrorDialog("error with getting phone numbers");
-                                }
-                            }}
-                        />
+                <View>
+                    <TextInput
+                        style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                        editable={false}
+                        mode="flat"
+                        underlineColor="transparent"
+                        label="Primary Mobile"
+                        value={params.Telnr}
+                        textColor={(dataContext.currentProfile == 'MyMembers') ? theme.colors.secondary : theme.colors.onBackground}
+                        right={
+                            <TextInput.Icon
+                                icon={() => (
+                                    <LucideIcons.Pencil color={theme.colors.primary} size={20} />
+                                )}
+                                onPress={async () => {
+                                    setBusyDialog(true);
+                                    try {
+                                        const pernr = params.Pernr;
+                                        getData(
+                                            `EmployeePhoneNumbers?$filter=Pernr%20eq%20%27${pernr}%27`,
+                                            "Z_ESS_MSS_SRV",
+                                            "EmployeePhoneNumbers",
+                                            function (response) {
+                                                const phoneNumbers = response.responseBody.d.results[0];
+                                                EditData({ primarymobile: phoneNumbers });
+                                                setBusyDialog(false);
+                                            }
+                                        );
+                                    } catch (error) {
+                                        setErrorDialog("error with getting phone numbers");
+                                    }
+                                }}
+                            />
+                        }
+                    />
+                    {
+                        (dataContext.currentProfile == 'MyMembers') && (
+                            <Pressable
+                                onPress={() => {
+                                    let mobNumber= `tel:${params.Telnr}`;
+                                    Linking.openURL(mobNumber);
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    left: 0,
+                                    right: 60, // leave space for the icon so it remains clickable
+                                    top: 20,
+                                    bottom: 0,
+                                }}
+                            />
+                        )
                     }
-                />
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    editable={false}
-                    mode="flat"
-                    underlineColor="transparent"
-                    label="Home"
-                    value={params.Zznum01}
-                    right={
-                        <TextInput.Icon
-                            icon={() => (
-                                <LucideIcons.Pencil color={theme.colors.primary} size={20} />
-                            )}
-                            onPress={async () => {
-                                setBusyDialog(true);
-                                try {
-                                    const pernr = params.Pernr;
-                                    getData(
-                                        `EmployeePhoneNumbers?$filter=Pernr%20eq%20%27${pernr}%27`,
-                                        "Z_ESS_MSS_SRV",
-                                        "EmployeePhoneNumbers",
-                                        function (response) {
-                                            const phoneNumbers = response.responseBody.d.results[0];
-                                            EditData({ home: phoneNumbers });
-                                            setBusyDialog(false);
-                                        }
-                                    );
-                                } catch (error) {
-                                    setErrorDialog("error with getting phone numbers");
-                                }
-                            }}
-                        />
+                </View>
+                <View>
+                    <TextInput
+                        style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                        editable={false}
+                        mode="flat"
+                        underlineColor="transparent"
+                        label="Home"
+                        value={params.Zznum01}
+                        textColor={(dataContext.currentProfile == 'MyMembers') ? theme.colors.secondary : theme.colors.onBackground}
+                        right={
+                            <TextInput.Icon
+                                icon={() => (
+                                    <LucideIcons.Pencil color={theme.colors.primary} size={20} />
+                                )}
+                                onPress={async () => {
+                                    setBusyDialog(true);
+                                    try {
+                                        const pernr = params.Pernr;
+                                        getData(
+                                            `EmployeePhoneNumbers?$filter=Pernr%20eq%20%27${pernr}%27`,
+                                            "Z_ESS_MSS_SRV",
+                                            "EmployeePhoneNumbers",
+                                            function (response) {
+                                                const phoneNumbers = response.responseBody.d.results[0];
+                                                EditData({ home: phoneNumbers });
+                                                setBusyDialog(false);
+                                            }
+                                        );
+                                    } catch (error) {
+                                        setErrorDialog("error with getting phone numbers");
+                                    }
+                                }}
+                            />
+                        }
+                    />
+                    {
+                        (dataContext.currentProfile == 'MyMembers') && (
+                            <Pressable
+                                onPress={() => {
+                                    let homeNumber = `tel:${params.Zznum01}`;
+                                    Linking.openURL(homeNumber);
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    left: 0,
+                                    right: 60, // leave space for the icon so it remains clickable
+                                    top: 20,
+                                    bottom: 0,
+                                }}
+                            />
+                        )
                     }
-                />
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    editable={false}
-                    mode="flat"
-                    underlineColor="transparent"
-                    label="Work"
-                    value={params.Zznum02}
-                    right={
-                        <TextInput.Icon
-                            icon={() => (
-                                <LucideIcons.Pencil color={theme.colors.primary} size={20} />
-                            )}
-                            onPress={async () => {
-                                setBusyDialog(true);
-                                try {
-                                    const pernr = params.Pernr;
-                                    getData(
-                                        `EmployeePhoneNumbers?$filter=Pernr%20eq%20%27${pernr}%27`,
-                                        "Z_ESS_MSS_SRV",
-                                        "EmployeePhoneNumbers",
-                                        function (response) {
-                                            const phoneNumbers = response.responseBody.d.results[0];
-                                            EditData({ work: phoneNumbers });
-                                            setBusyDialog(false);
-                                        }
-                                    );
-                                } catch (error) {
-                                    setErrorDialog("error with getting phone numbers");
-                                }
-                            }}
-                        />
+                </View>
+                <View>
+                    <TextInput
+                        style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                        editable={false}
+                        mode="flat"
+                        underlineColor="transparent"
+                        label="Work"
+                        value={params.Zznum02}
+                        textColor={(dataContext.currentProfile == 'MyMembers') ? theme.colors.secondary : theme.colors.onBackground}
+                        right={
+                            <TextInput.Icon
+                                icon={() => (
+                                    <LucideIcons.Pencil color={theme.colors.primary} size={20} />
+                                )}
+                                onPress={async () => {
+                                    setBusyDialog(true);
+                                    try {
+                                        const pernr = params.Pernr;
+                                        getData(
+                                            `EmployeePhoneNumbers?$filter=Pernr%20eq%20%27${pernr}%27`,
+                                            "Z_ESS_MSS_SRV",
+                                            "EmployeePhoneNumbers",
+                                            function (response) {
+                                                const phoneNumbers = response.responseBody.d.results[0];
+                                                EditData({ work: phoneNumbers });
+                                                setBusyDialog(false);
+                                            }
+                                        );
+                                    } catch (error) {
+                                        setErrorDialog("error with getting phone numbers");
+                                    }
+                                }}
+                            />
+                        }
+                    />
+                    {
+                        (dataContext.currentProfile == 'MyMembers') && (
+                            <Pressable
+                                onPress={() => {
+                                    let workNumber = `tel:${params.Zznum02}`;
+                                    Linking.openURL(workNumber);
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    left: 0,
+                                    right: 60, // leave space for the icon so it remains clickable
+                                    top: 20,
+                                    bottom: 0,
+                                }}
+                            />
+                        )
                     }
-                />
+                </View>
             </View>
             <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
                 <CustomText variant="bodyLargeBold">Email</CustomText>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    editable={false}
-                    mode="flat"
-                    underlineColor="transparent"
-                    label="Email"
-                    value={params.Email}
-                    right={
-                        <TextInput.Icon
-                            icon={() => (
-                                <LucideIcons.Pencil color={theme.colors.primary} size={20} />
-                            )}
-                            onPress={async () => {
-                                setBusyDialog(true);
-                                try {
-                                    const pernr = params.Pernr;
-                                    getData(
-                                        `EmployeeEmails?$filter=Pernr%20eq%20%27${pernr}%27`,
-                                        "Z_ESS_MSS_SRV",
-                                        "EmployeeEmails",
-                                        function (response) {
-                                            const emails = response.responseBody.d.results;
-                                            //look for subty 9040
-                                            const email = response.responseBody.d.results.filter(
-                                                (x: any) => x.Subty === "9040"
-                                            )[0];
-                                            EditData({ email: email });
-                                            setBusyDialog(false);
-                                        }
-                                    );
-                                } catch (error) {
-                                    setErrorDialog("error with getting phone numbers");
-                                }
-                            }}
-                        />
+                <View>
+                    <TextInput
+                        style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                        editable={false}
+                        mode="flat"
+                        underlineColor="transparent"
+                        label="Email"
+                        value={params.Email}
+                        textColor={(dataContext.currentProfile == 'MyMembers') ? theme.colors.secondary : theme.colors.onBackground}
+                        right={
+                            <TextInput.Icon
+                                icon={() => (
+                                    <LucideIcons.Pencil color={theme.colors.primary} size={20} />
+                                )}
+                                onPress={async () => {
+                                    setBusyDialog(true);
+                                    try {
+                                        const pernr = params.Pernr;
+                                        getData(
+                                            `EmployeeEmails?$filter=Pernr%20eq%20%27${pernr}%27`,
+                                            "Z_ESS_MSS_SRV",
+                                            "EmployeeEmails",
+                                            function (response) {
+                                                const emails = response.responseBody.d.results;
+                                                //look for subty 9040
+                                                const email = response.responseBody.d.results.filter(
+                                                    (x: any) => x.Subty === "9040"
+                                                )[0];
+                                                EditData({ email: email });
+                                                setBusyDialog(false);
+                                            }
+                                        );
+                                    } catch (error) {
+                                        setErrorDialog("error with getting phone numbers");
+                                    }
+                                }}
+                            />
+                        }
+                    />
+                    {
+                        (dataContext.currentProfile == 'MyMembers') && (
+                            <Pressable
+                                onPress={() => {
+                                    let emailAddress = `mailto:${params.Email}`;
+                                    Linking.openURL(emailAddress);
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    left: 0,
+                                    right: 60, // leave space for the icon so it remains clickable
+                                    top: 20,
+                                    bottom: 0,
+                                }}
+                            />
+                        )
                     }
-                />
+                </View>
             </View>
             <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
                 <CustomText variant="bodyLargeBold">Addresses</CustomText>

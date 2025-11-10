@@ -99,7 +99,7 @@ const CfuPhonebookContactsList = ({route} : props) => {
                                                             onPress={() => {
                                                                 screenFlowModule.onNavigateToScreen('CfuPhonebookContactDetail', contact)
                                                             }} 
-                                                            right={() => <LucideIcons.ChevronRight color={theme.colors.outline}/>} 
+                                                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} 
                                                             left={() => <View style={{backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50}}><LucideIcons.User color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} 
                                                             title={`${contact.FirstName} ${contact.Surname}`}
                                                             description={contact.Role}

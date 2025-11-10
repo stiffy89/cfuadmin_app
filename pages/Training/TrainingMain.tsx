@@ -82,7 +82,7 @@ const ByDrill = () => {
                     }
                   }}
                   right={() => (
-                    <LucideIcons.ChevronRight color={theme.colors.outline} />
+                    <LucideIcons.ChevronRight color={theme.colors.primary} />
                   )}
                   left={() => {
                     let backgroundColor;
@@ -287,7 +287,7 @@ const ByTeamMember = () => {
                           }}
                           right={() => (
                             <LucideIcons.ChevronRight
-                              color={theme.colors.outline}
+                              color={theme.colors.primary}
                             />
                           )}
                           left={() => (

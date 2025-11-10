@@ -57,7 +57,7 @@ const TrainingHistory = ({ route, navigation }: props) => {
                                 <DataTable.Cell style={{ flex: 3.5, marginRight: 10 }}><CustomText style={{ flexWrap: 'wrap' }}>{item.QualificationName}</CustomText></DataTable.Cell>
                                 <DataTable.Cell style={{ flex: 2 }}>{genericFormatter.formatFromEdmDate(item.ValidFrom)}</DataTable.Cell>
                                 <DataTable.Cell style={{ flex: 2 }}>{genericFormatter.formatFromEdmDate(item.ValidTo)}</DataTable.Cell>
-                                <DataTable.Cell style={{ flex: 0.5 }}><LucideIcons.ChevronRight /></DataTable.Cell>
+                                <DataTable.Cell style={{ flex: 0.5 }}><LucideIcons.ChevronRight color={theme.colors.primary}/></DataTable.Cell>
                             </DataTable.Row>
                         )
                     })

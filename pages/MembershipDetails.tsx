@@ -53,7 +53,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
                                         style={{ height: 80, justifyContent: 'center' }} 
                                         onPress={() => {screenFlowModule.onNavigateToScreen('UniformDetailsScreen', item)}} 
                                         title={`${item.ObjectTypesStext} - ${item.Anzkl} ${item.UnitsEtext}` } 
-                                        right={() => <LucideIcons.ChevronRight />} 
+                                        right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} 
                                     />
                                 )
                             })
@@ -71,7 +71,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
                                         onPress={() => {screenFlowModule.onNavigateToScreen('MedalsAndAwardsScreen', item)}} 
                                         titleNumberOfLines={2}
                                         title={item.Awdtx} 
-                                        right={() => <LucideIcons.ChevronRight />} 
+                                        right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} 
                                     />
                                 )
                             })
