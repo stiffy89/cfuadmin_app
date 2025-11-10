@@ -24,17 +24,6 @@ const loadInstructions = async (Path: string, FileType: string) => {
   return response.data;
 };
 
-/*const storeInstructions = async (contentString: string, filename:string) => {
-  try {
-    const src = new File(Paths.document, filename);
-    const bytes = Buffer.from(contentString, "base64")
-    src.write(bytes)
-    return src.uri 
-  } catch (error) {
-    console.error('Error saving file from Base64:', error);
-  }
-}*/
-
 const base64ToUint8Array = (base64: string) => {
         const binaryStr = atob(base64);
         const len = binaryStr.length;
