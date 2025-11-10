@@ -85,7 +85,7 @@ const ResourceListPage = ({ route, navigation }: props) => {
                         )}
                       </View>
                     <CustomText style={{width: "75%", flexWrap: "wrap"}}variant='bodyLarge'>{resource.DisplayName}</CustomText>
-                    <LucideIcons.ChevronRight color={theme.colors.outline} />
+                    <LucideIcons.ChevronRight color={theme.colors.primary} />
                   </Pressable>
                   <Divider />
                 </React.Fragment>

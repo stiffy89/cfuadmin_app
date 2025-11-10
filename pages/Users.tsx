@@ -153,7 +153,7 @@ const Users = () => {
                 onPress={async () => {
                     await AsyncStorage.removeItem('localAuthToken');
                     const username = 'HOL825004';
-                    const password = 'flanJIG1!';
+                    const password = 'Wary-hess-CARE-1!';
                     const token = btoa(`${username}:${password}`);
                     await AsyncStorage.setItem('localAuthToken', token)
                     screenFlowModule.onNavigateToScreen('SplashScreen');
@@ -168,7 +168,7 @@ const Users = () => {
                 onPress={async () => {
                     await AsyncStorage.removeItem('localAuthToken');
                     const username = 'WAK816316';
-                    const password = 'BUTTERbar1!';
+                    const password = 'Wary-hess-CARE-1!';
                     const token = btoa(`${username}:${password}`);
                     await AsyncStorage.setItem('localAuthToken', token)
                     screenFlowModule.onNavigateToScreen('SplashScreen');
@@ -183,7 +183,7 @@ const Users = () => {
                 onPress={async () => {
                     await AsyncStorage.removeItem('localAuthToken');
                     const username = 'CAM823299';
-                    const password = 'PIANISTpen1!';
+                    const password = 'Wary-hess-CARE-1!';
                     const token = btoa(`${username}:${password}`);
                     await AsyncStorage.setItem('localAuthToken', token)
                     screenFlowModule.onNavigateToScreen('SplashScreen');
