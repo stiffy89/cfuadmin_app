@@ -23,9 +23,9 @@ const ProfileHeader = () => {
     const membership = dataContext.myMembersMembershipDetails[0];
 
     return (
-        <View style={{ margin: 20 }}>
+        <View style={{ padding: 20, backgroundColor: theme.colors.background}}>
             <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            
+
             </View>
             <View
                 style={{
@@ -77,12 +77,12 @@ const MyMembersProfile = ({ route }: props) => {
 
     const theme = useTheme();
 
-    async function getPageData (url : string, service : string, entity : string, callback : (val : any) => void) {
+    async function getPageData(url: string, service: string, entity: string, callback: (val: any) => void) {
         setShowDialog(true);
         setShowBusyIndicator(true);
         try {
             const responseData = await dataHandlerModule.batchGet(url, service, entity);
-            if (responseData.responseBody.error){
+            if (responseData.responseBody.error) {
                 setDialogMessage('There was an error reading ' + entity);
                 setShowBusyIndicator(false);
                 return;
@@ -92,38 +92,39 @@ const MyMembersProfile = ({ route }: props) => {
             setShowDialog(false);
             callback(responseData.responseBody.d.results);
         }
-        catch (error){
+        catch (error) {
             console.log(error);
             throw error;
         }
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-            <View
-                style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginVertical: 20,
-                }}
-            >
-                <IconButton
-                    icon={() => (
-                        <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />
-                    )}
-                    size={20}
-                    onPress={() => screenFlowModule.onGoBack()}
-                />
-                <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
-                    My Member Details
-                </CustomText>
-            </View>
-            <ProfileHeader />
-            <ScrollView
-                style={{ flex: 1, backgroundColor: "#fff" }}
-                contentContainerStyle={{ paddingBottom: 0 }}
-            >
-                <View style={{ marginVertical: 40, paddingHorizontal: 20 }}>
+        <ScrollView
+            style={{ flex: 1 }}
+            contentContainerStyle={{ paddingBottom: 50, backgroundColor: theme.colors.onPrimary }}
+        >
+            <View style={{ flex: 1, backgroundColor: theme.colors.onPrimary }}>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        paddingVertical: 20,
+                        backgroundColor: theme.colors.background
+                    }}
+                >
+                    <IconButton
+                        icon={() => (
+                            <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />
+                        )}
+                        size={20}
+                        onPress={() => screenFlowModule.onGoBack()}
+                    />
+                    <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
+                        Team Member Details
+                    </CustomText>
+                </View>
+                <ProfileHeader/>
+                <View style={{ marginVertical: 40, paddingHorizontal: 20, backgroundColor: theme.colors.onPrimary }}>
                     <CustomText
                         variant="titleLargeBold"
                         style={{ marginVertical: 15, color: theme.colors.primary }}
@@ -146,9 +147,9 @@ const MyMembersProfile = ({ route }: props) => {
                                 })
                             }}
                             title={() => (
-                                <CustomText variant="bodyLarge">My Details</CustomText>
+                                <CustomText variant="bodyLarge">Personal Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
                         <List.Item
@@ -163,7 +164,7 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Contact Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
                         <List.Item
@@ -182,7 +183,7 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Emergency Contacts</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                     </List.Section>
                     <CustomText
@@ -202,7 +203,7 @@ const MyMembersProfile = ({ route }: props) => {
                             onPress={async () => {
                                 appContext.setShowBusyIndicator(true);
                                 appContext.setShowDialog(true);
-                    
+
                                 const requests = [
                                     dataHandlerModule.batchGet(`ObjectsOnLoan?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${membershipDetails.Zzplans}%27%20and%20Mss%20eq%20true`, 'Z_ESS_MSS_SRV', 'ObjectsOnLoan'),
                                     dataHandlerModule.batchGet(`MedalsAwards?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27&$skip=0&$top=100`, 'Z_ESS_MSS_SRV', 'MedalsAwards'),
@@ -211,28 +212,28 @@ const MyMembersProfile = ({ route }: props) => {
                                 try {
                                     const results = await Promise.allSettled(requests);
                                     const passed = results.every(x => x.status == 'fulfilled');
-                                    if (!passed){
+                                    if (!passed) {
                                         //TODO take them to a critical error page
                                         appContext.setDialogMessage('Critical error occurred during the initial GET');
                                         return;
                                     }
 
                                     const readErrors = results.filter(x => x.value.responseBody.error);
-                                    if (readErrors.length > 0){
+                                    if (readErrors.length > 0) {
                                         //TODO handle read errors somewhere
-			                            appContext.setDialogMessage('Read error on initialisation');
+                                        appContext.setDialogMessage('Read error on initialisation');
                                     }
 
                                     for (const x of results) {
-                                        switch (x.value.entityName){
+                                        switch (x.value.entityName) {
 
                                             case 'MedalsAwards':
-                                            dataContext.setMedalsAwards(x.value.responseBody.d.results);
-                                            break;
+                                                dataContext.setMedalsAwards(x.value.responseBody.d.results);
+                                                break;
 
                                             case 'ObjectsOnLoan':
-                                            dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
-                                            break;
+                                                dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
+                                                break;
                                         }
                                     }
 
@@ -249,16 +250,16 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Membership Details</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={() => {
-                                
+
                                 getPageData(
-                                    `TrainingHistoryDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27`, 
-                                    'Z_VOL_MEMBER_SRV', 
+                                    `TrainingHistoryDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27`,
+                                    'Z_VOL_MEMBER_SRV',
                                     'TrainingHistoryDetails',
                                     (data) => {
                                         dataContext.setTrainingHistoryDetails(data);
@@ -269,29 +270,12 @@ const MyMembersProfile = ({ route }: props) => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Training History</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
-                        />
-                        <Divider />
-                        <List.Item
-                            style={{ height: 80, justifyContent: "center" }}
-                            onPress={() => {
-                                getPageData(
-                                    `Brigades?$filter=Zzplans%20eq%20%27${dataContext.myMembersMembershipDetails[0].Zzplans}%27`,
-                                    "Z_VOL_MEMBER_SRV",
-                                    "Brigades",
-                                    (data) => {
-                                        dataContext.setMyOrgUnitDetails(data);
-                                        screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen')
-                                    }
-                                )
-                            }}
-                            title={() => <CustomText variant="bodyLarge">My Unit</CustomText>}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                     </List.Section>
                 </View>
-            </ScrollView>
-        </View>
+            </View>
+        </ScrollView>
     )
 };
 

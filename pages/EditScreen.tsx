@@ -38,7 +38,7 @@ const MyDetailsEdit = (data: any) => {
     return (
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
             <CustomText style={{ marginBottom: 20 }} variant="titleLargeBold">
-                My Details Edit
+                Personal Details Edit
             </CustomText>
             <TextInput
                 label="Preferred Name"

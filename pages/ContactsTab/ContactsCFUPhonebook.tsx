@@ -88,7 +88,7 @@ const ContactsCFUPhoneBook = () => {
 
     return (
         <ScrollView style={{paddingBottom: 40, backgroundColor: theme.colors.background}}>
-            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceDisabled}} value={searchValue} placeholder='Search Suburbs' onChangeText={(text) => {
+            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceVariant}} value={searchValue} placeholder='Search Suburbs' onChangeText={(text) => {
                 const filterResult = filterAndFormatList(text);
                 setSuburbsList(filterResult)
                 setSearchValue(text);

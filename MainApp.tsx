@@ -121,7 +121,7 @@ const TabNavigator = () => {
 							formattedRouteName = 'Contacts';
 							break;
 						case 'MyProfileScreen':
-							formattedRouteName = 'Profile';
+							formattedRouteName = 'My Profile';
 							break;
 					}
 

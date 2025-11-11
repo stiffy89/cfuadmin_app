@@ -76,8 +76,8 @@ const CfuPhonebookContactsList = ({route} : props) => {
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Contacts</CustomText>
             </View>
-            <View style={{alignItems: 'center', borderBottomColor: theme.colors.onSurfaceDisabled, borderBottomWidth: 1, paddingBottom: 10}}><CustomText variant='bodyLarge'>{suburbName}</CustomText></View>
-            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceDisabled}} placeholder='Search Members' value={searchValue} onChangeText={(text) => {
+            <View style={{alignItems: 'center', borderBottomColor: theme.colors.onSurfaceDisabled, borderBottomWidth: 1, paddingBottom: 10}}><CustomText variant='bodyLargeBold'>{suburbName}</CustomText></View>
+            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceVariant}} placeholder='Search Members' value={searchValue} onChangeText={(text) => {
                 const filterResult = filterAndFormatList(text);
                 setContactsList(filterResult);
                 setSearchValue(text);

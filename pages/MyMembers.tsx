@@ -30,17 +30,18 @@ const MyMembers = () => {
     }, []);
 
     //filter our contacts
-    const filterAndFormatList = (query: string) => {
+    const filterAndFormatList = (query: string, results?: any[]) => {
         let filteredList;
+        let dataList = results ? results : dataContext.orgUnitTeamMembers;
 
         if (query) {
-            filteredList = dataContext.orgUnitTeamMembers.filter((x) => {
-                if ( x.Stext.toLowerCase().includes(query.toLowerCase())) {
+            filteredList = dataList.filter((x) => {
+                if (x.Stext.toLowerCase().includes(query.toLowerCase())) {
                     return x;
                 }
             });
         } else {
-            filteredList = dataContext.orgUnitTeamMembers;
+            filteredList = dataList;
         }
 
         const sortedList = [...filteredList].sort((a, b) =>
@@ -72,52 +73,101 @@ const MyMembers = () => {
 
     return (
         <View style={GlobalStyles.page}>
-            <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
-                <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>My Members</CustomText>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
+                <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
+                <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>My Members</CustomText>
             </View>
-            
             {orgUnitList.length === 1 && (
-                <View style={{paddingVertical: 20, paddingLeft: 20, borderBottomColor: theme.colors.onSurfaceDisabled, borderBottomWidth: 1}}>
+                <View style={{ paddingVertical: 20, paddingLeft: 20, borderBottomColor: theme.colors.onSurfaceDisabled, borderBottomWidth: 1 }}>
                     <CustomText variant="bodyLargeBold">{orgUnitList[0].Short}</CustomText>
                 </View>
             )}
             {orgUnitList.length > 1 && (
-                <View style={{paddingHorizontal: 20, marginTop: 20}}>
-                    <TextInput
-                        mode='outlined'
-                        value={selectedOrgUnit.Short}
-                        editable={false}
-                        right={
-                            <TextInput.Icon
-                                icon={() => {
-                                    return <LucideIcons.ChevronDown />
-                                }}
-                                onPress={() => {
-                                    setShowDropDown(!showDropDown);
-                                }}
-                            />
+                <>
+                    <View style={{ marginLeft: 20 }}>
+                        <CustomText variant='bodyLargeBold'>{selectedOrgUnit.Stext}</CustomText>
+                    </View>
+                    <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                        <TextInput
+                            mode='outlined'
+                            value={selectedOrgUnit.Short}
+                            editable={false}
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                    onPress={() => {
+                                        setShowDropDown(!showDropDown);
+                                    }}
+                                />
+                            }
+                        />
+                        {(showDropDown) &&
+                            <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                                {orgUnitList.map((x, i) => {
+                                    return (
+                                        <>
+                                            <List.Item
+                                                key={i}
+                                                title={x.Short}
+                                                style={{
+                                                    backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                }}
+                                                onPress={async () => {
+                                                    const plans = x.Plans;
+                                                    setSelectedOrgUnit(x);
+
+                                                    //when we set the selected org unit, we need to update the members list aswell
+                                                    setShowDropDown(!showDropDown);
+
+
+                                                    appContext.setShowBusyIndicator(true);
+                                                    appContext.setShowDialog(true);
+
+                                                    //read the org unit team members
+                                                    try {
+                                                        const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
+                                                        appContext.setShowBusyIndicator(false);
+
+                                                        if (orgUnitTeamMembers.responseBody.error) {
+                                                            appContext.setDialogMessage(
+                                                                orgUnitTeamMembers.responseBody.error.message.value
+                                                            );
+
+                                                            return;
+                                                        }
+
+                                                        dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results);
+                                                        const newTeamList = filterAndFormatList('', orgUnitTeamMembers.responseBody.d.results);
+
+                                                        setMembersList(newTeamList);
+                                                        appContext.setShowDialog(false);
+                                                    }
+                                                    catch (error) {
+                                                        //TODO handle error
+                                                        appContext.setShowBusyIndicator(false);
+                                                        appContext.setShowDialog(false);
+                                                        console.log(error);
+                                                    }
+
+
+                                                }}
+                                            />
+                                            <Divider key={'divider' + i} />
+                                        </>
+                                    )
+                                })}
+                            </List.Section>
                         }
-                    />
-                    { (showDropDown) &&
-                    <List.Section style={{backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px'}}>
-                        {orgUnitList.map((x, i) => {
-                            return (
-                                <List.Item key={i} title={x.Short} onPress={() => {
-                                    setSelectedOrgUnit(x);
-                                    setShowDropDown(!showDropDown);
-                                }}/>
-                            )
-                        })}
-                    </List.Section>
-                    }
-                </View>
+                    </View>
+                </>
             )}
             <Searchbar
                 style={{
                     marginVertical: 20,
                     marginHorizontal: 20,
-                    backgroundColor: theme.colors.surfaceDisabled,
+                    backgroundColor: theme.colors.surfaceVariant,
                 }}
                 placeholder="Search Members"
                 value={searchValue}
@@ -128,100 +178,101 @@ const MyMembers = () => {
                 }}
             />
             <ScrollView
-                style={{flex: 1, paddingBottom: 40, backgroundColor: theme.colors.background }}
+                style={{ flex: 1, paddingBottom: 40, backgroundColor: theme.colors.background }}
             >
-            {membersList && (
-                <List.Section>
-                    {Object.keys(membersList).map((letter, i) => {
-                        return (
-                            <React.Fragment key={`header_${letter}_${i}`}>
-                                <List.Subheader key={"subheader_" + i}>
-                                    <CustomText variant="bodyLargeBold">{letter}</CustomText>
-                                </List.Subheader>
-                                {membersList[letter].map((member, ii) => {
-                                    
-                                    return (
-                                        <React.Fragment key={`contact_${letter}_${ii}`}>
-                                            <List.Item
-                                                onPress={async () => {
-                                                    //next screen also needs the brigade information, so combine them into ones
-                                                    //do a read and update the employeeDetails & myMembersMembershipDetails
-                                                    appContext.setShowDialog(true);
-                                                    appContext.setShowBusyIndicator(true);
+                {membersList && (
+                    <List.Section>
+                        {Object.keys(membersList).map((letter, i) => {
+                            return (
+                                <React.Fragment key={`header_${letter}_${i}`}>
+                                    <List.Subheader key={"subheader_" + i}>
+                                        <CustomText variant="bodyLargeBold">{letter}</CustomText>
+                                    </List.Subheader>
+                                    {membersList[letter].map((member, ii) => {
 
-                                                    try {
-                                                        const membershipDetails = await dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails');
-                                                        const employeeDetails = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails');
+                                        return (
+                                            <React.Fragment key={`contact_${letter}_${ii}`}>
+                                                <List.Item
+                                                    onPress={async () => {
+                                                        //next screen also needs the brigade information, so combine them into ones
+                                                        //do a read and update the employeeDetails & myMembersMembershipDetails
+                                                        appContext.setShowDialog(true);
+                                                        appContext.setShowBusyIndicator(true);
 
-                                                        if (!membershipDetails.responseBody.error){
-                                                            dataContext.setMyMembersMembershipDetails(membershipDetails.responseBody.d.results);
-                                                        }  
-                                                        else {
-                                                            //TODO handle error properly
-                                                            console.log(membershipDetails.responseBody.error)
+                                                        try {
+                                                            const membershipDetails = await dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails');
+                                                            const employeeDetails = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails');
+
+                                                            if (!membershipDetails.responseBody.error) {
+                                                                dataContext.setMyMembersMembershipDetails(membershipDetails.responseBody.d.results);
+                                                            }
+                                                            else {
+                                                                //TODO handle error properly
+                                                                console.log(membershipDetails.responseBody.error)
+                                                            }
+
+                                                            if (!employeeDetails.responseBody.error) {
+                                                                dataContext.setMyMemberEmployeeDetails(employeeDetails.responseBody.d.results);
+                                                            }
+                                                            else {
+                                                                //TODO handle error properly
+                                                                console.log(employeeDetails.responseBody.error)
+                                                            }
+
+                                                            const memberInfo = {
+                                                                ...member,
+                                                                ...selectedOrgUnit,
+                                                            };
+
+                                                            screenFlowModule.onNavigateToScreen(
+                                                                "MyMembersProfile",
+                                                                memberInfo
+                                                            );
+
+                                                            appContext.setShowDialog(false);
+                                                            appContext.setShowBusyIndicator(false);
+                                                        }
+                                                        catch (error) {
+                                                            //TODO handle error
+                                                            appContext.setShowDialog(false);
+                                                            appContext.setShowBusyIndicator(false);
+                                                            throw error;
                                                         }
 
-                                                        if (!employeeDetails.responseBody.error){
-                                                            dataContext.setMyMemberEmployeeDetails(employeeDetails.responseBody.d.results);
-                                                        }  
-                                                        else {
-                                                            //TODO handle error properly
-                                                            console.log(employeeDetails.responseBody.error)
-                                                        }
-
-                                                        const memberInfo = {
-                                                            ...member,
-                                                            ...selectedOrgUnit,
-                                                        };
-
-                                                        screenFlowModule.onNavigateToScreen(
-                                                            "MyMembersProfile",
-                                                            memberInfo
-                                                        );
-
-                                                        appContext.setShowDialog(false);
-                                                        appContext.setShowBusyIndicator(false);
-                                                    }
-                                                    catch (error){
-                                                        //TODO handle error
-                                                        appContext.setShowDialog(false);
-                                                        appContext.setShowBusyIndicator(false);
-                                                        throw error;
-                                                    }
-                                                    
-                                                }}
-                                                right={() => (
-                                                    <LucideIcons.ChevronRight
-                                                        color={theme.colors.primary}
-                                                    />
-                                                )}
-                                                left={() => (
-                                                    <View
-                                                        style={{
-                                                            backgroundColor: theme.colors.surfaceDisabled,
-                                                            padding: 5,
-                                                            borderRadius: 50,
-                                                        }}
-                                                    >
-                                                        <LucideIcons.User color={theme.colors.outline} />
-                                                    </View>
-                                                )}
-                                                style={{ marginLeft: 20 }}
-                                                key={"item_" + ii}
-                                                title={`${member.Stext}`}
-                                            />
-                                            <Divider />
-                                        </React.Fragment>
-                                    );
-                                })}
-                            </React.Fragment>
-                        );
-                    })}
-                </List.Section>
-            )}
-            {(!membersList || membersList == undefined) && (
-                <CustomText>No members in this unit</CustomText>
-            )}
+                                                    }}
+                                                    right={() => (
+                                                        <LucideIcons.ChevronRight
+                                                            color={theme.colors.primary}
+                                                        />
+                                                    )}
+                                                    left={() => (
+                                                        <View
+                                                            style={{
+                                                                backgroundColor: theme.colors.surfaceDisabled,
+                                                                padding: 5,
+                                                                borderRadius: 50,
+                                                            }}
+                                                        >
+                                                            <LucideIcons.User color={theme.colors.outline} />
+                                                        </View>
+                                                    )}
+                                                    style={{ marginLeft: 20 }}
+                                                    key={"item_" + ii}
+                                                    title={`${member.Stext}`}
+                                                    description={member.RoleFl}
+                                                />
+                                                <Divider />
+                                            </React.Fragment>
+                                        );
+                                    })}
+                                </React.Fragment>
+                            );
+                        })}
+                    </List.Section>
+                )}
+                {(!membersList || membersList == undefined) && (
+                    <CustomText>No members in this unit</CustomText>
+                )}
             </ScrollView>
         </View>
     );

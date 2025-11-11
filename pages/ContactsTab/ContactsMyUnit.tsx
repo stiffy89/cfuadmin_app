@@ -63,7 +63,7 @@ const ContactsMyUnit = () => {
 
     return (
         <ScrollView style={{paddingBottom: 40, backgroundColor: theme.colors.background}}>
-            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceDisabled}} placeholder='Search Members' value={searchValue} onChangeText={(text) => {
+            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceVariant}} placeholder='Search Members' value={searchValue} onChangeText={(text) => {
                 const filterResult = filterAndFormatList(text);
                 setContactsList(filterResult);
                 setSearchValue(text);
