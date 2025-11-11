@@ -5,7 +5,7 @@ import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
 
 import { StackScreenProps } from "@react-navigation/stack";
-import { SkillsMaintenanceStackParamList } from "../../types/AppTypes";
+import { SkillsMaintenanceCategory, SkillsMaintenanceStackParamList } from "../../types/AppTypes";
 
 import { useAppContext } from "../../helper/AppContext";
 
@@ -18,7 +18,7 @@ const DrillPage = ({ route, navigation }: props) => {
     const { setShowDialog, setShowBusyIndicator } = useAppContext();
     const theme = useTheme();
     const params = route.params ?? {};
-    const category = params
+    const category = params as unknown as SkillsMaintenanceCategory
     
     const drillNum = category.Name.includes("-") ? category.Name.substring(0, category.Name.indexOf("-")):null;
     const drillName = category.Name.includes("-") ? category.Name.substring(category.Name.indexOf("-") + 2):category.Name
@@ -57,11 +57,11 @@ const DrillPage = ({ route, navigation }: props) => {
                 <CustomText style={{marginHorizontal: 20, marginTop: 20}} variant='bodyLarge'>{category.BlurbText}</CustomText>
             </ScrollView>
             <View style={{position: "absolute", bottom: 10, width: "100%", gap: 10 }}>
-                <Button icon={() => <CustomIcon name="File" color={category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled} size={20}/>}style={{marginHorizontal: 20, borderRadius: 10, borderColor: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} contentStyle={{height: 50}} mode="outlined" disabled={!category.InstructionLink} onPress={navigateToDrillInstructions} >
-                    <CustomText style={{marginLeft: 20, color: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} variant='titleMediumBold'>Open instructions</CustomText>
+                <Button icon={() => <CustomIcon name="File" color={category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled} size={20}/>}style={{marginHorizontal: 20, borderRadius: 10, borderWidth: 1, borderColor: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} contentStyle={{height: 50}} mode="outlined" disabled={!category.InstructionLink} onPress={navigateToDrillInstructions} >
+                    <CustomText style={{color: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} variant='titleMediumBold'>Open instructions</CustomText>
                 </Button>
-                <Button style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} onPress={navigateToDrillCards} >
-                    <CustomText style={{marginLeft: 20, color: "#fff"}} variant='titleMediumBold'>Begin group discussion</CustomText>
+                <Button buttonColor={theme.colors.primary} style={{marginHorizontal: 20, borderRadius: 10, borderWidth: 1, borderColor: theme.colors.primary}} contentStyle={{height: 50}} mode="contained" onPress={navigateToDrillCards} >
+                    <CustomText style={{color: "#fff"}} variant='titleMediumBold'>Begin group discussion</CustomText>
                 </Button>
             </View>
         </View>
