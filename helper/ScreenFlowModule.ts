@@ -32,6 +32,10 @@ export class ScreenFlowModule {
                     });
                     break;
 
+                case 'AllServicesListScreen' :
+                    this.navigator?.navigate('AllServicesListScreen', data);
+                    break;
+
                 case 'FeedbackScreen' :
                     this.navigator?.navigate('FeedbackScreen');
                     break;
@@ -55,7 +59,7 @@ export class ScreenFlowModule {
                     this.navigator?.navigate(
                         'Resources', 
                         {
-                            screen: 'ResourceCategories',
+                            screen: 'ResourceCategoriesPage',
                             params: data
                         }
                     );
@@ -65,7 +69,7 @@ export class ScreenFlowModule {
                     this.navigator?.navigate(
                         'Resources', 
                         {
-                            screen: 'ResourceList',
+                            screen: 'ResourceListPage',
                             params: data
                         }
                     );
@@ -75,7 +79,7 @@ export class ScreenFlowModule {
                     this.navigator?.navigate(
                         'Resources',
                         {
-                            screen: 'Resource',
+                            screen: 'ResourcePage',
                             params: data
                         }
                     )
