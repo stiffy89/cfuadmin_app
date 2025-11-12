@@ -222,14 +222,14 @@ const Services = () => {
             screenFlowModule.onNavigateToScreen('AllServicesListScreen', {title: Title});
         },
         "/cfu-unit-details": (TargetPath: string, Title: string) => {
-            screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen');
+            // screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen', {title: Title});
         },
         "/cfu-manage-members" : (TargetPath: string, Title: string) => {
             setCurrentProfile('MyMembers');
-            screenFlowModule.onNavigateToScreen('MyMembers');
+            screenFlowModule.onNavigateToScreen('MyMembers', {title: Title});
         },
         "/cfu-training": (TargetPath: string, Title: string) => {
-            screenFlowModule.onNavigateToScreen('TrainingMain');
+            screenFlowModule.onNavigateToScreen('TrainingMain', {title: Title});
         },
         "/cfu-resources": (TargetPath: string, Title: string) => {
             screenFlowModule.onNavigateToScreen('Resources', {title: Title});
