@@ -131,6 +131,9 @@ export type DataContextType = {
 
     trainingSelectedOrgUnit: any;
     setTrainingSelectedOrgUnit: (val: any[]) => void;//sets the selected org unit for training
+
+    volAdminLastSelectedOrgUnit: any;
+    setVolAdminLastSelectedOrgUnit: (val: any[]) => void; //sets the last selected org unit for the vol admin user
 }
 
 export type OktaLoginResult = {
@@ -153,6 +156,13 @@ interface MemberData {
     brigades: Record<string, string>[];
     trainingDetails : Record<string, string>[];
     volunteerStatuses : Record<string, string>[];
+}
+
+type PDFDisplayPageProp = {
+    showSharing : boolean;
+    displayName : string;
+    fileName : string;
+    filePath : string;
 }
 
 export type RootStackParamList = {
@@ -179,6 +189,9 @@ export type RootStackParamList = {
     TrainingCompletionByUser: MemberData | undefined;
     Users: undefined;
     FeedbackScreen: Record<string, string> | undefined;
+    PDFDisplayPage: PDFDisplayPageProp | undefined;
+    VolAdminSearch: Record<string, string> | undefined;
+    VolAdminCeaseMember : any | undefined;
 }
 
 export type TabParamList = {

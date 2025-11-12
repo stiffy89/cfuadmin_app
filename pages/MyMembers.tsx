@@ -21,8 +21,14 @@ const MyMembers = () => {
     const [orgUnitList, setOrgUnitList] = useState<any[]>([]);
     const [selectedOrgUnit, setSelectedOrgUnit] = useState<any>(undefined);
     const [showDropDown, setShowDropDown] = useState<boolean>(false);
+    const [volAdmin, setVolAdmin] = useState(false);
 
     useEffect(() => {
+        
+        if (dataContext.currentUser[0].VolAdmin){
+            setVolAdmin(true);
+        }
+
         setOrgUnitList(dataContext.rootOrgUnits);
         setSelectedOrgUnit(dataContext.rootOrgUnits[0]);
         const filteredList = filterAndFormatList("");
@@ -77,12 +83,12 @@ const MyMembers = () => {
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>My Members</CustomText>
             </View>
-            {orgUnitList.length === 1 && (
+            {(!volAdmin && orgUnitList.length === 1) && (
                 <View style={{ paddingVertical: 20, paddingLeft: 20, borderBottomColor: theme.colors.onSurfaceDisabled, borderBottomWidth: 1 }}>
                     <CustomText variant="bodyLargeBold">{orgUnitList[0].Short}</CustomText>
                 </View>
             )}
-            {orgUnitList.length > 1 && (
+            {(!volAdmin && orgUnitList.length > 1) && (
                 <>
                     <View style={{ marginLeft: 20 }}>
                         <CustomText variant='bodyLargeBold'>{selectedOrgUnit.Stext}</CustomText>
@@ -107,7 +113,7 @@ const MyMembers = () => {
                             <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
                                 {orgUnitList.map((x, i) => {
                                     return (
-                                        <>
+                                        <React.Fragment key={'Fragment_' + i}>
                                             <List.Item
                                                 key={i}
                                                 title={x.Short}
@@ -155,7 +161,7 @@ const MyMembers = () => {
                                                 }}
                                             />
                                             <Divider key={'divider' + i} />
-                                        </>
+                                        </React.Fragment>
                                     )
                                 })}
                             </List.Section>
