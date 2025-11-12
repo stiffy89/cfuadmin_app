@@ -102,7 +102,7 @@ const AllServicesListScreen = ({ route, navigation }: props) => {
         }
         
         //close the list first
-        screenFlowModule.onGoBack()
+        //screenFlowModule.onGoBack()
         callBack(TargetPath, Title)
     }
 
