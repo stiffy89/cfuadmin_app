@@ -41,6 +41,7 @@ import TrainingCompletionByDrill from './pages/Training/TrainingCompletionByDril
 import TrainingCompletionByUser from './pages/Training/TrainingCompletionByUser';
 import Users from './pages/Users';
 import FeedbackScreen from './pages/FeedbackScreen';
+import AllServicesListScreen from './pages/AllServicesListScreen';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -125,11 +126,11 @@ const TabNavigator = () => {
 							break;
 					}
 
-					let iconColor = focused ? theme.colors.primary : theme.colors.outline;
+					let iconColor = focused ? theme.colors.primary : "#000";
 					return <CustomText variant='labelSmall' style={{ color: iconColor }}>{formattedRouteName}</CustomText>
 				},
 				tabBarIcon: ({ focused, color, size }) => {
-					let iconColor = focused ? theme.colors.primary : theme.colors.outline;
+					let iconColor = focused ? theme.colors.primary : "#000";
 
 					switch (route.name) {
 						case "HomeScreen":
@@ -489,6 +490,7 @@ export default function MainApp() {
 							<Stack.Screen name='TrainingCompletionByUser' component={TrainingCompletionByUser}/>
 							<Stack.Screen name='Users' component={Users}/>
 							<Stack.Screen name='FeedbackScreen' component={FeedbackScreen} options={{animation: "fade",presentation:"transparentModal", cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
+							<Stack.Screen name='AllServicesListScreen' component={AllServicesListScreen} options={{animation: "slide_from_bottom", gestureEnabled: false, cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>

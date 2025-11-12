@@ -17,7 +17,7 @@ const ResourceStack = () => {
   return (
     <View style={{flex: 1, paddingBottom: insets.bottom}}>
       <Stack.Navigator
-        initialRouteName="ResourceCategories"
+        initialRouteName="ResourceCategoriesPage"
         screenOptions={{
           headerShown: false,
           cardStyle: GlobalStyles.AppBackground,
@@ -41,11 +41,11 @@ const ResourceStack = () => {
         }}
       >
         <Stack.Screen
-          name="ResourceCategories"
+          name="ResourceCategoriesPage"
           component={ResourceCategoriesPage}
         />
-        <Stack.Screen name="ResourceList" component={ResourceListPage} />
-        <Stack.Screen name="Resource" component={ResourcePage} />
+        <Stack.Screen name="ResourceListPage" component={ResourceListPage} />
+        <Stack.Screen name="ResourcePage" component={ResourcePage} />
       </Stack.Navigator>
     </View>
   );

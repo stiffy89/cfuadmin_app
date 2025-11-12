@@ -179,6 +179,7 @@ export type RootStackParamList = {
     TrainingCompletionByUser: MemberData | undefined;
     Users: undefined;
     FeedbackScreen: Record<string, string> | undefined;
+    AllServicesListScreen: Record<string, string> | undefined;
 }
 
 export type TabParamList = {
@@ -205,9 +206,9 @@ export type ProfileStackParamList = {
 }
 
 export type ResourceStackParamList = {
-    ResourceCategories: Record<string, string> | undefined;
-    ResourceList: Record<string, string> | undefined;
-    Resource: Record<string, string> | undefined;
+    ResourceCategoriesPage: Record<string, string> | undefined;
+    ResourceListPage: Record<string, string> | undefined;
+    ResourcePage: Record<string, string> | undefined;
 };
 
 export type FormServiceStackParamList = {

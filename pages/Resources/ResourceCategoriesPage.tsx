@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, ScrollView, Pressable, StyleProp, ViewStyle } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import { useTheme, Button, IconButton} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
@@ -7,12 +7,17 @@ import CustomIcon from "../../assets/CustomIcon"
 
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
+import { ResourceStackParamList } from "../../types/AppTypes";
+import { StackScreenProps } from "@react-navigation/stack";
 
-const ResourceCategoriesPage = () => {
+type props = StackScreenProps<ResourceStackParamList, "ResourceCategoriesPage">;
+
+const ResourceCategoriesPage = ({ route, navigation }: props) => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();
   const [maxWidth, setMaxWidth] = useState<number>()
   const theme = useTheme();
-  
+  const params = route.params ?? {};
+
   interface CategoryIcons {
     [key:string] : string
   }
@@ -66,7 +71,7 @@ const ResourceCategoriesPage = () => {
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
         <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-        <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Resources</CustomText>
+        <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>{params.title}</CustomText>
       </View>
       <ScrollView style={{ flex: 1, width:"100%", backgroundColor: theme.colors.background }} contentContainerStyle={{flexDirection: "row", flexWrap:"wrap", justifyContent: "flex-start", gap: 20, margin: 20}}>
         {
