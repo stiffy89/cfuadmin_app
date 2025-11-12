@@ -29,6 +29,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [drillDetails, setDrillDetails] = useState<any>([]); //<-- drills per org unit zzplans
     const [memberDrillCompletion, setMemberDrillCompletion] = useState<any>([]); //<-- drill completions by members per org unit
     const [trainingSelectedOrgUnit, setTrainingSelectedOrgUnit] = useState<any>([]); //<-- this sets the selected org unit (be it root or drop down)
+    const [volAdminLastSelectedOrgUnit, setVolAdminLastSelectedOrgUnit] = useState<any>([]) //<-- this is the vol admin last selected org unit
 
    
     const value: DataContextType = {
@@ -77,7 +78,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         memberDrillCompletion,
         setMemberDrillCompletion,
         trainingSelectedOrgUnit,
-        setTrainingSelectedOrgUnit
+        setTrainingSelectedOrgUnit,
+        volAdminLastSelectedOrgUnit,
+        setVolAdminLastSelectedOrgUnit
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

@@ -96,6 +96,23 @@ const LegacyServices = () => {
                 </Pressable>
             )
         }
+        else if (x.TargetPath == '/cfu-unit-details'){
+            return (
+                <Pressable
+                    onPress={() => {
+                        screenFlowModule.onNavigateToScreen('MyUnitDetailScreen');
+                    }}
+                >
+                    <View style={{alignItems: 'center', padding: 10}}>
+                        <Image
+                            source={imageIcon}
+                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                        />
+                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
+                    </View>
+                </Pressable>
+            )
+        }
         else if (x.TargetPath == '/cfu-training'){
             return (
                 <Pressable

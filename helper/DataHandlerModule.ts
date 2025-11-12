@@ -23,8 +23,8 @@ class DataHandlerModule {
         })
 
         //clear cookies
-        const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking').default; 
-        RCTNetworking.clearCookies((result : any) => {
+        const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking').default;
+        RCTNetworking.clearCookies((result: any) => {
             console.log('Network cookies cleared')
         })
 
@@ -148,7 +148,7 @@ class DataHandlerModule {
         }
     }
 
-    
+
 
     batchBodyFormatter(action: string, urlPath: string, data: any) {
         const changeSet = 'changeset_' + Crypto.randomUUID();
@@ -207,7 +207,7 @@ class DataHandlerModule {
             const response = await this.axiosInstance?.get('/Z_VOL_MEMBER_SRV/MembershipDetails', {
                 headers: {
                     'x-csrf-token': 'Fetch',
-                    'Authorization' : authString
+                    'Authorization': authString
                 }
             });
 
@@ -220,7 +220,7 @@ class DataHandlerModule {
         catch (error) {
             throw error
         }
-    } 
+    }
 
     async batchSingleUpdate(urlPath: string, serviceName: string, data: any, passedAccessToken?: string): Promise<batchGETResponse> {
         const batchBodyObj = this.batchBodyFormatter('MERGE', urlPath, data);
@@ -624,7 +624,7 @@ class DataHandlerModule {
                             const csrfResponse = await this.fetchCsrfToken();
                             const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
                             if (!newCsrfToken) throw new Error('No CSRF token returned');
-                            
+
                             await AsyncStorage.setItem('csrf-token', newCsrfToken);
                             console.log('CSRF token refreshed.');
                             csrfRefreshPromise = null;
@@ -663,16 +663,40 @@ class DataHandlerModule {
         }
     }
 
-    async getResourceFolderList (path: string) : Promise<AxiosResponse> {
+    async getPDFResource(url: string): Promise<AxiosResponse> {
+        try {
+
+            const token = await AsyncStorage.getItem('localAuthToken');
+            const authString = `Basic ${token}`
+
+            const response = await this.axiosInstance?.get(url, {
+                headers: {
+                    Authorization: authString,
+                },
+                responseType: "arraybuffer"
+            })
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
+            }
+
+            return response;
+
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getResourceFolderList(path: string): Promise<AxiosResponse> {
         try {
             const pathURI = encodeURIComponent(path);
             const odataServiceUrl = "/Z_CFU_DOCUMENTS_SRV/$batch";
-            
+
             const id = Crypto.randomUUID()
             const batchBoundary = `batch_${id}`;
 
             const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Folders?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${pathURI}%27 HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-            
+
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
@@ -686,28 +710,28 @@ class DataHandlerModule {
                     "Accept-Encoding": "gzip, deflate, br, zstd",
                 },
             })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
             }
 
 
             return response;
-        }catch(error) {
+        } catch (error) {
             throw error
         }
     }
 
-    async getResourceList (path: string) : Promise<AxiosResponse> {
+    async getResourceList(path: string): Promise<AxiosResponse> {
         try {
             const pathURI = encodeURIComponent(path);
             const odataServiceUrl = "/Z_CFU_DOCUMENTS_SRV/$batch";
-            
+
             const id = Crypto.randomUUID()
             const batchBoundary = `batch_${id}`;
 
             const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Files?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${pathURI}%27%20and%20Desktop%20eq%20false HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-            
+
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
@@ -721,26 +745,26 @@ class DataHandlerModule {
                     "Accept-Encoding": "gzip, deflate, br, zstd",
                 },
             })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
             }
 
 
             return response;
-        }catch(error) {
+        } catch (error) {
             throw error
         }
     }
-    
-    async getResource(path: string, fileType: string) : Promise<AxiosResponse> {
+
+    async getResource(path: string, fileType: string): Promise<AxiosResponse> {
         try {
             const encodedPathURI = encodeURIComponent(path);
             const encodedFileType = encodeURIComponent(fileType);
 
             const filters = `Url='${encodedPathURI}',FileType='${encodedFileType}'`;
             const odataServiceUrl = `/Z_CFU_DOCUMENTS_SRV/FileExports(${filters})/$value`;
-
+            console.log(odataServiceUrl);
             const token = await AsyncStorage.getItem('localAuthToken');
             const authString = `Basic ${token}`
 
@@ -749,20 +773,20 @@ class DataHandlerModule {
                     Authorization: authString,
                 },
                 responseType: fileType == "application/pdf" ? "arraybuffer" : "json",
-                })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
+            })
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
             }
 
 
-            return response;    
-        }catch(error){
+            return response;
+        } catch (error) {
             throw error
         }
     }
 
-    async getFormsLauncherSet(formLaunchId:string) : Promise<AxiosResponse>{
+    async getFormsLauncherSet(formLaunchId: string): Promise<AxiosResponse> {
         try {
             const encodedFormLaunchId = encodeURIComponent(formLaunchId);
 
@@ -777,61 +801,27 @@ class DataHandlerModule {
                     Authorization: authString,
                 },
             })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
-            }
 
-
-            return response;    
-        }catch(error){
-            throw error
-        }
-    }
-
-    async getSkillsMaintenanceCategories (): Promise<AxiosResponse> {
-        try {
-            const odataServiceUrl = "/Z_CFU_FLASHCARDS_SRV/$batch";
-            
-            const id = Crypto.randomUUID()
-            const batchBoundary = `batch_${id}`;
-
-            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Categories?$filter=ParentCategoryId%20eq%20%270000000000%27 HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-            
-            const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
-
-            const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
-
-            const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
-                headers: {
-                    Authorization: authString,
-                    "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
-                    Accept: "multipart/mixed",
-                    "Accept-Encoding": "gzip, deflate, br, zstd",
-                },
-            })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
+            if (!response) {
+                throw new Error('cannot get entity, no response')
             }
 
 
             return response;
-        }catch(error) {
+        } catch (error) {
             throw error
         }
     }
 
-    async getSkillsMaintenanceRandomCards (categoryId:string) : Promise<AxiosResponse> {
+    async getSkillsMaintenanceCategories(): Promise<AxiosResponse> {
         try {
             const odataServiceUrl = "/Z_CFU_FLASHCARDS_SRV/$batch";
-            
+
             const id = Crypto.randomUUID()
             const batchBoundary = `batch_${id}`;
 
-            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET GetRandomCards?CategoryId='${categoryId}' HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-            
+            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Categories?$filter=ParentCategoryId%20eq%20%270000000000%27 HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
+
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
@@ -845,29 +835,63 @@ class DataHandlerModule {
                     "Accept-Encoding": "gzip, deflate, br, zstd",
                 },
             })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
             }
 
-            return response; 
-        }catch(error){
+
+            return response;
+        } catch (error) {
             throw error
         }
     }
 
-    async postFeedbackSet(rating: string, comment: string) : Promise<AxiosResponse> {
+    async getSkillsMaintenanceRandomCards(categoryId: string): Promise<AxiosResponse> {
+        try {
+            const odataServiceUrl = "/Z_CFU_FLASHCARDS_SRV/$batch";
+
+            const id = Crypto.randomUUID()
+            const batchBoundary = `batch_${id}`;
+
+            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET GetRandomCards?CategoryId='${categoryId}' HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
+
+            const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
+
+            const token = await AsyncStorage.getItem('localAuthToken');
+            const authString = `Basic ${token}`
+
+            const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
+                headers: {
+                    Authorization: authString,
+                    "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
+                    Accept: "multipart/mixed",
+                    "Accept-Encoding": "gzip, deflate, br, zstd",
+                },
+            })
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
+            }
+
+            return response;
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async postFeedbackSet(rating: string, comment: string): Promise<AxiosResponse> {
         try {
             const odataServiceUrl = `/Z_MOB2_SRV/FeedbackSet`;
 
             const postBody = {
-                "FeedbackId" : "",
-                "FeedbackDate" :   "",
-                "FeedbackTime" : "",
-                "FeedbackBy" : "",
-                "FeedbackText" : comment,
-                "FeedbackRating" : rating,
-                "FeedbackFullname" : ""
+                "FeedbackId": "",
+                "FeedbackDate": "",
+                "FeedbackTime": "",
+                "FeedbackBy": "",
+                "FeedbackText": comment,
+                "FeedbackRating": rating,
+                "FeedbackFullname": ""
             }
 
             const response = await this.axiosInstance?.post(odataServiceUrl, postBody, {
@@ -876,19 +900,19 @@ class DataHandlerModule {
                     "Content-Type": "application/json"
                 },
             })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
             }
 
 
-            return response;    
-        }catch(error){
+            return response;
+        } catch (error) {
             throw error
         }
     }
 
-    async getIdCardPhoto (pernr: string) : Promise<AxiosResponse>{
+    async getIdCardPhoto(pernr: string): Promise<AxiosResponse> {
         try {
             const encodedPernr = encodeURIComponent(pernr);
 
@@ -903,14 +927,14 @@ class DataHandlerModule {
                     Authorization: authString,
                 },
                 responseType: "arraybuffer"
-                })
-            
-            if (!response){
-                throw new Error ('cannot get entity, no response')
+            })
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
             }
 
-            return response;    
-        }catch(error){
+            return response;
+        } catch (error) {
             throw error
         }
     }

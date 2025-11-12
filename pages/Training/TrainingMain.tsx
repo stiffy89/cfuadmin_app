@@ -350,11 +350,31 @@ const TrainingMain = () => {
           size={20}
           onPress={() => screenFlowModule.onGoBack()}
         />
-        <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
-          Training
-        </CustomText>
+        <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'space-between', paddingRight: 20 }}>
+          <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
+            Training
+          </CustomText>
+          <IconButton
+            icon={() => <LucideIcons.Printer />}
+            mode='contained-tonal'
+            onPress={() => {
+
+              appContext.setShowDialog(true);
+              appContext.setShowBusyIndicator(true);
+              
+              const url = `Z_VOL_MANAGER_SRV/DrillsPrints(Zzplans='${dataContext.trainingSelectedOrgUnit.Plans}')/$value`;
+              const obj = {
+                showSharing: true,
+                displayName: "Training Drills - " + dataContext.trainingSelectedOrgUnit.Short,
+                filePath: url,
+                fileName: `Training_Drills_${dataContext.trainingSelectedOrgUnit.Short}`
+              }
+              screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
+            }}
+          />
+        </View>
       </View>
-      <View style={{marginLeft: 20}}>
+      <View style={{ marginLeft: 20 }}>
         <CustomText variant='bodyLargeBold'>{dataContext.trainingSelectedOrgUnit.Stext}</CustomText>
       </View>
       <View style={{ marginBottom: 20 }}>
@@ -403,52 +423,52 @@ const TrainingMain = () => {
               >
                 {orgUnitList.map((x, i) => {
                   return (
-                    <>
-                    <List.Item
-                      style={{
-                        backgroundColor : (x.Plans === dataContext.trainingSelectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
-                      }}
-                      key={i}
-                      title={x.Short}
-                      onPress={async () => {
-                        dataContext.setTrainingSelectedOrgUnit(x);
-                        setShowDropDown(!showDropDown);
+                    <React.Fragment key={'Fragment_' + i}>
+                      <List.Item
+                        style={{
+                          backgroundColor: (x.Plans === dataContext.trainingSelectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                        }}
+                        key={i}
+                        title={x.Short}
+                        onPress={async () => {
+                          dataContext.setTrainingSelectedOrgUnit(x);
+                          setShowDropDown(!showDropDown);
 
-                        appContext.setShowBusyIndicator(true);
-                        appContext.setShowDialog(true);
+                          appContext.setShowBusyIndicator(true);
+                          appContext.setShowDialog(true);
 
-                        //do a read on both memberdrill details and drill completion
-                        const plans = x.Plans;
+                          //do a read on both memberdrill details and drill completion
+                          const plans = x.Plans;
 
-                        try {
-                          const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
-                          const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
-                          appContext.setShowBusyIndicator(false);
+                          try {
+                            const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
+                            const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
+                            appContext.setShowBusyIndicator(false);
 
-                          if (memberDrillDownCompletion.responseBody.error || drillDetails.responseBody.error) {
-                            let sMessage = '';
-                            memberDrillDownCompletion.responseBody.error ? sMessage += (memberDrillDownCompletion.responseBody.error.message.value + `/n`) : '';
-                            drillDetails.responseBody.error ? sMessage += (drillDetails.responseBody.error.message.value + `/n`) : '';
+                            if (memberDrillDownCompletion.responseBody.error || drillDetails.responseBody.error) {
+                              let sMessage = '';
+                              memberDrillDownCompletion.responseBody.error ? sMessage += (memberDrillDownCompletion.responseBody.error.message.value + `/n`) : '';
+                              drillDetails.responseBody.error ? sMessage += (drillDetails.responseBody.error.message.value + `/n`) : '';
 
-                            appContext.setDialogMessage(sMessage);
-                            return;
+                              appContext.setDialogMessage(sMessage);
+                              return;
+                            }
+
+                            dataContext.setDrillDetails(drillDetails.responseBody.d.results);
+                            dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
+                            appContext.setShowDialog(false);
+                          }
+                          catch (error) {
+                            //TODO handle error
+                            console.log(error);
+                            appContext.setShowBusyIndicator(false);
+                            appContext.setShowDialog(false);
                           }
 
-                          dataContext.setDrillDetails(drillDetails.responseBody.d.results);
-                          dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
-                          appContext.setShowDialog(false);
-                        }
-                        catch (error) {
-                          //TODO handle error
-                          console.log(error);
-                          appContext.setShowBusyIndicator(false);
-                          appContext.setShowDialog(false);
-                        }
-
-                      }}
-                    />
-                    <Divider key={'divider' + i}/>
-                    </>
+                        }}
+                      />
+                      <Divider key={'divider' + i} />
+                    </React.Fragment>
                   );
                 })}
               </List.Section>

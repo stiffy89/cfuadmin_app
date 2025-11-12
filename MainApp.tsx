@@ -41,6 +41,9 @@ import TrainingCompletionByDrill from './pages/Training/TrainingCompletionByDril
 import TrainingCompletionByUser from './pages/Training/TrainingCompletionByUser';
 import Users from './pages/Users';
 import FeedbackScreen from './pages/FeedbackScreen';
+import PDFDisplayPage from './pages/PDFDisplayPage';
+import VolAdminSearch from './pages/VolAdminSearch';
+import VolAdminCeaseMember from './pages/VolAdminCeaseMember';
 import AllServicesListScreen from './pages/AllServicesListScreen';
 
 //navigation modules
@@ -101,9 +104,10 @@ const TabNavigator = () => {
 	return (
 		<Tab.Navigator
 			screenOptions={({ route }) => ({
+				lazy: false,
 				sceneStyle: GlobalStyles.AppBackground,
 				headerShown: false,
-				animation: 'fade',
+			//	animation: 'fade',
 				tabBarButton: (props) => (
 					<PlatformPressable
 						{...props}
@@ -147,11 +151,19 @@ const TabNavigator = () => {
 		>
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
 			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
-			<Tab.Screen name="MyProfileScreen" component={ProfilePage} listeners={({ navigation, route }) => ({
-				tabPress: (e) => {
-					dataContext.setCurrentProfile('CurrentUser')
-				},
-			})}/>
+			{
+				(!dataContext.currentUser[0].VolAdmin) && (
+					<Tab.Screen 
+						name="MyProfileScreen" 
+						component={ProfilePage} 
+						listeners={({ navigation, route }) => ({
+							tabPress: (e) => {
+								dataContext.setCurrentProfile('CurrentUser')
+							}
+						})}
+					/>
+				)
+			}
 		</Tab.Navigator>
 	)
 }
@@ -489,6 +501,9 @@ export default function MainApp() {
 							<Stack.Screen name='TrainingCompletionByDrill' component={TrainingCompletionByDrill}/>
 							<Stack.Screen name='TrainingCompletionByUser' component={TrainingCompletionByUser}/>
 							<Stack.Screen name='Users' component={Users}/>
+							<Stack.Screen name='PDFDisplayPage' component={PDFDisplayPage}/>
+							<Stack.Screen name='VolAdminSearch' component={VolAdminSearch}/>
+							<Stack.Screen name='VolAdminCeaseMember' component={VolAdminCeaseMember}/>
 							<Stack.Screen name='FeedbackScreen' component={FeedbackScreen} options={{animation: "fade",presentation:"transparentModal", cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
 							<Stack.Screen name='AllServicesListScreen' component={AllServicesListScreen} options={{animation: "slide_from_bottom", gestureEnabled: false, cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
 						</Stack.Navigator>
