@@ -302,6 +302,27 @@ export class ScreenFlowModule {
                         data
                     );
                     break;
+
+                case 'PDFDisplayPage' : 
+                    this.navigator?.navigate(
+                        'PDFDisplayPage',
+                        data
+                    );
+                    break;
+
+                case 'VolAdminSearch' : 
+                    this.navigator?.navigate(
+                        'VolAdminSearch',
+                        data
+                    );
+                    break;
+
+                case 'VolAdminCeaseMember' : 
+                    this.navigator?.navigate(
+                        'VolAdminCeaseMember',
+                        data
+                    );
+                    break;
             }
         }
     }

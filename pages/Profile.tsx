@@ -55,6 +55,7 @@ const ProfileHeader = () => {
 
                             console.log(responseBody);
                         } catch (error) {
+                            //TODO handle error
                             throw error;
                         }
                     }}

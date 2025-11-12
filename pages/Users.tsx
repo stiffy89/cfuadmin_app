@@ -35,12 +35,19 @@ const Users = () => {
 		let requests = [
 			dataHandlerModule.batchGet('MenuSet?$format=json', 'Z_MOB2_SRV', 'MenuSet', undefined, true),
 			dataHandlerModule.batchGet('EmployeeDetails', 'Z_ESS_MSS_SRV', 'EmployeeDetails'),
-			dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
-			dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'),
-            dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'), 
 			dataHandlerModule.batchGet('AddressStates?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressStates'),
 			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships')
 		]
+
+		if (!user.VolAdmin){
+			requests.push(dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'));
+			requests.push(dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'));
+			requests.push(dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'));
+		}
+		else {
+			const plans = user.Zzplans;
+			requests.push(dataHandlerModule.batchGet(`BrigadeSummaries?$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MEMBER_SRV', 'Brigades'))
+		}
 
 		//add the extra calls for mymembers and training
 		if (user.TeamCoordinator){
@@ -49,9 +56,19 @@ const Users = () => {
 				dataHandlerModule.batchGet('RootOrgUnits', 'Z_VOL_MANAGER_SRV', 'RootOrgUnits')
 			]
 		}
-		
+		else if (user.VolAdmin){
+			const plans = user.Zzplans;
 
+			requests = [
+				...requests,
+				dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs'), 
+				dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members')
+			]
+		}
+		
 		const results = await Promise.allSettled(requests);
+		console.log(results);
+
 		//if we have any fails - its a critical error
 		const passed = results.every(x => x.status == 'fulfilled');
 
@@ -103,11 +120,26 @@ const Users = () => {
 				case 'Brigades':
 					dataContext.setBrigadeSummary(x.value.responseBody.d.results);
 					const zzplans = x.value.responseBody.d.results[0].Zzplans;
+
 					try {
-						const myUnitContacts = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'Suburbs');
+
+						let sContactsUrlString = `Contacts?$filter=Zzplans%20eq%20%27${zzplans}%27`;
+
+						if (user.VolAdmin){
+							sContactsUrlString = `Contacts?$filter=Zzplans%20eq%20%27${zzplans}%27%20and%20Mss%20eq%20true`;
+						}
+
+						const myUnitContacts = await dataHandlerModule.batchGet(sContactsUrlString, 'Z_VOL_MEMBER_SRV', 'Contacts');
+
+						if (myUnitContacts.responseBody.error){
+							//TODO handle error
+							throw new Error('my Unit contacts read error');
+						}
+
 						dataContext.setMyUnitContacts(myUnitContacts.responseBody.d.results);
 					}
 					catch (error) {
+						//TODO handle error
 						console.log(error)
 					}
 					break;
@@ -221,6 +253,22 @@ const Users = () => {
                 }}
             >
                 Multi-unit but TC for only 1 unit - CUR822107
+            </Button>
+			<Button 
+                style={{marginBottom: 20}} 
+                mode='outlined'
+				disabled={true}
+                onPress={async () => {
+                    await AsyncStorage.removeItem('localAuthToken');
+                    const username = 'HOB7804';
+                    const password = 'Wary-hess-CARE-1!';
+                    const token = btoa(`${username}:${password}`);
+                    await AsyncStorage.setItem('localAuthToken', token)
+                    screenFlowModule.onNavigateToScreen('SplashScreen');
+                    onGetInitialLoad();
+                }}
+            >
+                Vol Admin - HOB7804
             </Button>
         </View>
     )
