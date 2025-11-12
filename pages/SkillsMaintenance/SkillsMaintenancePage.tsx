@@ -60,7 +60,7 @@ const SkillsMaintenancePage = ({ route, navigation }: props) => {
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Skills Maintenance</CustomText>
+                <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>{params.title}</CustomText>
             </View>
             <ScrollView style={{ flex: 1, width:"100%", backgroundColor: theme.colors.background }} contentContainerStyle={{flexDirection: "row", flexWrap:"wrap", justifyContent: "flex-start", gap: 20, margin: 20}}>
                 {

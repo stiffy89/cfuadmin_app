@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Dimensions, Platform } from "react-native";
+import { View, Dimensions } from "react-native";
 import { useTheme, IconButton} from "react-native-paper";
 import {WebView} from "react-native-webview"
 import * as LucideIcons from "lucide-react-native";
@@ -44,7 +44,7 @@ const base64ToUint8Array = (base64: string) => {
     return bytes;
 };
 
-type props = StackScreenProps<ResourceStackParamList, "Resource">;
+type props = StackScreenProps<ResourceStackParamList, "ResourcePage">;
 
 const ResourcePage = ({ route, navigation }: props) => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();

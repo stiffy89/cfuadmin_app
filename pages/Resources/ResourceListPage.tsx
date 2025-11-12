@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, Pressable } from "react-native";
-import { useTheme, IconButton, List, Divider } from "react-native-paper";
+import { useTheme, IconButton, Divider } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
 
@@ -42,10 +42,7 @@ const loadResourceList = async (Path: string) => {
     return data.d.results;
 };
 
-type props = StackScreenProps<
-  ResourceStackParamList,
-  "ResourceList"
->;
+type props = StackScreenProps<ResourceStackParamList, "ResourceListPage">;
 
 const ResourceListPage = ({ route, navigation }: props) => {
   const { setShowDialog, setShowBusyIndicator } = useAppContext();
@@ -79,7 +76,7 @@ const ResourceListPage = ({ route, navigation }: props) => {
     setShowDialog(true);
     
     setTimeout(() => {  
-      navigation.push("ResourceList", {ParentRid: folder.DisplayName, Path: folder.AccessRid});
+      navigation.push("ResourceListPage", {ParentRid: folder.DisplayName, Path: folder.AccessRid});
     }, 500);
   }
 
