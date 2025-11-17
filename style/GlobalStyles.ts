@@ -45,6 +45,14 @@ const GlobalStyles = StyleSheet.create({
     floatingButtonBottom: {
         position: 'relative',
         width: '100%'
+    },
+    inputRoundedCorners: {
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        borderBottomColor: 'grey',
+        borderBottomWidth: 1
     }
 });
 

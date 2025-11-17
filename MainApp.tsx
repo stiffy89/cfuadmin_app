@@ -70,7 +70,7 @@ import { RootStackParamList } from './types/AppTypes';
 import { authModule } from './helper/AuthModule';
 import { screenFlowModule } from './helper/ScreenFlowModule';
 import { dataHandlerModule } from './helper/DataHandlerModule';
-import { DummyData } from './data/DummyData';
+
 
 //set up custom themes
 const customLightTheme = {

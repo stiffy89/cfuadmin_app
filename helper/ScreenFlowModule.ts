@@ -289,7 +289,8 @@ export class ScreenFlowModule {
                 
                 case 'TrainingMain':
                     this.navigator?.navigate(
-                        'TrainingMain'
+                        'TrainingMain',
+                        data
                     );
                     break;
 

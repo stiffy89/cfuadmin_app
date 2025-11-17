@@ -5,6 +5,7 @@ import * as LucideIcons from "lucide-react-native";
 import CustomText from "../assets/CustomText";
 import { useDataContext } from "../helper/DataContext";
 import GlobalStyles from "../style/GlobalStyles";
+import GenericFormatter from "../helper/GenericFormatters";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { ProfileStackParamList } from "../types/AppTypes";
@@ -21,9 +22,10 @@ const ProfileHeader = () => {
     const dataContext = useDataContext();
     const employeeDetails = dataContext.myMemberEmployeeDetails[0];
     const membership = dataContext.myMembersMembershipDetails[0];
+    const genericFormatter = new GenericFormatter();
 
     return (
-        <View style={{ padding: 20, backgroundColor: theme.colors.background}}>
+        <View style={{ padding: 20, backgroundColor: theme.colors.background }}>
             <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
 
             </View>
@@ -50,18 +52,36 @@ const ProfileHeader = () => {
             >
                 {employeeDetails.Vorna} {employeeDetails.Nachn}
             </CustomText>
-            <CustomText
-                variant="titleLarge"
-                style={{ textAlign: "center", marginTop: 10 }}
-            >
-                {membership.ZzmemtyDesc}
-            </CustomText>
-            <CustomText
-                variant="titleSmall"
-                style={{ textAlign: "center", marginTop: 10 }}
-            >
-                {membership.Otext}
-            </CustomText>
+            {
+                (employeeDetails.Ceased) && (
+                    <View>
+                        <CustomText
+                            variant="titleMedium"
+                            style={{ textAlign: "center", marginTop: 10 }}
+                        >
+                            Ceased Date : {genericFormatter.formatFromEdmDate(employeeDetails.CeasedDate)}
+                        </CustomText>
+                    </View>
+                )
+            }
+            {
+                (!employeeDetails.Ceased) && (
+                    <View>
+                        <CustomText
+                            variant="titleLarge"
+                            style={{ textAlign: "center", marginTop: 10 }}
+                        >
+                            {membership.ZzmemtyDesc}
+                        </CustomText>
+                        <CustomText
+                            variant="titleSmall"
+                            style={{ textAlign: "center", marginTop: 10 }}
+                        >
+                            {membership.Otext}
+                        </CustomText>
+                    </View>
+                )
+            }
         </View>
     );
 };
@@ -72,6 +92,7 @@ const MyMembersProfile = ({ route }: props) => {
     const { setShowDialog, setShowBusyIndicator, setDialogMessage } = useAppContext();
     const dataContext = useDataContext();
     const appContext = useAppContext();
+
     const employeeDetails = dataContext.myMemberEmployeeDetails[0];
     const membershipDetails = dataContext.myMembersMembershipDetails[0];
 
@@ -123,7 +144,7 @@ const MyMembersProfile = ({ route }: props) => {
                         Team Member Details
                     </CustomText>
                 </View>
-                <ProfileHeader/>
+                <ProfileHeader />
                 <View style={{ marginVertical: 40, paddingHorizontal: 20, backgroundColor: theme.colors.onPrimary }}>
                     <CustomText
                         variant="titleLargeBold"
@@ -140,7 +161,16 @@ const MyMembersProfile = ({ route }: props) => {
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={async () => {
-                                const plans = dataContext.myMembersMembershipDetails[0].Zzplans;
+                                let plans;
+
+                                //if ceased, use the parsed member object to get the 
+                                if (employeeDetails.Ceased){
+                                    plans = dataContext.volAdminCeasedSelectedMember.Zzplans;
+                                }
+                                else {
+                                    plans = dataContext.myMembersMembershipDetails[0].Zzplans;
+                                }
+                                
                                 getPageData(`EmployeeDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails', (data) => {
                                     dataContext.setEmployeeDetails(data);
                                     screenFlowModule.onNavigateToScreen('MyDetailsScreen')
@@ -155,7 +185,15 @@ const MyMembersProfile = ({ route }: props) => {
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={async () => {
-                                const plans = dataContext.myMembersMembershipDetails[0].Zzplans;
+                                let plans;
+                                
+                                //if ceased, use the parsed member object to get the 
+                                if (employeeDetails.Ceased){
+                                    plans = dataContext.volAdminCeasedSelectedMember.Zzplans;
+                                }
+                                else {
+                                    plans = dataContext.myMembersMembershipDetails[0].Zzplans;
+                                }
                                 getPageData(`EmployeeDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails', (data) => {
                                     dataContext.setEmployeeDetails(data);
                                     screenFlowModule.onNavigateToScreen('ContactDetailsScreen')
@@ -198,61 +236,66 @@ const MyMembersProfile = ({ route }: props) => {
                             ...GlobalStyles.globalBorderRadius,
                         }}
                     >
-                        <List.Item
-                            style={{ height: 80, justifyContent: "center" }}
-                            onPress={async () => {
-                                appContext.setShowBusyIndicator(true);
-                                appContext.setShowDialog(true);
+                        {(!employeeDetails.Ceased) &&
+                            //only show if member is not ceased
+                            <>
+                                <List.Item
+                                    style={{ height: 80, justifyContent: "center" }}
+                                    onPress={async () => {
+                                        appContext.setShowBusyIndicator(true);
+                                        appContext.setShowDialog(true);
 
-                                const requests = [
-                                    dataHandlerModule.batchGet(`ObjectsOnLoan?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${membershipDetails.Zzplans}%27%20and%20Mss%20eq%20true`, 'Z_ESS_MSS_SRV', 'ObjectsOnLoan'),
-                                    dataHandlerModule.batchGet(`MedalsAwards?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27&$skip=0&$top=100`, 'Z_ESS_MSS_SRV', 'MedalsAwards'),
-                                ]
+                                        const requests = [
+                                            dataHandlerModule.batchGet(`ObjectsOnLoan?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${membershipDetails.Zzplans}%27%20and%20Mss%20eq%20true`, 'Z_ESS_MSS_SRV', 'ObjectsOnLoan'),
+                                            dataHandlerModule.batchGet(`MedalsAwards?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27&$skip=0&$top=100`, 'Z_ESS_MSS_SRV', 'MedalsAwards'),
+                                        ]
 
-                                try {
-                                    const results = await Promise.allSettled(requests);
-                                    const passed = results.every(x => x.status == 'fulfilled');
-                                    if (!passed) {
-                                        //TODO take them to a critical error page
-                                        appContext.setDialogMessage('Critical error occurred during the initial GET');
-                                        return;
-                                    }
+                                        try {
+                                            const results = await Promise.allSettled(requests);
+                                            const passed = results.every(x => x.status == 'fulfilled');
+                                            if (!passed) {
+                                                //TODO take them to a critical error page
+                                                appContext.setDialogMessage('Critical error occurred during the initial GET');
+                                                return;
+                                            }
 
-                                    const readErrors = results.filter(x => x.value.responseBody.error);
-                                    if (readErrors.length > 0) {
-                                        //TODO handle read errors somewhere
-                                        appContext.setDialogMessage('Read error on initialisation');
-                                    }
+                                            const readErrors = results.filter(x => x.value.responseBody.error);
+                                            if (readErrors.length > 0) {
+                                                //TODO handle read errors somewhere
+                                                appContext.setDialogMessage('Read error on initialisation');
+                                            }
 
-                                    for (const x of results) {
-                                        switch (x.value.entityName) {
+                                            for (const x of results) {
+                                                switch (x.value.entityName) {
 
-                                            case 'MedalsAwards':
-                                                dataContext.setMedalsAwards(x.value.responseBody.d.results);
-                                                break;
+                                                    case 'MedalsAwards':
+                                                        dataContext.setMedalsAwards(x.value.responseBody.d.results);
+                                                        break;
 
-                                            case 'ObjectsOnLoan':
-                                                dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
-                                                break;
+                                                    case 'ObjectsOnLoan':
+                                                        dataContext.setObjectsOnLoan(x.value.responseBody.d.results);
+                                                        break;
+                                                }
+                                            }
+
+                                            screenFlowModule.onNavigateToScreen('MembershipDetailsScreen');
+                                            appContext.setShowDialog(false);
+                                            appContext.setShowBusyIndicator(false);
+                                        } catch (error) {
+                                            appContext.setShowBusyIndicator(false);
+                                            appContext.setShowDialog(false);
+                                            console.log(error);
+                                            throw error;
                                         }
-                                    }
-
-                                    screenFlowModule.onNavigateToScreen('MembershipDetailsScreen');
-                                    appContext.setShowDialog(false);
-                                    appContext.setShowBusyIndicator(false);
-                                } catch (error) {
-                                    appContext.setShowBusyIndicator(false);
-                                    appContext.setShowDialog(false);
-                                    console.log(error);
-                                    throw error;
-                                }
-                            }}
-                            title={() => (
-                                <CustomText variant="bodyLarge">Membership Details</CustomText>
-                            )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
-                        />
-                        <Divider />
+                                    }}
+                                    title={() => (
+                                        <CustomText variant="bodyLarge">Membership Details</CustomText>
+                                    )}
+                                    right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                                />
+                                <Divider />
+                            </>
+                        }
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={() => {
@@ -272,6 +315,25 @@ const MyMembersProfile = ({ route }: props) => {
                             )}
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
+                        {
+                            //vol admin and not ceased
+                            (dataContext.currentUser[0].VolAdmin && !employeeDetails.Ceased) && (
+                                <List.Item
+                                    style={{ height: 80, justifyContent: "center", paddingLeft: 20 }}
+                                    onPress={() => {
+                                        screenFlowModule.onNavigateToScreen('VolAdminCeaseMember', {
+                                            employeeDetails: employeeDetails,
+                                            membershipDetails: membershipDetails
+                                        })
+                                    }}
+                                    title={() => (
+                                        <CustomText style={{ color: theme.colors.primary }} variant="bodyLargeBold">Cease Membership</CustomText>
+                                    )}
+                                    left={() => <LucideIcons.UserX color={theme.colors.primary} />}
+                                    right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                                />
+                            )
+                        }
                     </List.Section>
                 </View>
             </View>

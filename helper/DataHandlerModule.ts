@@ -12,6 +12,14 @@ class DataHandlerModule {
     private csrfToken: string | null = null;
 
     private useToken = false;
+    
+    //TODO remove this for production
+    private authType: string = 'Basic';
+
+    //TODO remove this for production
+    setAuthType (type : string) {
+        this.authType = type;
+    }
 
     async init(): Promise<boolean> {
         this.axiosInstance = axios.create({
@@ -94,6 +102,7 @@ class DataHandlerModule {
     securityInstanceInitialised() {
         return (this.axiosSecurityInstance !== null)
     }
+    
 
     async getInitialTokens(idToken: string): Promise<AxiosResponse> {
         try {
@@ -202,7 +211,8 @@ class DataHandlerModule {
         //TODO need to fix this up eventually
         try {
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.get('/Z_VOL_MEMBER_SRV/MembershipDetails', {
                 headers: {
@@ -237,7 +247,7 @@ class DataHandlerModule {
         }
 
         const token = await AsyncStorage.getItem('localAuthToken');
-        const authString = `Basic ${token}`
+        const authString = `${this.authType} ${token}`
 
         try {
             //run the create call
@@ -256,6 +266,10 @@ class DataHandlerModule {
 
             //format the response
             const jsonResponse = this.formatMERGEResponse(postResponse.data);
+
+            if (jsonResponse.error){
+                throw new Error(jsonResponse.error);
+            }
 
             return {
                 entityName: '',
@@ -372,7 +386,7 @@ class DataHandlerModule {
         }
 
         const token = await AsyncStorage.getItem('localAuthToken');
-        const authString = `Basic ${token}`
+        const authString = `${this.authType} ${token}`
 
         try {
             //run the create call
@@ -507,7 +521,9 @@ class DataHandlerModule {
         }
 
         const token = await AsyncStorage.getItem('localAuthToken');
-        const authString = `Basic ${token}`
+
+        
+        const authString = `${this.authType} ${token}`
 
         try {
             let accessToken;
@@ -552,6 +568,10 @@ class DataHandlerModule {
 
             if (!jsonResponse) {
                 throw new Error('response body is malformed, cannot parse')
+            }
+
+            if (jsonResponse.error){
+                throw new Error('SAP error - ' + jsonResponse.error.message.value);
             }
 
             return {
@@ -667,7 +687,7 @@ class DataHandlerModule {
         try {
 
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.get(url, {
                 headers: {
@@ -700,7 +720,7 @@ class DataHandlerModule {
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
                 headers: {
@@ -735,7 +755,7 @@ class DataHandlerModule {
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
                 headers: {
@@ -766,7 +786,7 @@ class DataHandlerModule {
             const odataServiceUrl = `/Z_CFU_DOCUMENTS_SRV/FileExports(${filters})/$value`;
             console.log(odataServiceUrl);
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.get(odataServiceUrl, {
                 headers: {
@@ -794,7 +814,7 @@ class DataHandlerModule {
             const odataServiceUrl = `/Z_MOB2_SRV/FormsLauncherSet(${filters})`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.get(odataServiceUrl, {
                 headers: {
@@ -825,7 +845,7 @@ class DataHandlerModule {
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
                 headers: {
@@ -859,7 +879,7 @@ class DataHandlerModule {
             const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
                 headers: {
@@ -920,7 +940,7 @@ class DataHandlerModule {
             const odataServiceUrl = `/Z_MOB2_SRV/IdCardPhotoSet(${filters})/$value`;
 
             const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `Basic ${token}`
+            const authString = `${this.authType} ${token}`
 
             const response = await this.axiosInstance?.get(odataServiceUrl, {
                 headers: {

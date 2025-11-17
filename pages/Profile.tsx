@@ -16,7 +16,7 @@ import { screenFlowModule } from "../helper/ScreenFlowModule";
 
 import { authModule } from "../helper/AuthModule";
 import { OktaLoginResult } from "../types/AppTypes";
-import { DummyData } from "../data/DummyData";
+
 
 const ProfileHeader = () => {
     const { setCardModalVisible } = useAppContext();
@@ -287,23 +287,6 @@ const ProfilePage = () => {
                             title={() => (
                                 <CustomText variant="bodyLarge">Training History</CustomText>
                             )}
-                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
-                        />
-                        <Divider />
-                        <List.Item
-                            style={{ height: 80, justifyContent: "center" }}
-                            onPress={() => {
-                                getPageData(
-                                    `Brigades?$filter=Zzplans%20eq%20%27${dataContext.membershipDetails[0].Zzplans}%27`,
-                                    "Z_VOL_MEMBER_SRV",
-                                    "Brigades",
-                                    (data) => {
-                                        dataContext.setMyOrgUnitDetails(data);
-                                        screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen')
-                                    }
-                                )
-                            }}
-                            title={() => <CustomText variant="bodyLarge">My Unit</CustomText>}
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                     </List.Section>

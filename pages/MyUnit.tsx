@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useTheme, IconButton, TextInput, List, Divider } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
@@ -13,32 +13,26 @@ import { useAppContext } from '../helper/AppContext';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 
 type props = StackScreenProps<RootStackParamList, 'MyUnitDetailsScreen'>; //typing the navigation props
-type MyUnitHeaderProps = {
-    unitName?: string
-}
-const MyUnitHeader = (props: MyUnitHeaderProps) => {
-    const theme = useTheme();
-
-    return (
-        <View style={{ padding: 20, backgroundColor: theme.colors.background, marginBottom: 20 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
-                <View style={{ padding: 20, backgroundColor: '#d3d3d3ff', borderRadius: 50 }}>
-                    <LucideIcons.House size={50} />
-                </View>
-            </View>
-            <CustomText variant='displaySmallBold' style={{ textAlign: 'center', marginTop: 20 }}>{props.unitName}</CustomText>
-        </View>
-    )
-}
-
 
 const MyUnit = ({ route, navigation }: props) => {
 
     const theme = useTheme();
     const appContext = useAppContext();
     const genericFormatter = new GenericFormatter();
-    const dataContext = useDataContext()
-    const UnitData = dataContext.myOrgUnitDetails[0];
+    const dataContext = useDataContext();
+    const [UnitData, setUnitData] = useState(dataContext.myOrgUnitDetails[0]);
+    const [selectedOrgUnit, setSelectedOrgUnit] = useState<any | undefined>(undefined);
+    const [showDropDown, setShowDropDown] = useState(false);
+
+    useEffect(() => {
+        if (dataContext.rootOrgUnits.length > 1){
+            //find the default org unit
+            const matchingUnit = dataContext.rootOrgUnits.filter(x => x.Plans == dataContext.myOrgUnitDetails[0].Zzplans)[0];
+            setSelectedOrgUnit(matchingUnit);
+        }
+
+        setUnitData(dataContext.myOrgUnitDetails[0]);
+    }, [])
 
     return (
         <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
@@ -47,7 +41,81 @@ const MyUnit = ({ route, navigation }: props) => {
                     <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
                     <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>My Unit Details</CustomText>
                 </View>
-                <MyUnitHeader unitName={UnitData.Short} />
+                {
+                    (dataContext.rootOrgUnits.length > 1) && (
+                        <>
+                            <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                                <TextInput
+                                    mode='outlined'
+                                    value={selectedOrgUnit ? selectedOrgUnit.Short : ''}
+                                    editable={false}
+                                    right={
+                                        <TextInput.Icon
+                                            icon={() => {
+                                                return <LucideIcons.ChevronDown />
+                                            }}
+                                            onPress={() => {
+                                                setShowDropDown(!showDropDown);
+                                            }}
+                                        />
+                                    }
+                                />
+                                {(showDropDown) &&
+                                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                                        {dataContext.rootOrgUnits.map((x, i) => {
+                                            return (
+                                                <React.Fragment key={'Fragment_' + i}>
+                                                    <List.Item
+                                                        key={i}
+                                                        title={`${x.Short} ${x.Stext}`}
+                                                        style={{
+                                                            backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                        }}
+                                                        onPress={async () => {
+                                                            const plans = x.Plans;
+                                                            setSelectedOrgUnit(x);
+
+                                                            //when we set the selected org unit, we need to update the members list aswell
+                                                            setShowDropDown(!showDropDown);
+
+
+                                                            appContext.setShowBusyIndicator(true);
+                                                            appContext.setShowDialog(true);
+
+                                                            //read the org unit team members
+                                                            try {
+                                                                const selectedOrgUnitDetail = await dataHandlerModule.batchGet(`Brigades?$filter=Zzplans%20eq%20%27${x.Plans}%27`, 'Z_VOL_MEMBER_SRV', 'Brigades');
+                                                                setUnitData(selectedOrgUnitDetail.responseBody.d.results[0]);
+                                                                appContext.setShowDialog(false);
+                                                            }
+                                                            catch (error) {
+                                                                //TODO handle error
+                                                                appContext.setShowBusyIndicator(false);
+                                                                appContext.setShowDialog(false);
+                                                                console.log(error);
+                                                            }
+
+
+                                                        }}
+                                                    />
+                                                    <Divider key={'divider' + i} />
+                                                </React.Fragment>
+                                            )
+                                        })}
+                                    </List.Section>
+                                }
+                            </View>
+                        </>
+                    )
+                }
+                <View style={{ padding: 20, backgroundColor: theme.colors.background, marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: 20 }}>
+                        <View style={{ padding: 20, backgroundColor: '#d3d3d3ff', borderRadius: 50 }}>
+                            <LucideIcons.House size={50} />
+                        </View>
+                    </View>
+                    <CustomText variant='displaySmallBold' style={{ textAlign: 'center', marginTop: 20 }}>{UnitData.Short}</CustomText>
+                </View>
                 <View style={{ paddingHorizontal: 20 }}>
                     <CustomText variant='bodyLargeBold'>Contact Information</CustomText>
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} multiline editable={false} mode='flat' underlineColor='transparent' label='Location' value={UnitData ? genericFormatter.formatAddress(UnitData) : ''} />
@@ -55,7 +123,7 @@ const MyUnit = ({ route, navigation }: props) => {
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station Phone' value={UnitData ? UnitData.StationPhone : ''} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Maintenance Schedule' value={UnitData ? genericFormatter.formatFromEdmDate(UnitData.OpReadyCheckDate) : ''} />
                 </View>
-                <View style={{ paddingHorizontal: 20, marginTop: 20}}>
+                <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
                     <CustomText variant='bodyLargeBold'>Other Details</CustomText>
                     <List.Section
                         style={{
@@ -64,9 +132,9 @@ const MyUnit = ({ route, navigation }: props) => {
                         }}
                     >
                         <List.Item
-                            style={{ height: 60, justifyContent: 'center'}}
-                            onPress={async() => { 
-                                
+                            style={{ height: 60, justifyContent: 'center' }}
+                            onPress={async () => {
+
                                 appContext.setShowDialog(true);
                                 appContext.setShowBusyIndicator(true);
 
@@ -74,8 +142,8 @@ const MyUnit = ({ route, navigation }: props) => {
                                 const obj = {
                                     showSharing: false,
                                     displayName: 'Bushfire Risk Map (' + UnitData.Short + ")",
-                                    filePath : url,
-                                    fileName : `Bushfire_Risk_Map_${UnitData.Short}`
+                                    filePath: url,
+                                    fileName: `Bushfire_Risk_Map_${UnitData.Short}`
                                 }
                                 screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
                             }}
@@ -84,8 +152,8 @@ const MyUnit = ({ route, navigation }: props) => {
                         />
                         <Divider />
                         <List.Item
-                            style={{ height: 60, justifyContent: 'center'}}
-                            onPress={() => { 
+                            style={{ height: 60, justifyContent: 'center' }}
+                            onPress={() => {
 
                                 appContext.setShowDialog(true);
                                 appContext.setShowBusyIndicator(true);
@@ -94,8 +162,8 @@ const MyUnit = ({ route, navigation }: props) => {
                                 const obj = {
                                     showSharing: false,
                                     displayName: '(PIP) Map (' + UnitData.Short + ')',
-                                    filePath : url,
-                                    fileName : `PIP_Map_${UnitData.Short}`
+                                    filePath: url,
+                                    fileName: `PIP_Map_${UnitData.Short}`
                                 }
                                 screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
                             }}

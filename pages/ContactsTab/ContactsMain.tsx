@@ -15,7 +15,7 @@ const ContactsMain = () => {
     const theme = useTheme();
     const dataContext = useDataContext();
 
-    const isTeamManager = dataContext.currentUser[0].TeamCoordinator;
+    const isTeamManager = (dataContext.currentUser[0].TeamCoordinator || dataContext.currentUser[0].VolAdmin);
 
     return (
         <>

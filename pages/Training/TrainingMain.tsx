@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import CustomText from "../../assets/CustomText";
-import {
-  useTheme,
-  List,
-  Divider,
-  IconButton,
-  TextInput,
-  Searchbar,
-  Badge
-} from "react-native-paper";
+import { useTheme, List, Divider, IconButton, TextInput, Badge, Chip } from "react-native-paper";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useDataContext } from "../../helper/DataContext";
 import { useAppContext } from "../../helper/AppContext";
@@ -17,6 +9,10 @@ import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { dataHandlerModule } from "../../helper/DataHandlerModule";
 import * as LucideIcons from "lucide-react-native";
 import GlobalStyles from "../../style/GlobalStyles";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../../types/AppTypes";
+
+type props = StackScreenProps<RootStackParamList, "TrainingMain">;
 
 const ByDrill = () => {
   const dataContext = useDataContext();
@@ -134,36 +130,48 @@ const ByTeamMember = () => {
   const dataContext = useDataContext();
   const appContext = useAppContext();
 
-  type listType = Record<string, Record<string, string>[]> | undefined;
-
-  const [searchValue, setSearchValue] = useState("");
   const [membersList, setMembersList] = useState<any[]>([]);
+  const [showTeamMemberSearch, setShowTeamMemberSearch] = useState(false);
 
-  useEffect(() => {
-    const initialMembersList = filterAndFormatList("");
-    setMembersList(initialMembersList);
-  }, [dataContext.memberDrillCompletion]);
+  if (!dataContext.currentUser[0].VolAdmin) {
+    useEffect(() => {
+      const initialMembersList = filterAndFormatList(dataContext.memberDrillCompletion);
+      setMembersList(initialMembersList);
+    }, [dataContext.memberDrillCompletion]);
+  }
+  else {
+    useEffect(() => {
+      let selectedList = [];
+      if (dataContext.volAdminTrainingSearchFilter.firstName || dataContext.volAdminTrainingSearchFilter.lastName || dataContext.volAdminTrainingSearchFilter.pernr) {
+        selectedList = filterAndFormatList(dataContext.volAdminMemberDetailSearchResults, 'Ename');
+        setShowTeamMemberSearch(true);
+      }
+      else {
+        selectedList = filterAndFormatList(dataContext.memberDrillCompletion);
+        setShowTeamMemberSearch(false);
+      }
 
-  const filterAndFormatList = (query: string, results?: any[]) => {
-    let filteredList;
-    let dataList = results ? results : dataContext.memberDrillCompletion;
+      setMembersList(selectedList);
 
-    if (query) {
-      filteredList = dataList.filter((x) => {
-        if (x.FirstName.toLowerCase().includes(query.toLowerCase()) || x.LastName.toLowerCase().includes(query.toLowerCase())) {
-          return x;
-        }
-      });
-    } else {
-      filteredList = dataList;
+    }, [dataContext.orgUnitTeamMembers, dataContext.volAdminMemberDetailSearchResults])
+  }
+
+
+
+  const filterAndFormatList = (results: any[], field?: string) => {
+
+    let dataList = results;
+    let compareField = 'LastName';
+    if (field) {
+      compareField = field;
     }
 
-    const sortedList = [...filteredList].sort((a, b) =>
-      a.LastName.localeCompare(b.LastName)
+    const sortedList = [...dataList].sort((a, b) =>
+      a[compareField].localeCompare(b[compareField])
     );
 
     const grouped = sortedList.reduce((accumulator, currentValue) => {
-      const firstLetter = currentValue.LastName[0].toUpperCase();
+      const firstLetter = currentValue[compareField][0].toUpperCase();
       if (!accumulator[firstLetter]) {
         accumulator[firstLetter] = [];
       }
@@ -187,20 +195,6 @@ const ByTeamMember = () => {
 
   return (
     <View style={GlobalStyles.page}>
-      <Searchbar
-        style={{
-          marginVertical: 20,
-          marginHorizontal: 20,
-          backgroundColor: theme.colors.surfaceVariant,
-        }}
-        placeholder="Search Members"
-        value={searchValue}
-        onChangeText={(text) => {
-          const filterResult = filterAndFormatList(text);
-          setMembersList(filterResult);
-          setSearchValue(text);
-        }}
-      />
       <ScrollView
         style={{
           flex: 1,
@@ -227,9 +221,12 @@ const ByTeamMember = () => {
                             appContext.setShowDialog(true);
 
                             try {
+
                               const pernr = member.Pernr;
                               const plans = member.Zzplans;
-                              const status = member.Zzvstat;
+
+                              //if we are showing results from either /Brigades entity due to the search of the member OR from /MemberDrillCompletions
+                              const status = (dataContext.currentUser[0].VolAdmin && showTeamMemberSearch) ? member.TrainingStatus : member.Zzvstat;
 
                               const requests = [
                                 dataHandlerModule.batchGet(`TrainingDetails?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MEMBER_SRV', 'TrainingDetails'),
@@ -304,8 +301,8 @@ const ByTeamMember = () => {
                           )}
                           style={{ marginLeft: 20 }}
                           key={"item_" + ii}
-                          title={`${member.FirstName} ${member.LastName}`}
-                          description={`${member.Stext}`}
+                          title={(showTeamMemberSearch ? member.Ename : `${member.FirstName} ${member.LastName}`)}
+                          description={(showTeamMemberSearch ? '' : `${member.Stext}`)}
                         />
                         <Divider />
                       </React.Fragment>
@@ -324,7 +321,112 @@ const ByTeamMember = () => {
   );
 };
 
-const TrainingMain = () => {
+const FilterTokens = () => {
+
+  const dataContext = useDataContext();
+  const appContext = useAppContext();
+
+  const [filters, setFilters] = useState<any[]>([]);
+
+  useEffect(() => {
+    const trainingVolAdminFilter: any = dataContext.volAdminTrainingSearchFilter;
+    let currentFilters: any[] = [];
+
+    ['firstName', 'lastName', 'pernr'].forEach(x => {
+      if (trainingVolAdminFilter[x]) {
+        const filterObj: any = {
+          filter: '',
+          value: ''
+        };
+        filterObj.filter = x;
+        filterObj.value = trainingVolAdminFilter[x];
+        currentFilters.push(filterObj)
+      }
+    });
+
+    setFilters(currentFilters)
+
+  }, [dataContext.volAdminTrainingSearchFilter])
+
+  return (
+    <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+      {
+        filters.map((x, i) => {
+          return (
+            <Chip
+              key={'chip' + i}
+              textStyle={{ fontSize: 15 }}
+              style={{ marginRight: 10 }}
+              closeIcon={() => <LucideIcons.X size={15} />}
+              onClose={async () => {
+                //update the datacontext filters first
+
+                const newFilter: any = {
+                  ...dataContext.volAdminTrainingSearchFilter,
+                  [x.filter]: ''
+                }
+
+                appContext.setShowBusyIndicator(true);
+                appContext.setShowDialog(true);
+
+                //do a read on members list based on whatever filters left
+                if (newFilter.firstName || newFilter.lastName) {
+                  //do a read on one of them
+                  let query = '';
+
+                  if (newFilter.firstName) {
+                    const cleanedFirstname = newFilter.firstName.replace(/\s+/g, '');
+                    query = `Brigades?$skip=0&$top=100&$filter=substringof(%27${cleanedFirstname}%27,Vorna)`
+                  }
+                  else if (newFilter.lastName) {
+                    const cleanedLastname = newFilter.lastName.replace(/\s+/g, '');
+                    query = `Brigades?$skip=0&$top=100&$filter=substringof(%27${cleanedLastname}%27,Nachn)`
+                  }
+
+                  try {
+                    const results = await dataHandlerModule.batchGet(
+                      query,
+                      'Z_VOL_MANAGER_SRV',
+                      'Brigades'
+                    );
+
+                    dataContext.setVolAdminMemberDetailSearchResults(results.responseBody.d.results);
+                    dataContext.setVolAdminTrainingSearchFilter(newFilter);
+                    appContext.setShowDialog(false);
+                  } catch (error) {
+                    //TODO handle error
+                    console.log(error)
+                  }
+                }
+                else {
+                  //read last saved org unit and show list
+                  try {
+                    const results = await dataHandlerModule.batchGet(
+                      `Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${dataContext.volAdminLastSelectedOrgUnit[0].Zzplans}%27%20and%20InclWithdrawn%20eq%20${newFilter.withdrawn}`,
+                      'Z_VOL_MANAGER_SRV',
+                      'Brigades'
+                    );
+
+                    dataContext.setOrgUnitTeamMembers(results.responseBody.d.results);
+                    dataContext.setVolAdminTrainingSearchFilter(newFilter);
+                    appContext.setShowDialog(false);
+                  } catch (error) {
+                    //TODO handle error
+                    console.log(error)
+                  }
+                }
+              }}
+            >
+              {x.value}
+            </Chip>
+          )
+        })
+      }
+    </View>
+  )
+}
+
+const TrainingMain = ({ route }: props) => {
   const Tab = createMaterialTopTabNavigator();
   const theme = useTheme();
   const dataContext = useDataContext();
@@ -332,7 +434,20 @@ const TrainingMain = () => {
 
   const orgUnitList = dataContext.rootOrgUnits;
 
+  const [showTeamMemberSearch, setShowTeamMemberSearch] = useState(false);
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
+  const title = route.params!.title;
+
+  if (dataContext.currentUser[0].VolAdmin) {
+    useEffect(() => {
+      if (dataContext.volAdminTrainingSearchFilter.firstName || dataContext.volAdminTrainingSearchFilter.lastName || dataContext.volAdminTrainingSearchFilter.pernr) {
+        setShowTeamMemberSearch(true);
+      }
+      else {
+        setShowTeamMemberSearch(false);
+      }
+    }, [dataContext.orgUnitTeamMembers, dataContext.volAdminMemberDetailSearchResults])
+  }
 
   return (
     <>
@@ -348,134 +463,179 @@ const TrainingMain = () => {
             <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />
           )}
           size={20}
-          onPress={() => screenFlowModule.onGoBack()}
+          onPress={() => {
+            if (dataContext.currentUser[0].VolAdmin) {
+              dataContext.setVolAdminTrainingSearchFilter({
+                withdrawn: false,
+                unit: '',
+                station: '',
+                lastName: '',
+                firstName: '',
+                pernr: ''
+              })
+            }
+            screenFlowModule.onGoBack()
+          }}
         />
         <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'space-between', paddingRight: 20 }}>
           <CustomText style={{ marginLeft: 20 }} variant="titleLargeBold">
-            Training
+            {title}
           </CustomText>
-          <IconButton
-            icon={() => <LucideIcons.Printer />}
-            mode='contained-tonal'
-            onPress={() => {
+          <View style={{ flexDirection: 'row' }}>
+            {
+              (dataContext.currentUser[0].VolAdmin) &&
+              <IconButton style={{ marginRight: 10 }} icon={() => <LucideIcons.Search color={theme.colors.primary} size={25} />} size={20} onPress={() => {
+                screenFlowModule.onNavigateToScreen('VolAdminSearch', { category: 'training' });
+              }} />
+            }
+            <IconButton
+              icon={() => <LucideIcons.Printer />}
+              mode='contained-tonal'
+              onPress={() => {
 
-              appContext.setShowDialog(true);
-              appContext.setShowBusyIndicator(true);
-              
-              const url = `Z_VOL_MANAGER_SRV/DrillsPrints(Zzplans='${dataContext.trainingSelectedOrgUnit.Plans}')/$value`;
-              const obj = {
-                showSharing: true,
-                displayName: "Training Drills - " + dataContext.trainingSelectedOrgUnit.Short,
-                filePath: url,
-                fileName: `Training_Drills_${dataContext.trainingSelectedOrgUnit.Short}`
-              }
-              screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
-            }}
-          />
+                appContext.setShowDialog(true);
+                appContext.setShowBusyIndicator(true);
+
+                const url = `Z_VOL_MANAGER_SRV/DrillsPrints(Zzplans='${dataContext.trainingSelectedOrgUnit.Plans}')/$value`;
+                const obj = {
+                  showSharing: true,
+                  displayName: "Training Drills - " + dataContext.trainingSelectedOrgUnit.Short,
+                  filePath: url,
+                  fileName: `Training_Drills_${dataContext.trainingSelectedOrgUnit.Short}`
+                }
+                screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
+              }}
+            />
+          </View>
         </View>
       </View>
-      <View style={{ marginLeft: 20 }}>
-        <CustomText variant='bodyLargeBold'>{dataContext.trainingSelectedOrgUnit.Stext}</CustomText>
-      </View>
-      <View style={{ marginBottom: 20 }}>
-        {orgUnitList.length === 1 && (
-          <View
-            style={{
-              paddingBottom: 20,
-              paddingLeft: 20,
-              borderBottomColor: theme.colors.onSurfaceDisabled,
-              borderBottomWidth: 1,
-            }}
-          >
-            <CustomText variant="bodyLargeBold">
-              {orgUnitList[0].Short}
-            </CustomText>
+      {
+        (!dataContext.currentUser[0].VolAdmin) && (
+          <View style={{ marginLeft: 20 }}>
+            <CustomText variant='bodyLargeBold'>{dataContext.trainingSelectedOrgUnit.Stext}</CustomText>
           </View>
-        )}
-        {orgUnitList.length > 1 && (
-          <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-            <TextInput
-              mode="outlined"
-              value={dataContext.trainingSelectedOrgUnit.Short}
-              editable={false}
-              right={
-                <TextInput.Icon
-                  icon={() => {
-                    return <LucideIcons.ChevronDown />;
+        )
+      }
+      {(!dataContext.currentUser[0].VolAdmin) &&
+        <View style={{ marginBottom: 20 }}>
+          {orgUnitList.length === 1 && (
+            <View
+              style={{
+                paddingBottom: 20,
+                paddingLeft: 20,
+                borderBottomColor: theme.colors.onSurfaceDisabled,
+                borderBottomWidth: 1,
+              }}
+            >
+              <CustomText variant="bodyLargeBold">
+                {orgUnitList[0].Short}
+              </CustomText>
+            </View>
+          )}
+          {orgUnitList.length > 1 && (
+            <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+              <TextInput
+                mode="outlined"
+                value={`${dataContext.trainingSelectedOrgUnit.Short}`}
+                editable={false}
+                right={
+                  <TextInput.Icon
+                    icon={() => {
+                      return <LucideIcons.ChevronDown />;
+                    }}
+                    onPress={() => {
+                      setShowDropDown(!showDropDown);
+                    }}
+                  />
+                }
+              />
+              {showDropDown && (
+                <List.Section
+                  style={{
+                    backgroundColor: theme.colors.onSecondary,
+                    position: "absolute",
+                    width: "100%",
+                    top: 50,
+                    left: 20,
+                    zIndex: 100,
+                    boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
                   }}
-                  onPress={() => {
-                    setShowDropDown(!showDropDown);
-                  }}
-                />
-              }
-            />
-            {showDropDown && (
-              <List.Section
-                style={{
-                  backgroundColor: theme.colors.onSecondary,
-                  position: "absolute",
-                  width: "100%",
-                  top: 50,
-                  left: 20,
-                  zIndex: 100,
-                  boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-                }}
-              >
-                {orgUnitList.map((x, i) => {
-                  return (
-                    <React.Fragment key={'Fragment_' + i}>
-                      <List.Item
-                        style={{
-                          backgroundColor: (x.Plans === dataContext.trainingSelectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
-                        }}
-                        key={i}
-                        title={x.Short}
-                        onPress={async () => {
-                          dataContext.setTrainingSelectedOrgUnit(x);
-                          setShowDropDown(!showDropDown);
+                >
+                  {orgUnitList.map((x, i) => {
+                    return (
+                      <React.Fragment key={'Fragment_' + i}>
+                        <List.Item
+                          style={{
+                            backgroundColor: (x.Plans === dataContext.trainingSelectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                          }}
+                          key={i}
+                          title={`${x.Short} ${x.Stext}`}
+                          onPress={async () => {
+                            dataContext.setTrainingSelectedOrgUnit(x);
+                            setShowDropDown(!showDropDown);
 
-                          appContext.setShowBusyIndicator(true);
-                          appContext.setShowDialog(true);
+                            appContext.setShowBusyIndicator(true);
+                            appContext.setShowDialog(true);
 
-                          //do a read on both memberdrill details and drill completion
-                          const plans = x.Plans;
+                            //do a read on both memberdrill details and drill completion
+                            const plans = x.Plans;
 
-                          try {
-                            const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
-                            const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
-                            appContext.setShowBusyIndicator(false);
+                            try {
+                              const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
+                              const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
+                              appContext.setShowBusyIndicator(false);
 
-                            if (memberDrillDownCompletion.responseBody.error || drillDetails.responseBody.error) {
-                              let sMessage = '';
-                              memberDrillDownCompletion.responseBody.error ? sMessage += (memberDrillDownCompletion.responseBody.error.message.value + `/n`) : '';
-                              drillDetails.responseBody.error ? sMessage += (drillDetails.responseBody.error.message.value + `/n`) : '';
+                              if (memberDrillDownCompletion.responseBody.error || drillDetails.responseBody.error) {
+                                let sMessage = '';
+                                memberDrillDownCompletion.responseBody.error ? sMessage += (memberDrillDownCompletion.responseBody.error.message.value + `/n`) : '';
+                                drillDetails.responseBody.error ? sMessage += (drillDetails.responseBody.error.message.value + `/n`) : '';
 
-                              appContext.setDialogMessage(sMessage);
-                              return;
+                                appContext.setDialogMessage(sMessage);
+                                return;
+                              }
+
+                              dataContext.setDrillDetails(drillDetails.responseBody.d.results);
+                              dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
+                              appContext.setShowDialog(false);
+                            }
+                            catch (error) {
+                              //TODO handle error
+                              console.log(error);
+                              appContext.setShowBusyIndicator(false);
+                              appContext.setShowDialog(false);
                             }
 
-                            dataContext.setDrillDetails(drillDetails.responseBody.d.results);
-                            dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
-                            appContext.setShowDialog(false);
-                          }
-                          catch (error) {
-                            //TODO handle error
-                            console.log(error);
-                            appContext.setShowBusyIndicator(false);
-                            appContext.setShowDialog(false);
-                          }
-
-                        }}
-                      />
-                      <Divider key={'divider' + i} />
-                    </React.Fragment>
-                  );
-                })}
-              </List.Section>
-            )}
+                          }}
+                        />
+                        <Divider key={'divider' + i} />
+                      </React.Fragment>
+                    );
+                  })}
+                </List.Section>
+              )}
+            </View>
+          )}
+        </View>
+      }
+      {
+        (dataContext.currentUser[0].VolAdmin) && (
+          <View style={{ paddingHorizontal: 20 }}>
+            <View style={{ marginLeft: 10 }}>
+              <CustomText style={{ marginBottom: 10 }} variant='bodyMediumBold'>Showing results for :</CustomText>
+              {
+                (!showTeamMemberSearch) && (
+                  <CustomText variant='bodyLarge'>{dataContext.volAdminLastSelectedOrgUnit[0].Stext}</CustomText>
+                )
+              }
+              {
+                (showTeamMemberSearch) && (
+                  <FilterTokens />
+                )
+              }
+            </View>
           </View>
-        )}
-      </View>
+        )
+      }
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIndicatorStyle: {
@@ -504,8 +664,38 @@ const TrainingMain = () => {
           },
         })}
       >
-        <Tab.Screen name="TrainingListByUser" component={ByTeamMember} />
-        <Tab.Screen name="TrainingListByDrill" component={ByDrill} />
+        <Tab.Screen 
+          name="TrainingListByUser" 
+          component={ByTeamMember} 
+          listeners={
+            //only attach listener if vol admin
+            (dataContext.currentUser[0].VolAdmin) ?
+            ({ navigation, route }) => ({
+              tabPress: (e) => {
+                //either show current unit or the search chips
+                if (dataContext.volAdminTrainingSearchFilter.firstName || dataContext.volAdminTrainingSearchFilter.lastName || dataContext.volAdminTrainingSearchFilter.pernr) {
+                  setShowTeamMemberSearch(true);
+                }
+                else {
+                  setShowTeamMemberSearch(false);
+                }
+              }
+            }) : undefined
+          }
+        />
+        <Tab.Screen
+          name="TrainingListByDrill"
+          component={ByDrill}
+          listeners={
+            //only attach listener if vol admin
+            (dataContext.currentUser[0].VolAdmin) ?
+            ({ navigation, route }) => ({
+              tabPress: (e) => {
+                setShowTeamMemberSearch(false);
+              }
+            }) : undefined
+          } 
+        />
       </Tab.Navigator>
     </>
   );

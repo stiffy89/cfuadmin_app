@@ -62,6 +62,15 @@ export type ServiceData = {
     title: string;
 }
 
+export type VolAdminSearchFilter = {
+    withdrawn : boolean, 
+    unit : string, 
+    station : string, 
+    lastName : string, 
+    firstName : string, 
+    pernr : string
+}
+
 export type DataContextType = {
     services: any[];
     setServices: (val: any[]) => void;
@@ -92,6 +101,9 @@ export type DataContextType = {
 
     myOrgUnitDetails : any [];
     setMyOrgUnitDetails : (val : any[]) => void;
+
+    cessationReasons : any [];
+    setCessationReasons : (val : any[]) => void;
 
     addressStates: any[];
     setAddressStates: (val: any[]) => void;
@@ -134,6 +146,18 @@ export type DataContextType = {
 
     volAdminLastSelectedOrgUnit: any;
     setVolAdminLastSelectedOrgUnit: (val: any[]) => void; //sets the last selected org unit for the vol admin user
+
+    volAdminMembersSearchFilter: VolAdminSearchFilter; //search filter for manage members
+    setVolAdminMembersSearchFilter: (val : VolAdminSearchFilter) => void;
+
+    volAdminTrainingSearchFilter: VolAdminSearchFilter; //search filter for manage members
+    setVolAdminTrainingSearchFilter: (val : VolAdminSearchFilter) => void;
+
+    volAdminMemberDetailSearchResults: any;
+    setVolAdminMemberDetailSearchResults: (val: any[]) => void; //this is specifically for results that is returned for firstname, lastname, pernr searches as vol admin
+
+    volAdminCeasedSelectedMember : any;
+    setVolAdminCeasedSelectedMember : (val : any) => void; //if we select a ceased member, in manage members, we need to store the data so we can get their zzplans as MembershipDetails is empty
 }
 
 export type OktaLoginResult = {
@@ -184,7 +208,7 @@ export type RootStackParamList = {
     MedalsAndAwardsScreen: Record<string, string> | undefined;
     SkillsMaintenance: NavigatorScreenParams<SkillsMaintenanceStackParamList>;
     FormService:NavigatorScreenParams<FormServiceStackParamList>;
-    TrainingMain: undefined;
+    TrainingMain: Record<string, string> | undefined;
     TrainingCompletionByDrill: DrillData | undefined;
     TrainingCompletionByUser: MemberData | undefined;
     Users: undefined;

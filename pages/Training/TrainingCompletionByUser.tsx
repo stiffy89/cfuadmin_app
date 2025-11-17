@@ -23,9 +23,19 @@ const TrainingCompletionByUser = ({ route }: props) => {
     const genericFormatter = new GenericFormatter();
 
     let brigadeInitialData = route.params!.brigades[0];
-    let memberInitialData = route.params!.memberData;
+    let memberInitialData : any = route.params!.memberData;
     let volInitialStatuses = route.params!.volunteerStatuses;
     let initialTrainingDetails = route.params!.trainingDetails[0];
+    
+    //check to see if our member data is from a team member search (vol admin searching) because data is coming from
+    ///Brigades entity rather than /MemberDrillCompletions -> do this by checking the path of the memberData uri being passed in
+    if (memberInitialData.__metadata.id.includes('Brigades')){
+        //split up Ename to first and last name so that the binding for first and last name is the same as /MemberDrillCompletions
+        let Ename = memberInitialData.Ename.split(" ");
+        memberInitialData.FirstName = Ename[0];
+        memberInitialData.LastName = Ename[1];
+    }
+    
 
     //const member = route.params!.memberData;
     const [isEditing, setIsEditing] = useState(false);
@@ -671,7 +681,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
 
                         const edmDate = genericFormatter.formatToEdmDate(newDateObj);
 
-                        if (selectedRecordToEdit.current == 'OpReadCheckDate') {
+                        if (selectedRecordToEdit.current == 'OpReadyCheckDate') {
                             setBrigades({
                                 ...brigades,
                                 OpReadyCheckDate: edmDate
@@ -698,7 +708,9 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                 //saves training details, brigades
                                 appContext.setShowBusyIndicator(true);
                                 appContext.setShowDialog(true);
+
                                 const brigadePath = brigades.__metadata.uri.split('Z_VOL_MEMBER_SRV')[1].substring(1);
+
                                 const trainingDetailPath = trainingDetails.__metadata.uri.split('Z_VOL_MEMBER_SRV')[1].substring(1);
 
                                 const updates = [

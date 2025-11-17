@@ -117,6 +117,8 @@ const MyDetailsEdit = (data: any) => {
                                 );
                             }
                         } catch (error) {
+                            //TODO handle error
+                            appContext.setShowDialog(false);
                             console.log(error);
                         }
 

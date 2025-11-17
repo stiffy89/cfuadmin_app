@@ -222,7 +222,7 @@ const Services = () => {
             screenFlowModule.onNavigateToScreen('AllServicesListScreen', {title: Title});
         },
         "/cfu-unit-details": (TargetPath: string, Title: string) => {
-            // screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen', {title: Title});
+            screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen', {title: Title});
         },
         "/cfu-manage-members" : (TargetPath: string, Title: string) => {
             setCurrentProfile('MyMembers');
