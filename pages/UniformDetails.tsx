@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import { View, ScrollView } from 'react-native';
 import { useTheme, IconButton, TextInput } from 'react-native-paper';
-import * as LucideIcons from 'lucide-react-native';
+import {ChevronLeft, Pencil}from 'lucide-react-native';
 import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
@@ -31,7 +31,7 @@ const UniformDetails = ({route, navigation} : props) => {
     return (
         <View style={GlobalStyles.page}>
             <View style={{flexDirection: 'row', alignItems: 'center', marginVertical: 20}}>
-                <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
+                <IconButton icon={() => <ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1}}>
                     <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Uniform Details</CustomText>
                     {
@@ -39,7 +39,7 @@ const UniformDetails = ({route, navigation} : props) => {
                             <IconButton
                                 style={{marginRight: 20}}
                                 icon={() => (
-                                    <LucideIcons.Pencil color={theme.colors.primary} size={20} />
+                                    <Pencil color={theme.colors.primary} size={20} />
                                 )}
                                 onPress={() => {
                                     EditData(params);

@@ -1,46 +1,42 @@
-import React, {useState, useEffect} from 'react';
-import {View, ScrollView} from 'react-native';
-import {Searchbar, List, Divider, useTheme} from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView } from 'react-native';
+import { List, Divider, TextInput, useTheme } from 'react-native-paper';
 import CustomText from '../../assets/CustomText';
 import { useDataContext } from '../../helper/DataContext';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule } from '../../helper/ScreenFlowModule';
+import { useAppContext } from '../../helper/AppContext';
+import { dataHandlerModule } from '../../helper/DataHandlerModule';
+import GenericFormatter from '../../helper/GenericFormatters';
 
 const ContactsMyUnit = () => {
-    
+
     const dataContext = useDataContext();
-    const [searchValue, setSearchValue] = useState('');
+    const appContext = useAppContext();
+    const genericFormatter = new GenericFormatter();
+
     type listType = Record<string, Record<string, string>[]> | undefined;
+
     const [contactsList, setContactsList] = useState<listType>(undefined);
+    const [selectedOrgUnit, setSelectedOrgUnit] = useState<any>(undefined);
+    const [showDropDown, setShowDropDown] = useState<boolean>(false);
 
     useEffect(() => {
-
-        const filteredList = filterAndFormatList('');
+        const filteredList = filterAndFormatList(dataContext.myUnitContacts);
         setContactsList(filteredList);
+        const matchingUnit = dataContext.rootOrgUnits.filter(x => x.Plans == dataContext.myOrgUnitDetails[0].Zzplans)[0];
+        setSelectedOrgUnit(matchingUnit);
     }, [])
 
     //filter our contacts
-    const filterAndFormatList = (query : string) => {
-        let filteredList;
-
-        if (query){
-            filteredList = dataContext.myUnitContacts.filter((x) => {
-                if (x.Nachn.toLowerCase().includes(query.toLowerCase()) || x.Vorna.toLowerCase().includes(query.toLowerCase())) {
-                    return x;
-                }
-            })
-        }
-        else {
-            filteredList = dataContext.myUnitContacts;
-        }
-
-        const sortedList = [...filteredList].sort((a, b) => 
+    const filterAndFormatList = (List : any[]) => {
+        const sortedList = [...List].sort((a, b) =>
             a.Nachn.localeCompare(b.Nachn)
         )
 
         const grouped = sortedList.reduce((accumulator, currentValue) => {
             const firstLetter = currentValue.Nachn[0].toUpperCase();
-            if (!accumulator[firstLetter]){
+            if (!accumulator[firstLetter]) {
                 accumulator[firstLetter] = []
             }
 
@@ -62,52 +58,119 @@ const ContactsMyUnit = () => {
     const theme = useTheme();
 
     return (
-        <ScrollView style={{paddingBottom: 40, backgroundColor: theme.colors.background}}>
-            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceVariant}} placeholder='Search Members' value={searchValue} onChangeText={(text) => {
-                const filterResult = filterAndFormatList(text);
-                setContactsList(filterResult);
-                setSearchValue(text);
-            }}/>
+        <>
             {
-                (contactsList) && (
-                    <List.Section>
-                        {
-                            Object.keys(contactsList).map((letter, i) => {
-                                return (
-                                    <React.Fragment key={`header_${letter}_${i}`}>
-                                        <List.Subheader key={'subheader_' + i}><CustomText variant='bodyLargeBold'>{letter}</CustomText></List.Subheader>
-                                        {
-                                            contactsList[letter].map((contact, ii) => {
-                                                return (
-                                                    <React.Fragment key={`contact_${letter}_${ii}`}>
-                                                        <Divider/>
-                                                        <List.Item onPress={() => {
-                                                            //next screen also needs the brigade information, so combine them into ones
-                                                            const contactInfo = {
-                                                                ...contact,
-                                                                ...dataContext.brigadeSummary[0]
-                                                            }
-                                                            
-                                                            screenFlowModule.onNavigateToScreen('MyUnitContactDetail', contactInfo)
-                                                            }} right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} left={() => <View style={{backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50}}><LucideIcons.User color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} title={`${contact.Vorna} ${contact.Nachn}`}/>
-                                                        <Divider/>
-                                                    </React.Fragment>
-                                                )
-                                            })
-                                        }
-                                    </React.Fragment>
-                                )
-                            })
-                        }
-                    </List.Section>
+                (dataContext.rootOrgUnits.length > 1) && (
+                    <View style={{marginTop: 20}}>
+                        <View style={{ marginLeft: 20 }}>
+                            <CustomText variant='bodyLargeBold'>{selectedOrgUnit ? selectedOrgUnit.Stext : ""}</CustomText>
+                        </View>
+                        <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                            <TextInput
+                                mode='outlined'
+                                value={selectedOrgUnit ? `${selectedOrgUnit.Short}` : ""}
+                                editable={false}
+                                right={
+                                    <TextInput.Icon
+                                        icon={() => {
+                                            return <LucideIcons.ChevronDown />
+                                        }}
+                                        onPress={() => {
+                                            setShowDropDown(!showDropDown);
+                                        }}
+                                    />
+                                }
+                            />
+                            {(showDropDown) &&
+                                <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                                    {dataContext.rootOrgUnits.map((x, i) => {
+                                        return (
+                                            <React.Fragment key={'Fragment_' + i}>
+                                                <List.Item
+                                                    key={i}
+                                                    title={`${x.Short} ${x.Stext}`}
+                                                    style={{
+                                                        backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                    }}
+                                                    onPress={async () => {
+                                                        const plans = x.Plans;
+                                                        setSelectedOrgUnit(x);
+
+                                                        //when we set the selected org unit, we need to update the members list aswell
+                                                        setShowDropDown(!showDropDown);
+
+                                                        appContext.setShowBusyIndicator(true);
+                                                        appContext.setShowDialog(true);
+
+                                                        //read the org unit team members
+                                                        try {
+                                                            const contactsOrgUnit = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MEMBER_SRV', 'Contacts');
+                                                            const filteredList = filterAndFormatList(contactsOrgUnit.responseBody.d.results);
+                                                            setContactsList(filteredList);
+                                                            appContext.setShowDialog(false);
+                                                        }
+                                                        catch (error) {
+                                                            //TODO handle error
+                                                            appContext.setShowBusyIndicator(false);
+                                                            appContext.setShowDialog(false);
+                                                            console.log(error);
+                                                        }
+
+
+                                                    }}
+                                                />
+                                                <Divider key={'divider' + i} />
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </List.Section>
+                            }
+                        </View>
+                    </View>
                 )
             }
-            {
-                (!contactsList) && (
-                    <CustomText>No contacts in my unit</CustomText>
-                )
-            }
-        </ScrollView>
+            <ScrollView style={{ paddingBottom: 40, backgroundColor: theme.colors.background }}>
+                {
+                    (contactsList) && (
+                        <List.Section>
+                            {
+                                Object.keys(contactsList).map((letter, i) => {
+                                    return (
+                                        <React.Fragment key={`header_${letter}_${i}`}>
+                                            <List.Subheader key={'subheader_' + i}><CustomText variant='bodyLargeBold'>{letter}</CustomText></List.Subheader>
+                                            {
+                                                contactsList[letter].map((contact, ii) => {
+                                                    return (
+                                                        <React.Fragment key={`contact_${letter}_${ii}`}>
+                                                            <Divider />
+                                                            <List.Item onPress={() => {
+                                                                //next screen also needs the brigade information, so combine them into ones
+                                                                const contactInfo = {
+                                                                    ...contact,
+                                                                    ...dataContext.brigadeSummary[0]
+                                                                }
+
+                                                                screenFlowModule.onNavigateToScreen('MyUnitContactDetail', contactInfo)
+                                                            }} right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />} left={() => <View style={{ backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50 }}><LucideIcons.User color={theme.colors.outline} /></View>} style={{ marginLeft: 20 }} key={'item_' + ii} title={`${contact.Vorna} ${contact.Nachn}`} description={genericFormatter.formatRole(contact.Role)}/>
+                                                            <Divider />
+                                                        </React.Fragment>
+                                                    )
+                                                })
+                                            }
+                                        </React.Fragment>
+                                    )
+                                })
+                            }
+                        </List.Section>
+                    )
+                }
+                {
+                    (!contactsList) && (
+                        <CustomText>No contacts in my unit</CustomText>
+                    )
+                }
+            </ScrollView>
+        </>
     )
 }
 

@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useTheme, IconButton, TextInput, List } from 'react-native-paper';
-import * as LucideIcons from 'lucide-react-native';
+import {Pencil, ChevronLeft, ChevronRight} from 'lucide-react-native';
 import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
@@ -16,23 +16,51 @@ const MembershipDetails = ({ route, navigation }: props) => {
 
     const theme = useTheme();
     const params: any = route.params ?? {};
-
     const genericFormatter = new GenericFormatter();
     const dataContext = useDataContext();
 
-    const membershipDetails = dataContext.membershipDetails[0];
     const objectsOnLoan = dataContext.objectsOnLoan;
     const medalsAndAwards = dataContext.medalsAwards;
+
+    let membershipInfo;
+
+    if (dataContext.currentProfile == 'MyMembers'){
+        membershipInfo = dataContext.myMembersMembershipDetails[0];
+    } else {
+        membershipInfo = dataContext.membershipDetails[0];
+    }
+
+    const [membershipDetails, setMembershipDetails] = useState(membershipInfo)
+
+    useEffect(() => {
+        setMembershipDetails(dataContext.myMembersMembershipDetails[0])
+    }, [dataContext.myMembersMembershipDetails])
+
+    const EditData = (data: any) => {
+        screenFlowModule.onNavigateToScreen("EditScreen", {
+            screenName: "VolunteerData",
+            editData: data,
+        });
+    };
 
     return (
         <ScrollView>
             <View style={{ ...GlobalStyles.page, paddingBottom: 40 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
-                    <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
+                    <IconButton icon={() => <ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
                     <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>Membership Details</CustomText>
                 </View>
                 <View style={{ paddingHorizontal: 20 }}>
-                    <CustomText variant='bodyLargeBold'>Volunteer Data</CustomText>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <CustomText variant='bodyLargeBold'>Volunteer Data</CustomText>
+                        <Pencil 
+                            style={{marginRight: 10}}
+                            color={theme.colors.primary} 
+                            size={20}
+                            onPress={() => EditData(membershipDetails)}
+                        />
+                    </View>
+                    
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={membershipDetails.Otext} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Location' value={membershipDetails.Stext} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Start Date' value={genericFormatter.formatFromEdmDate(membershipDetails.StartDate)} />
@@ -53,7 +81,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
                                         style={{ height: 80, justifyContent: 'center' }} 
                                         onPress={() => {screenFlowModule.onNavigateToScreen('UniformDetailsScreen', item)}} 
                                         title={`${item.ObjectTypesStext} - ${item.Anzkl} ${item.UnitsEtext}` } 
-                                        right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} 
+                                        right={() => <ChevronRight color={theme.colors.primary}/>} 
                                     />
                                 )
                             })
@@ -71,7 +99,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
                                         onPress={() => {screenFlowModule.onNavigateToScreen('MedalsAndAwardsScreen', item)}} 
                                         titleNumberOfLines={2}
                                         title={item.Awdtx} 
-                                        right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} 
+                                        right={() => <ChevronRight color={theme.colors.primary}/>} 
                                     />
                                 )
                             })

@@ -328,6 +328,12 @@ export class ScreenFlowModule {
                         data
                     );
                     break;
+
+                case 'VolunteerNotes':
+                    this.navigator?.navigate(
+                        'VolunteerNotes',
+                        data
+                    )
             }
         }
     }

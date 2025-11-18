@@ -11,6 +11,7 @@ import GlobalStyles from "../style/GlobalStyles";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/AppTypes";
+import GenericFormatter from "../helper/GenericFormatters";
 
 type props = StackScreenProps<RootStackParamList, "MyMembers">;
 
@@ -18,6 +19,7 @@ const WithdrawnSwitch = () => {
     const [showWithdrawn, setShowWithdrawn] = useState(false);
     const appContext = useAppContext();
     const dataContext = useDataContext();
+
 
     useEffect(() => {
         setShowWithdrawn(dataContext.volAdminMembersSearchFilter.withdrawn)
@@ -163,6 +165,7 @@ const FilterTokens = () => {
 const MyMembers = ({ route }: props) => {
     const dataContext = useDataContext();
     const appContext = useAppContext();
+    const genericFormatter = new GenericFormatter();
 
     type listType = Record<string, Record<string, string>[]> | undefined;
 
@@ -190,7 +193,7 @@ const MyMembers = ({ route }: props) => {
                 setSelectedOrgUnit(dataContext.rootOrgUnits[0]);
             }
             
-
+            
             const filteredList = filterAndFormatList(dataContext.orgUnitTeamMembers);
             setMembersList(filteredList);
         }, []);
@@ -398,7 +401,6 @@ const MyMembers = ({ route }: props) => {
                                         <CustomText variant="bodyLargeBold">{letter}</CustomText>
                                     </List.Subheader>
                                     {membersList[letter].map((member, ii) => {
-
                                         return (
                                             <React.Fragment key={`contact_${letter}_${ii}`}>
                                                 <List.Item
@@ -416,21 +418,14 @@ const MyMembers = ({ route }: props) => {
                                                         try {
                                                             const membershipDetails = await dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails');
                                                             const employeeDetails = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails');
+                                                            
+                                                            dataContext.setMyMembersMembershipDetails(membershipDetails.responseBody.d.results);
+                                                            dataContext.setMyMemberEmployeeDetails(employeeDetails.responseBody.d.results);
 
-                                                            if (!membershipDetails.responseBody.error) {
-                                                                dataContext.setMyMembersMembershipDetails(membershipDetails.responseBody.d.results);
-                                                            }
-                                                            else {
-                                                                //TODO handle error properly
-                                                                console.log(membershipDetails.responseBody.error)
-                                                            }
-
-                                                            if (!employeeDetails.responseBody.error) {
-                                                                dataContext.setMyMemberEmployeeDetails(employeeDetails.responseBody.d.results);
-                                                            }
-                                                            else {
-                                                                //TODO handle error properly
-                                                                console.log(employeeDetails.responseBody.error)
+                                                            //vol admins - member notes
+                                                            if (dataContext.currentUser[0].VolAdmin){
+                                                                const volNotes = await dataHandlerModule.batchGet(`VolunteerNotes?$skip=0&$top=100&$filter=Pernr%20eq%20%27${member.Pernr}%27`, 'Z_ESS_MSS_SRV', 'VolunteerNotes');
+                                                                dataContext.setVolAdminMemberNotes(volNotes.responseBody.d.results);
                                                             }
 
                                                             screenFlowModule.onNavigateToScreen(
@@ -467,7 +462,7 @@ const MyMembers = ({ route }: props) => {
                                                     style={{ marginLeft: 20 }}
                                                     key={"item_" + ii}
                                                     title={(showTeamMemberSearch ? member.Ename : member.Stext)}
-                                                    description={member.RoleFl}
+                                                    description={genericFormatter.formatRole(member.MembershipType)}
                                                 />
                                                 <Divider />
                                             </React.Fragment>

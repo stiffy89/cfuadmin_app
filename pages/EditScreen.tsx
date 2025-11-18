@@ -9,6 +9,7 @@ import {
     HelperText,
     Menu,
     Divider,
+    List
 } from "react-native-paper";
 import CustomText from "../assets/CustomText";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -49,7 +50,7 @@ const MyDetailsEdit = (data: any) => {
                 }}
             />
             {hasError && <HelperText type="error">{errorMsg}</HelperText>}
-            <View style={{flex: 1}}></View>
+            <View style={{ flex: 1 }}></View>
             <Button
                 style={{
                     backgroundColor: theme.colors.primary,
@@ -60,7 +61,7 @@ const MyDetailsEdit = (data: any) => {
                 onPress={async () => {
                     //check to see if keyboard is open, if it is, close it
                     const keyboardIsVisible = Keyboard.isVisible();
-                    if (keyboardIsVisible){
+                    if (keyboardIsVisible) {
                         Keyboard.dismiss();
                     }
 
@@ -631,7 +632,7 @@ const ContactDetailsEdit = (data: any) => {
                     />
                 </ScrollView>
             )}
-            <View style={{flex: 1}}></View>
+            <View style={{ flex: 1 }}></View>
             <Button
                 style={{
                     backgroundColor: theme.colors.primary,
@@ -643,7 +644,7 @@ const ContactDetailsEdit = (data: any) => {
                 onPress={() => {
                     //check to see if keyboard is open, if it is, close it
                     const keyboardIsVisible = Keyboard.isVisible();
-                    if (keyboardIsVisible){
+                    if (keyboardIsVisible) {
                         Keyboard.dismiss();
                     }
 
@@ -796,7 +797,7 @@ const EmergencyContactsEdit = (data: any) => {
 
 
     return (
-        
+
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
             <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}
@@ -815,7 +816,7 @@ const EmergencyContactsEdit = (data: any) => {
                     />
                 }
             </View>
-            <ScrollView 
+            <ScrollView
                 contentContainerStyle={{
                     paddingBottom: 50
                 }}
@@ -988,7 +989,7 @@ const EmergencyContactsEdit = (data: any) => {
                 onPress={() => {
                     //check to see if keyboard is open, if it is, close it
                     const keyboardIsVisible = Keyboard.isVisible();
-                    if (keyboardIsVisible){
+                    if (keyboardIsVisible) {
                         Keyboard.dismiss();
                     }
 
@@ -998,7 +999,7 @@ const EmergencyContactsEdit = (data: any) => {
                 Save
             </Button>
         </View>
-        
+
     );
 };
 
@@ -1024,7 +1025,7 @@ const UniformDetailsEdit = (data: any) => {
         appContext.setShowDialog(true);
 
         //convert DD/MM/YYYY to EDM Date
-        if (!returnDate){
+        if (!returnDate) {
             appContext.setShowBusyIndicator(false);
             appContext.setDialogMessage('Please select a return date before continuing');
             return;
@@ -1032,7 +1033,7 @@ const UniformDetailsEdit = (data: any) => {
 
         const luxonDate = DateTime.fromJSDate(returnDate);
 
-        if (!luxonDate.isValid){
+        if (!luxonDate.isValid) {
             appContext.setShowBusyIndicator(false);
             appContext.setShowDialog(true);
             appContext.setDialogMessage('Please input a valid date into the return date field')
@@ -1043,7 +1044,7 @@ const UniformDetailsEdit = (data: any) => {
         dataObj.ReturnDate = edmDate;
 
         try {
-            const uriParts =dataObj.__metadata.uri.split("Z_ESS_MSS_SRV");
+            const uriParts = dataObj.__metadata.uri.split("Z_ESS_MSS_SRV");
             const uriPath = uriParts[1].substring(1);
             const response = await dataHandlerModule.batchSingleUpdate(
                 uriPath,
@@ -1093,9 +1094,9 @@ const UniformDetailsEdit = (data: any) => {
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Quantity' value={dataObj.Anzkl} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={dataObj.UnitsEtext} />
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Reference No.' value={dataObj.Lobnr} />
-                <TextInput style={{ marginTop: 20 }} editable={false} mode='flat' underlineColor='transparent' label='Return Date' value={genericFormatter.formatJSDateToFormat(returnDate)} right={<TextInput.Icon onPress={()=> {
+                <TextInput style={{ marginTop: 20 }} editable={false} mode='flat' underlineColor='transparent' label='Return Date' value={genericFormatter.formatJSDateToFormat(returnDate)} right={<TextInput.Icon onPress={() => {
                     setShowPicker(!showPicker)
-                }} icon={() => <LucideIcons.Calendar/>}/>}/>
+                }} icon={() => <LucideIcons.Calendar />} />} />
                 <DatePickerModal
                     locale='en-GB'
                     date={returnDate}
@@ -1104,11 +1105,11 @@ const UniformDetailsEdit = (data: any) => {
                     saveLabel="Select Date"
                     validRange={{
                         startDate: undefined,
-                        endDate : endOfToday,
-                        disabledDates : undefined
+                        endDate: endOfToday,
+                        disabledDates: undefined
                     }}
                     onConfirm={(params) => {
-                        if (params.date){
+                        if (params.date) {
                             setReturnDate(params.date)
                         }
 
@@ -1127,7 +1128,7 @@ const UniformDetailsEdit = (data: any) => {
                     mode="elevated"
                     textColor={theme.colors.background}
                     onPress={() => {
-                        if (returnDate == undefined){
+                        if (returnDate == undefined) {
                             appContext.setShowDialog(true)
                             appContext.setDialogMessage('Please add a return date before continuing')
                             return;
@@ -1135,7 +1136,7 @@ const UniformDetailsEdit = (data: any) => {
 
                         //check to see if keyboard is open, if it is, close it
                         const keyboardIsVisible = Keyboard.isVisible();
-                        if (keyboardIsVisible){
+                        if (keyboardIsVisible) {
                             Keyboard.dismiss();
                         }
 
@@ -1146,6 +1147,399 @@ const UniformDetailsEdit = (data: any) => {
                 </Button>
             </ScrollView>
         </View>
+    );
+}
+
+const VolunteerDetailsEdit = (data: any) => {
+    const appContext = useAppContext();
+    const dataContext = useDataContext();
+    const genericFormatter = new GenericFormatter();
+
+    const theme = useTheme();
+
+    const [volunteerNotes, setVolunteerNotes] = useState<any>(data.data);
+
+    const [hasError, setHasError] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string>("");
+
+    return (
+        <View style={{ paddingHorizontal: 20, flex: 1 }}>
+            <CustomText style={{ marginBottom: 20 }} variant="titleLargeBold">
+                Volunteer Notes Edit
+            </CustomText>
+            <View style={{ flexGrow: 1, marginTop: 20 }}>
+                <TextInput
+                    multiline={true}
+                    placeholder='Add a comment...'
+                    value={volunteerNotes.Notes}
+                    onChangeText={text => setVolunteerNotes({
+                        ...volunteerNotes,
+                        Notes: text
+                    })}
+                    style={{ flex: 1, paddingTop: 10 }}
+                    mode='outlined'
+                />
+            </View>
+            {hasError && <HelperText type="error">{errorMsg}</HelperText>}
+            <View style={{ flex: 1 }}></View>
+            <Button
+                style={{
+                    backgroundColor: theme.colors.primary,
+                    ...GlobalStyles.floatingButtonBottom,
+                }}
+                mode="elevated"
+                textColor={theme.colors.background}
+                onPress={async () => {
+                    //check to see if keyboard is open, if it is, close it
+                    const keyboardIsVisible = Keyboard.isVisible();
+
+                    if (keyboardIsVisible) {
+                        Keyboard.dismiss();
+                    }
+
+                    //check to see if we have an value
+                    if (volunteerNotes.Notes === "") {
+                        setErrorMsg(
+                            "Please fill in the text box before saving"
+                        );
+                        setHasError(true);
+                    } else {
+                        setErrorMsg("");
+                        setHasError(false);
+                        appContext.setShowBusyIndicator(true);
+                        appContext.setShowDialog(true);
+
+                        let uriPath = '';
+
+                        if (volunteerNotes.NewNote) {
+                            const abapBegda = genericFormatter.convertEdmToAbapDateTime(volunteerNotes.Begda);
+                            uriPath = `VolunteerNotes(Pernr='${volunteerNotes.Pernr}',Subty='',Objps='',Sprps='',Seqnr='',Endda=datetime'9999-12-01T11%3A12%3A00',Begda=${abapBegda})`
+                        }
+                        else {
+                            const uriParts = volunteerNotes.__metadata.uri.split("Z_ESS_MSS_SRV");
+                            uriPath = uriParts[1].substring(1);
+                        }
+
+                        try {
+                            const response = await dataHandlerModule.batchSingleUpdate(
+                                uriPath,
+                                "Z_ESS_MSS_SRV",
+                                volunteerNotes
+                            );
+
+                            if (!response.responseBody) {
+                                try {
+                                    const volNotes = await dataHandlerModule.batchGet(`VolunteerNotes?$skip=0&$top=100&$filter=Pernr%20eq%20%27${volunteerNotes.Pernr}%27`, 'Z_ESS_MSS_SRV', 'VolunteerNotes');
+                                    dataContext.setVolAdminMemberNotes(volNotes.responseBody.d.results);
+                                    appContext.setShowDialog(false);
+                                    screenFlowModule.onGoBack();
+                                }
+                                catch (error) {
+                                    //TODO handle error
+                                    console.log(error);
+                                    appContext.setShowDialog(false);
+                                }
+                            }
+                        }
+                        catch (error) {
+                            //TODO handle error
+                            console.log(error);
+                            appContext.setShowDialog(false);
+                        }
+                    }
+                }}
+            >
+                Save
+            </Button>
+        </View>
+    );
+}
+
+const VolunteerEdit = (data: any) => {
+    const appContext = useAppContext();
+    const dataContext = useDataContext();
+    const genericFormatter = new GenericFormatter();
+
+    const theme = useTheme();
+    const membershipDetail = data.data;
+    const [membershipData, setMembershipData] = useState<any>(membershipDetail);
+
+    const [hasMemberTypeError, setHasMemberTypeError] = useState(false);
+    const [errorMemberTypeMsg, setErrorMemberTypeMsg] = useState<string>("");
+
+    const [hasMemberStatusError, setHasMemberStatusError] = useState(false);
+    const [errorMemberStatusMsg, setErrorMemberStatusMsg] = useState<string>("");
+
+    const [hasVolStatusError, setHasVolStatusError] = useState(false);
+    const [errorVolStatusMsg, setErrorVolStatusMsg] = useState<string>("");
+
+    //membershiptype VH drop down
+    const [showMembershipType, setShowMembershipType] = useState(false);
+    const initialSelectedMembershipType = dataContext.membershipTypes.filter(x => x.Mtype === membershipDetail.Zzmemty)[0];
+    const [selectedMembershipType, setSelectedMembershipType] = useState<any>(initialSelectedMembershipType);
+
+    //memberstatus VH drop down
+    const [showMembershipStatus, setShowMembershipStatus] = useState(false);
+    const initialSelectedMembershipStatus = dataContext.membershipStatuses.filter(x => x.Statu === membershipDetail.Zzstatu)[0];
+    const [selectedMembershipStatus, setSelectedMembershipStatus] = useState<any>(initialSelectedMembershipStatus);
+
+    //volstatus VH drop down
+    const [showVolunteerStatus, setShowVolunteerStatus] = useState(false);
+    const initialSelectedVolunteerStatus = dataContext.volunteerStatuses.filter(x => x.Statu === membershipDetail.Zzvstat)[0];
+    const [selectedVolunteerStatus, setSelectedVolunteerStatus] = useState<any>(initialSelectedVolunteerStatus);
+
+
+    return (
+        <ScrollView style={{ paddingHorizontal: 20, flex: 1 }}>
+            <CustomText style={{ marginBottom: 20 }} variant="titleLargeBold">
+                Membership Edit
+            </CustomText>
+            <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={membershipData.Otext} />
+            <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Location' value={membershipData.Stext} />
+            <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Start Date' value={genericFormatter.formatFromEdmDate(membershipData.StartDate)} />
+            <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Member Since' value={genericFormatter.formatFromEdmDate(membershipData.FromDate)} />
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={membershipData.ZzmemtyDesc}
+                    editable={false}
+                    label='Member type'
+                    right={
+                        //this button is only accessible via vol admin
+                        (dataContext.currentUser[0].VolAdmin) && (
+                            <TextInput.Icon
+                                icon={() => {
+                                    return <LucideIcons.ChevronDown />
+                                }}
+                                onPress={() => {
+                                    setShowMembershipType(!showMembershipType);
+                                }}
+                            />
+                        )
+                    }
+                />
+                {hasMemberTypeError && <HelperText type="error">{errorMemberTypeMsg}</HelperText>}
+                {(showMembershipType) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {dataContext.membershipTypes.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Stext}`}
+                                        style={{
+                                            backgroundColor: (x.Mtype === selectedMembershipType.Mtype) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedMembershipType(x);
+
+                                            setMembershipData({
+                                                ...membershipData,
+                                                Zzmemty: x.Mtype,
+                                                ZzmemtyDesc: x.Stext
+                                            }); 
+
+                                            setShowMembershipType(!showMembershipType);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={membershipData.ZzstatuDesc}
+                    editable={false}
+                    label='Status'
+                    right={
+                        //this button is only accessible via vol admin
+                        (dataContext.currentUser[0].VolAdmin) && (
+                            <TextInput.Icon
+                                icon={() => {
+                                    return <LucideIcons.ChevronDown />
+                                }}
+                                onPress={() => {
+                                    setShowMembershipStatus(!showMembershipStatus);
+                                }}
+                            />
+                        )
+                    }
+                />
+                {hasMemberStatusError && <HelperText type="error">{errorMemberStatusMsg}</HelperText>}
+                {(showMembershipStatus) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {dataContext.membershipStatuses.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Stext}`}
+                                        style={{
+                                            backgroundColor: (x.Statu === selectedMembershipStatus.Statu) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedMembershipStatus(x);
+                                            setMembershipData({
+                                                ...membershipData,
+                                                Zzstatu: x.Statu,
+                                                ZzstatuDesc: x.Stext
+                                            }); 
+
+                                            setShowMembershipStatus(!showMembershipStatus);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={membershipData.ZzvstatDesc}
+                    editable={false}
+                    label='Volunteer Status'
+                    right={
+                        <TextInput.Icon
+                            icon={() => {
+                                return <LucideIcons.ChevronDown />
+                            }}
+                            onPress={() => {
+                                setShowVolunteerStatus(!showVolunteerStatus);
+                            }}
+                        />
+                    }
+                />
+                {hasVolStatusError && <HelperText type="error">{errorVolStatusMsg}</HelperText>}
+                {(showVolunteerStatus) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -450, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {dataContext.volunteerStatuses.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Stext}`}
+                                        style={{
+                                            backgroundColor: (x.Statu === selectedVolunteerStatus.Statu) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedVolunteerStatus(x);
+                                            setMembershipData({
+                                                ...membershipData,
+                                                Zzvstat: x.Statu,
+                                                ZzvstatDesc: x.Stext
+                                            });
+
+                                            setShowVolunteerStatus(!showVolunteerStatus);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <TextInput
+                style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                editable={true}
+                mode='flat'
+                underlineColor='transparent'
+                label='Occupation'
+                value={membershipData.Zzoccupation}
+                onChangeText={(text) => {
+                    setMembershipData({
+                        ...membershipData,
+                        Zzoccupation: text
+                    })
+                }}
+            />
+            <Button
+                style={{
+                    marginTop: 20,
+                    backgroundColor: theme.colors.primary
+                }}
+                mode="elevated"
+                textColor={theme.colors.background}
+                onPress={async () => {
+                    //check to see if keyboard is open, if it is, close it
+                    const keyboardIsVisible = Keyboard.isVisible();
+
+                    if (keyboardIsVisible) {
+                        Keyboard.dismiss();
+                    }
+
+                    let bPassed = true;
+
+                    //check to make sure all the values are filled in
+                    if (!membershipData.Zzmemty){
+                        setHasMemberTypeError(true);
+                        setErrorMemberTypeMsg('Please select a member type');
+                        bPassed = false;
+                    }
+
+                    if (!membershipData.Zzstatu){
+                        setHasMemberStatusError(true);
+                        setErrorMemberStatusMsg('Please select a member status');
+                        bPassed = false;
+                    }
+
+                    if (!membershipData.Zzvstat){
+                        setHasVolStatusError(true);
+                        setErrorVolStatusMsg('Please select a volunteer status');
+                        bPassed = false;
+                    }
+
+                    if (!bPassed){
+                        return;
+                    }
+
+                    appContext.setShowBusyIndicator(true);
+                    appContext.setShowDialog(true);
+
+                    const uriParts = membershipData.__metadata.uri.split("Z_VOL_MEMBER_SRV");
+                    let uriPath = uriParts[1].substring(1);
+
+                    try {
+                        const response = await dataHandlerModule.batchSingleUpdate(
+                            uriPath,
+                            "Z_VOL_MEMBER_SRV",
+                            membershipData
+                        );
+
+                        if (!response.responseBody) {
+                            try {
+                                const updatedMembershipDetails = await dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${membershipData.Pernr}%27%20and%20Zzplans%20eq%20%27${membershipData.Zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails');
+                                dataContext.setMyMembersMembershipDetails(updatedMembershipDetails.responseBody.d.results);
+                                appContext.setShowDialog(false);
+                                screenFlowModule.onGoBack();
+                            }
+                            catch (error) {
+                                //TODO handle error
+                                console.log(error);
+                                appContext.setShowDialog(false);
+                            }
+                        }
+                    }
+                    catch (error) {
+                        //TODO handle error
+                        console.log(error);
+                        appContext.setShowDialog(false);
+                    } 
+                }}
+            >
+                Save
+            </Button>
+        </ScrollView>
     );
 }
 
@@ -1186,13 +1580,21 @@ const EditScreen = ({ route, navigation }: props) => {
         case "UniformDetails":
             SelectedEditScreen = <UniformDetailsEdit data={EditPayload.editData} />
             break;
+
+        case "VolunteerNotes":
+            SelectedEditScreen = <VolunteerDetailsEdit data={EditPayload.editData} />
+            break;
+
+        case "VolunteerData":
+            SelectedEditScreen = <VolunteerEdit data={EditPayload.editData} />
+            break;
     }
 
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : "height"}
             keyboardVerticalOffset={75}
-            style={{flex:1}}
+            style={{ flex: 1 }}
         >
             <View style={GlobalStyles.page}>
                 <View style={{ alignItems: "flex-end" }}>
@@ -1202,7 +1604,7 @@ const EditScreen = ({ route, navigation }: props) => {
                     />
                 </View>
                 {SelectedEditScreen}
-                <View style={{marginBottom: keyboardIsShowing ? 0 : 30}}/>
+                <View style={{ marginBottom: keyboardIsShowing ? 0 : 30 }} />
             </View>
         </KeyboardAvoidingView>
     );

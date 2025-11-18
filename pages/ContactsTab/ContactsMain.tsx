@@ -33,10 +33,10 @@ const ContactsMain = () => {
 
                         switch (route.name) {
                             case 'ContactsMyUnit':
-                                formattedRouteName = 'My Unit';
+                                formattedRouteName = (dataContext.rootOrgUnits.length > 1) ? 'Selected Unit' : 'My Unit';
                                 break;
                             case 'ContactsCFUPhonebook':
-                                formattedRouteName = 'CFU Phonebook';
+                                formattedRouteName = 'All Units';
                                 break;
                         }
 

@@ -111,6 +111,15 @@ export type DataContextType = {
     addressRelationships: any[];
     setAddressRelationships: (val: any[]) => void;
 
+    membershipTypes: any[];
+    setMembershipTypes: (val: any[]) => void;
+
+    membershipStatuses: any[];
+    setMembershipStatuses: (val: any[]) => void;
+
+    volunteerStatuses: any[];
+    setVolunteerStatuses: (val: any[]) => void;
+
     brigadeSummary: any[];
     setBrigadeSummary: (val: any[]) => void;
 
@@ -158,6 +167,9 @@ export type DataContextType = {
 
     volAdminCeasedSelectedMember : any;
     setVolAdminCeasedSelectedMember : (val : any) => void; //if we select a ceased member, in manage members, we need to store the data so we can get their zzplans as MembershipDetails is empty
+
+    volAdminMemberNotes : any[];
+    setVolAdminMemberNotes : (val : any) => void; //vol admin's have the capability to keep notes on users
 }
 
 export type OktaLoginResult = {
@@ -217,6 +229,7 @@ export type RootStackParamList = {
     VolAdminSearch: Record<string, string> | undefined;
     VolAdminCeaseMember : any | undefined;
     AllServicesListScreen: Record<string, string> | undefined;
+    VolunteerNotes: Record<string, string> | undefined;
 }
 
 export type TabParamList = {

@@ -90,9 +90,9 @@ const Users = () => {
 		if (user.TeamCoordinator) {
 			requests.push(dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs'));
 			requests.push(dataHandlerModule.batchGet('RootOrgUnits', 'Z_VOL_MANAGER_SRV', 'RootOrgUnits'));
-			requests.push(dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members'))
-			requests.push(dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions'))
-			requests.push(dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails'))
+			requests.push(dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members'));
+			requests.push(dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions'));
+			requests.push(dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails'));
 		}
 		else if (user.VolAdmin) {
 			requests.push(dataHandlerModule.batchGet('CessationReasons', 'Z_VOL_MANAGER_SRV', 'VH_CessationReasons'));
@@ -101,6 +101,9 @@ const Users = () => {
 			requests.push(dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members'));
 			requests.push(dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails'));
 			requests.push(dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions'));
+			requests.push(dataHandlerModule.batchGet('MembershipTypes?$skip=0&$top=100', 'Z_VOL_MEMBER_SRV', 'VH_MembershipTypes'));
+			requests.push(dataHandlerModule.batchGet('MembershipStatuses?$skip=0&$top=100', 'Z_VOL_MEMBER_SRV', 'VH_MembershipStatuses'));
+			requests.push(dataHandlerModule.batchGet('VolunteerStatuses?$skip=0&$top=100', 'Z_VOL_MEMBER_SRV', 'VH_VolunteerStatuses'));
 		}
 
 		const results = await Promise.allSettled(requests);
@@ -157,6 +160,18 @@ const Users = () => {
 					dataContext.setAddressRelationships(x.value.responseBody.d.results);
 					break;
 
+				case 'VH_MembershipTypes':
+					dataContext.setMembershipTypes(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_MembershipStatuses':
+					dataContext.setMembershipStatuses(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_VolunteerStatuses':
+					dataContext.setVolunteerStatuses(x.value.responseBody.d.results);
+					break;
+
 				case 'Contacts':
 					dataContext.setMyUnitContacts(x.value.responseBody.d.results);
 					break;
@@ -190,7 +205,7 @@ const Users = () => {
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 			<Text style={{ marginBottom: 20 }}>Please select from the following users</Text>
-			<Button
+		{/*	<Button
 				style={{ marginBottom: 20 }}
 				mode='outlined'
 				disabled={true}
@@ -205,8 +220,8 @@ const Users = () => {
 					onGetInitialLoad();
 				}}
 			>
-				WOO823127
-			</Button> 
+				WOO823127 
+			</Button> */}
 			<Button
 				style={{ marginBottom: 20 }}
 				mode='outlined'

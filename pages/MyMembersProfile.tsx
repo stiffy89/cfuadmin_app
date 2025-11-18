@@ -164,13 +164,13 @@ const MyMembersProfile = ({ route }: props) => {
                                 let plans;
 
                                 //if ceased, use the parsed member object to get the 
-                                if (employeeDetails.Ceased){
+                                if (employeeDetails.Ceased) {
                                     plans = dataContext.volAdminCeasedSelectedMember.Zzplans;
                                 }
                                 else {
                                     plans = dataContext.myMembersMembershipDetails[0].Zzplans;
                                 }
-                                
+
                                 getPageData(`EmployeeDetails?$filter=Pernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20Zzplans%20eq%20%27${plans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails', (data) => {
                                     dataContext.setEmployeeDetails(data);
                                     screenFlowModule.onNavigateToScreen('MyDetailsScreen')
@@ -186,9 +186,9 @@ const MyMembersProfile = ({ route }: props) => {
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={async () => {
                                 let plans;
-                                
+
                                 //if ceased, use the parsed member object to get the 
-                                if (employeeDetails.Ceased){
+                                if (employeeDetails.Ceased) {
                                     plans = dataContext.volAdminCeasedSelectedMember.Zzplans;
                                 }
                                 else {
@@ -315,6 +315,20 @@ const MyMembersProfile = ({ route }: props) => {
                             )}
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
+                        {
+                            (dataContext.currentUser[0].VolAdmin) && (
+                                <List.Item
+                                    style={{ height: 80, justifyContent: "center" }}
+                                    onPress={() => {
+                                        screenFlowModule.onNavigateToScreen('VolunteerNotes', {pernr : employeeDetails.Pernr});
+                                    }}
+                                    title={() => (
+                                        <CustomText variant="bodyLarge">Volunteer Notes</CustomText>
+                                    )}
+                                    right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                                />
+                            )
+                        }
                         {
                             //vol admin and not ceased
                             (dataContext.currentUser[0].VolAdmin && !employeeDetails.Ceased) && (

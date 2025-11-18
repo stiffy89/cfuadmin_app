@@ -20,6 +20,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [cessationReasons, setCessationReasons] = useState<any>([]);
     const [addressStates, setAddressStates] = useState<any>([]);
     const [addressRelationships, setAddressRelationships] = useState<any>([]);
+    const [membershipTypes, setMembershipTypes] = useState<any>([]);
+    const [membershipStatuses, setMembershipStatuses] = useState<any>([]);
+    const [volunteerStatuses, setVolunteerStatuses] = useState<any>([]);
     const [brigadeSummary, setBrigadeSummary] = useState<any>([]);
     const [rootOrgUnits, setRootOrgUnits] = useState<any>([]);
     const [orgUnitTeamMembers, setOrgUnitTeamMembers] = useState<any>([]);
@@ -33,6 +36,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [volAdminLastSelectedOrgUnit, setVolAdminLastSelectedOrgUnit] = useState<any>([]) //<-- this is the vol admin last selected org unit
     const [volAdminMemberDetailSearchResults, setVolAdminMemberDetailSearchResults] = useState<any>([]) ////this is specifically for results that is returned for firstname, lastname, pernr searches as vol admin
     const [volAdminCeasedSelectedMember, setVolAdminCeasedSelectedMember] = useState<any | undefined>(undefined) //sets the selection of a ceased member in manage members
+    const [volAdminMemberNotes, setVolAdminMemberNotes] = useState<any>([]) //sets the member notes for vol admins
 
     const [volAdminMembersSearchFilter, setVolAdminMembersSearchFilter] = useState<VolAdminSearchFilter>({
         withdrawn : false, 
@@ -78,6 +82,12 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         setAddressStates,
         addressRelationships,
         setAddressRelationships,
+        membershipTypes,
+        setMembershipTypes,
+        membershipStatuses,
+        setMembershipStatuses,
+        volunteerStatuses,
+        setVolunteerStatuses,
         myUnitContacts,
         setMyUnitContacts,
         cfuPhonebookSuburbs,
@@ -111,7 +121,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         volAdminMemberDetailSearchResults,
         setVolAdminMemberDetailSearchResults,
         volAdminCeasedSelectedMember,
-        setVolAdminCeasedSelectedMember
+        setVolAdminCeasedSelectedMember,
+        volAdminMemberNotes,
+        setVolAdminMemberNotes
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
