@@ -39,7 +39,15 @@ const ByDrill = () => {
                   onPress={async () => {
                     appContext.setShowBusyIndicator(true);
                     appContext.setShowDialog(true);
-                    const plans = dataContext.trainingSelectedOrgUnit.Plans;
+
+                    let plans = '';
+                    
+                    if (dataContext.currentUser[0].VolAdmin){
+                      plans = dataContext.volAdminLastSelectedOrgUnit[0].Zzplans;
+                    } else {
+                      plans = dataContext.trainingSelectedOrgUnit.Plans;
+                    }
+                    
                     const short = drill.Short;
 
                     try {

@@ -361,25 +361,36 @@ const VolAdminSearch = ({ route }: props) => {
                                             appContext.setShowDialog(true);
 
                                             try {
-                                                const results = await dataHandlerModule.batchGet(
+                                                const orgUnitResults = await dataHandlerModule.batchGet(
                                                     `Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${x.Zzplans}%27%20and%20InclWithdrawn%20eq%20${searchFilter.withdrawn}`,
                                                     'Z_VOL_MANAGER_SRV',
                                                     'Members'
                                                 );
 
-                                                const saveLastSelected = await dataHandlerModule.batchGet(
+                                                const drillDetailResults = await dataHandlerModule.batchGet(
+                                                    `DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${x.Zzplans}%27`,
+                                                    'Z_VOL_MANAGER_SRV',
+                                                    'DrillDetails'
+                                                )
+
+                                                const memberDrillCompletionResults = await dataHandlerModule.batchGet(
+                                                    `MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${x.Zzplans}%27`,
+                                                    'Z_VOL_MANAGER_SRV',
+                                                    'DrillCompletions'
+                                                )
+
+                                                await dataHandlerModule.batchGet(
                                                     `SaveLastSelectedUnit?Zzplans='${x.Zzplans}'`,
                                                     'Z_VOL_MANAGER_SRV',
                                                     'SaveLastSelectedUnit'
                                                 );
 
-                                                if (results.responseBody.error || saveLastSelected.responseBody.error) {
-                                                    throw new Error('SAP error for updating vol admin org selection')
-                                                }
-
-                                                dataContext.setOrgUnitTeamMembers(results.responseBody.d.results);
+                                                dataContext.setOrgUnitTeamMembers(orgUnitResults.responseBody.d.results);
+                                                dataContext.setDrillDetails(drillDetailResults.responseBody.d.results);
+                                                dataContext.setMemberDrillCompletion(memberDrillCompletionResults.responseBody.d.results);
                                                 dataContext.setVolAdminLastSelectedOrgUnit([x]);
 
+                                                //reset the filters but leave withdrawn
                                                 if (parsedData!.category == 'member') {
                                                     dataContext.setVolAdminMembersSearchFilter({
                                                         withdrawn: searchFilter.withdrawn,
@@ -440,23 +451,33 @@ const VolAdminSearch = ({ route }: props) => {
                                             appContext.setShowDialog(true);
 
                                             try {
-                                                const results = await dataHandlerModule.batchGet(
+                                                const orgUnitResults = await dataHandlerModule.batchGet(
                                                     `Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${x.Zzplans}%27%20and%20InclWithdrawn%20eq%20${searchFilter.withdrawn}`,
                                                     'Z_VOL_MANAGER_SRV',
-                                                    'Brigades'
+                                                    'Members'
                                                 );
 
-                                                const saveLastSelected = await dataHandlerModule.batchGet(
+                                                const drillDetailResults = await dataHandlerModule.batchGet(
+                                                    `DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${x.Zzplans}%27`,
+                                                    'Z_VOL_MANAGER_SRV',
+                                                    'DrillDetails'
+                                                )
+
+                                                const memberDrillCompletionResults = await dataHandlerModule.batchGet(
+                                                    `MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${x.Zzplans}%27`,
+                                                    'Z_VOL_MANAGER_SRV',
+                                                    'DrillCompletions'
+                                                )
+
+                                                await dataHandlerModule.batchGet(
                                                     `SaveLastSelectedUnit?Zzplans='${x.Zzplans}'`,
                                                     'Z_VOL_MANAGER_SRV',
                                                     'SaveLastSelectedUnit'
                                                 );
 
-                                                if (results.responseBody.error || saveLastSelected.responseBody.error) {
-                                                    throw new Error('SAP error for updating vol admin org selection')
-                                                }
-
-                                                dataContext.setOrgUnitTeamMembers(results.responseBody.d.results);
+                                                dataContext.setOrgUnitTeamMembers(orgUnitResults.responseBody.d.results);
+                                                dataContext.setDrillDetails(drillDetailResults.responseBody.d.results);
+                                                dataContext.setMemberDrillCompletion(memberDrillCompletionResults.responseBody.d.results);
                                                 dataContext.setVolAdminLastSelectedOrgUnit([x]);
 
                                                 if (parsedData!.category == 'member') {
