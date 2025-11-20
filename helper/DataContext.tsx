@@ -17,12 +17,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [myUnitContacts, setMyUnitContacts] = useState<any>([]);
     const [cfuPhonebookSuburbs, setCfuPhonebookSuburbs] = useState<any>([]);
     const [employeeAddresses, setEmployeeAddresses] = useState<any>([]);
-    const [cessationReasons, setCessationReasons] = useState<any>([]);
-    const [addressStates, setAddressStates] = useState<any>([]);
-    const [addressRelationships, setAddressRelationships] = useState<any>([]);
-    const [membershipTypes, setMembershipTypes] = useState<any>([]);
-    const [membershipStatuses, setMembershipStatuses] = useState<any>([]);
-    const [volunteerStatuses, setVolunteerStatuses] = useState<any>([]);
     const [brigadeSummary, setBrigadeSummary] = useState<any>([]);
     const [rootOrgUnits, setRootOrgUnits] = useState<any>([]);
     const [orgUnitTeamMembers, setOrgUnitTeamMembers] = useState<any>([]);
@@ -37,6 +31,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [volAdminMemberDetailSearchResults, setVolAdminMemberDetailSearchResults] = useState<any>([]) ////this is specifically for results that is returned for firstname, lastname, pernr searches as vol admin
     const [volAdminCeasedSelectedMember, setVolAdminCeasedSelectedMember] = useState<any | undefined>(undefined) //sets the selection of a ceased member in manage members
     const [volAdminMemberNotes, setVolAdminMemberNotes] = useState<any>([]) //sets the member notes for vol admins
+    const [contactsPrintPlans, setContactsPrintPlans] = useState<string>('') //sets the plans for the contacts for printing
 
     const [volAdminMembersSearchFilter, setVolAdminMembersSearchFilter] = useState<VolAdminSearchFilter>({
         withdrawn : false, 
@@ -76,18 +71,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         setMedalsAwards,
         employeeAddresses,
         setEmployeeAddresses,
-        cessationReasons,
-        setCessationReasons,
-        addressStates,
-        setAddressStates,
-        addressRelationships,
-        setAddressRelationships,
-        membershipTypes,
-        setMembershipTypes,
-        membershipStatuses,
-        setMembershipStatuses,
-        volunteerStatuses,
-        setVolunteerStatuses,
         myUnitContacts,
         setMyUnitContacts,
         cfuPhonebookSuburbs,
@@ -123,7 +106,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         volAdminCeasedSelectedMember,
         setVolAdminCeasedSelectedMember,
         volAdminMemberNotes,
-        setVolAdminMemberNotes
+        setVolAdminMemberNotes,
+        contactsPrintPlans,
+        setContactsPrintPlans
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

@@ -259,19 +259,7 @@ const MyMembers = ({ route }: props) => {
         <View style={GlobalStyles.page}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => {
-                    //check to see if we are vol admin, if we are, clear the filters
-                    if (dataContext.currentUser[0].VolAdmin) {
-                        dataContext.setVolAdminMembersSearchFilter({
-                            withdrawn: dataContext.volAdminMembersSearchFilter.withdrawn,
-                            unit: '',
-                            station: '',
-                            lastName: '',
-                            firstName: '',
-                            pernr: ''
-                        })
-                    }
-
-                    screenFlowModule.onGoBack()
+                    screenFlowModule.onGoBack();
                 }} />
                 <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>{title}</CustomText>
                 {

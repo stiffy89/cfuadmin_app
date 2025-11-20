@@ -140,6 +140,7 @@ const MyUnit = ({ route, navigation }: props) => {
 
                                 const url = `Z_CFU_DOCUMENTS_SRV/FileExports(Url='%2Fdocuments%2Fzfrnsw%2Fcfu%2Fmaps%2FMAP_2%2FCFUPortal_MAP2_${UnitData.Short}.pdf',FileType='application%2Fpdf')/$value`;
                                 const obj = {
+                                    cache : true,
                                     showSharing: false,
                                     displayName: 'Bushfire Risk Map (' + UnitData.Short + ")",
                                     filePath: url,
@@ -160,6 +161,7 @@ const MyUnit = ({ route, navigation }: props) => {
 
                                 const url = `Z_CFU_DOCUMENTS_SRV/FileExports(Url='%2Fdocuments%2Fzfrnsw%2Fcfu%2Fmaps%2FMAP_4%2FCFUPortal_MAP4_${UnitData.Short}.pdf',FileType='application%2Fpdf')/$value`;
                                 const obj = {
+                                    cache : true,
                                     showSharing: false,
                                     displayName: '(PIP) Map (' + UnitData.Short + ')',
                                     filePath: url,

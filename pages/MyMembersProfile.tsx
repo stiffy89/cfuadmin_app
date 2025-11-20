@@ -315,18 +315,55 @@ const MyMembersProfile = ({ route }: props) => {
                             )}
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
+                        <Divider />
+                        <List.Item
+                            style={{ height: 80, justifyContent: "center" }}
+                            onPress={() => {
+                                screenFlowModule.onNavigateToScreen('EquityDiversity');
+                            }}
+                            title={() => (
+                                <CustomText variant="bodyLarge">Equity Diversity</CustomText>
+                            )}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                        />
+                        <Divider />
+                        <List.Item
+                            style={{ height: 80, justifyContent: "center" }}
+                            onPress={() => {
+                                getPageData(
+                                    `PositionRecords?$filter=Mss%20eq%20true%20and%20PskeyPernr%20eq%20%27${employeeDetails.Pernr}%27%20and%20FilterOptionId%20eq%201`,
+                                    'Z_VOL_MEMBER_SRV',
+                                    'PositionRecords',
+                                    (data) => {
+                                        const propData = {
+                                            pernr: employeeDetails.Pernr,
+                                            history: data
+                                        }
+                                        screenFlowModule.onNavigateToScreen('PositionHistory', propData)
+                                    }
+                                )
+                            }}
+                            title={() => (
+                                <CustomText variant="bodyLarge">Position History</CustomText>
+                            )}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                        />
+                        <Divider />
                         {
                             (dataContext.currentUser[0].VolAdmin) && (
-                                <List.Item
-                                    style={{ height: 80, justifyContent: "center" }}
-                                    onPress={() => {
-                                        screenFlowModule.onNavigateToScreen('VolunteerNotes', {pernr : employeeDetails.Pernr});
-                                    }}
-                                    title={() => (
-                                        <CustomText variant="bodyLarge">Volunteer Notes</CustomText>
-                                    )}
-                                    right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
-                                />
+                                <>
+                                    <List.Item
+                                        style={{ height: 80, justifyContent: "center" }}
+                                        onPress={() => {
+                                            screenFlowModule.onNavigateToScreen('VolunteerNotes', { pernr: employeeDetails.Pernr });
+                                        }}
+                                        title={() => (
+                                            <CustomText variant="bodyLarge">Volunteer Notes</CustomText>
+                                        )}
+                                        right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                                    />
+                                    <Divider />
+                                </>
                             )
                         }
                         {

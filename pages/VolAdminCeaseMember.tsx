@@ -12,6 +12,7 @@ import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { registerTranslation, enGB, DatePickerModal } from 'react-native-paper-dates';
 import { useDataContext } from '../helper/DataContext';
 import { useAppContext } from '../helper/AppContext';
+import { useHelperValuesDataContext } from '../helper/HelperValuesDataContext';
 
 
 type props = StackScreenProps<RootStackParamList, 'VolAdminCeaseMember'>;
@@ -23,6 +24,7 @@ const VolAdminCeaseMember = ({ route }: props) => {
     const genericFormatter = new GenericFormatter();
     const dataContext = useDataContext();
     const appContext = useAppContext();
+    const helperDataContext = useHelperValuesDataContext();
 
     const [showDialog, setShowDialog] = useState(false);
     const [dialogText, setDialogText] = useState('');
@@ -30,7 +32,7 @@ const VolAdminCeaseMember = ({ route }: props) => {
     const [showPicker, setShowPicker] = useState(false);
     const [ceaseDate, setCeaseDate] = useState<Date | null>(null);
 
-    const initCeaseReason = dataContext.cessationReasons.filter(x => x.Mgtxt === '')[0];
+    const initCeaseReason = helperDataContext.cessationReasons.filter(x => x.Mgtxt === '')[0];
 
     const [ceaseReason, setCeaseReason] = useState(initCeaseReason);
 
@@ -118,7 +120,7 @@ const VolAdminCeaseMember = ({ route }: props) => {
                 />
                 {(showDropDown) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
-                        {dataContext.cessationReasons.map((x, i) => {
+                        {helperDataContext.cessationReasons.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
@@ -286,12 +288,22 @@ const VolAdminCeaseMember = ({ route }: props) => {
                     endDate: endOfToday,
                     disabledDates: undefined
                 }}
-                onConfirm={(params) => {
-                    if (params.date) {
-                        setCeaseDate(params.date)
+                onConfirm={({date}) => {
+                    
+                    if (!date) {
+                        // no date selected, just close the picker
+                        setShowPicker(false);
+                        return;
                     }
 
-                    setShowPicker(!showPicker)
+                    const newDateObj = new Date(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate()
+                    );
+
+                    setCeaseDate(newDateObj);
+                    setShowPicker(false);
                 }}
                 onDismiss={() => setShowPicker(!showPicker)}
             />

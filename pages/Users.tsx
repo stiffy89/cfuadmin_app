@@ -5,6 +5,7 @@ import { screenFlowModule } from '../helper/ScreenFlowModule';
 import { useAppContext } from '../helper/AppContext';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { useDataContext } from '../helper/DataContext';
+import { useHelperValuesDataContext } from '../helper/HelperValuesDataContext';
 
 
 import { authModule } from '../helper/AuthModule';
@@ -14,6 +15,7 @@ import { OktaLoginResult } from '../types/AppTypes';
 const Users = () => {
 	const appContext = useAppContext();
 	const dataContext = useDataContext();
+	const helperDataContext = useHelperValuesDataContext();
 
 	const onGetInitialLoad = async () => {
 
@@ -74,11 +76,20 @@ const Users = () => {
 			}
 		}
 
+		//set the plans for the contact printing
+		dataContext.setContactsPrintPlans(zzplans);
+
 		let requests = [
 			dataHandlerModule.batchGet('MenuSet?$format=json', 'Z_MOB2_SRV', 'MenuSet', undefined, true),
 			dataHandlerModule.batchGet('EmployeeDetails', 'Z_ESS_MSS_SRV', 'EmployeeDetails'),
 			dataHandlerModule.batchGet('AddressStates?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressStates'),
-			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships')
+			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships'),
+			dataHandlerModule.batchGet('EquityGenderValues', 'Z_ESS_MSS_SRV', 'VH_EquityGenderValues'),
+			dataHandlerModule.batchGet('EquityItemValues?$filter=Edtyp%20eq%20%2708%27', 'Z_ESS_MSS_SRV', 'VH_EquityAboriginalValues'),
+			dataHandlerModule.batchGet('EquityItemValues?$filter=Edtyp%20eq%20%2709%27', 'Z_ESS_MSS_SRV', 'VH_EquityRacialEthnicReligiousValues'),
+			dataHandlerModule.batchGet('EquityItemValues?$filter=Edtyp%20eq%20%2702%27', 'Z_ESS_MSS_SRV', 'VH_EquityFirstLanguageValues'),
+			dataHandlerModule.batchGet('EquityItemValues?$filter=Edtyp%20eq%20%2703%27', 'Z_ESS_MSS_SRV', 'VH_EquityNESLValues'),
+			dataHandlerModule.batchGet('EquityItemValues?$filter=Edtyp%20eq%20%2701%27', 'Z_ESS_MSS_SRV', 'VH_EquityDisabilityValues')
 		]
 
 		if (!user.VolAdmin) {
@@ -93,6 +104,7 @@ const Users = () => {
 			requests.push(dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members'));
 			requests.push(dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions'));
 			requests.push(dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails'));
+			requests.push(dataHandlerModule.batchGet(`PositionHistoryFilters?$skip=0&$top=100`, 'Z_VOL_MANAGER_SRV', 'VH_PositionHistory'));
 		}
 		else if (user.VolAdmin) {
 			requests.push(dataHandlerModule.batchGet('CessationReasons', 'Z_VOL_MANAGER_SRV', 'VH_CessationReasons'));
@@ -104,6 +116,8 @@ const Users = () => {
 			requests.push(dataHandlerModule.batchGet('MembershipTypes?$skip=0&$top=100', 'Z_VOL_MEMBER_SRV', 'VH_MembershipTypes'));
 			requests.push(dataHandlerModule.batchGet('MembershipStatuses?$skip=0&$top=100', 'Z_VOL_MEMBER_SRV', 'VH_MembershipStatuses'));
 			requests.push(dataHandlerModule.batchGet('VolunteerStatuses?$skip=0&$top=100', 'Z_VOL_MEMBER_SRV', 'VH_VolunteerStatuses'));
+			requests.push(dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails'));
+			requests.push(dataHandlerModule.batchGet(`PositionHistoryFilters?$skip=0&$top=100`, 'Z_VOL_MANAGER_SRV', 'VH_PositionHistory'));
 		}
 
 		const results = await Promise.allSettled(requests);
@@ -148,30 +162,6 @@ const Users = () => {
 					dataContext.setVolunteerRoles(x.value.responseBody.d.results);
 					break;
 
-				case 'VH_CessationReasons':
-					dataContext.setCessationReasons(x.value.responseBody.d.results);
-					break;
-
-				case 'VH_AddressStates':
-					dataContext.setAddressStates(x.value.responseBody.d.results);
-					break;
-
-				case 'VH_AddressRelationships':
-					dataContext.setAddressRelationships(x.value.responseBody.d.results);
-					break;
-
-				case 'VH_MembershipTypes':
-					dataContext.setMembershipTypes(x.value.responseBody.d.results);
-					break;
-
-				case 'VH_MembershipStatuses':
-					dataContext.setMembershipStatuses(x.value.responseBody.d.results);
-					break;
-
-				case 'VH_VolunteerStatuses':
-					dataContext.setVolunteerStatuses(x.value.responseBody.d.results);
-					break;
-
 				case 'Contacts':
 					dataContext.setMyUnitContacts(x.value.responseBody.d.results);
 					break;
@@ -195,6 +185,58 @@ const Users = () => {
 				case 'RootOrgUnits':
 					dataContext.setRootOrgUnits(x.value.responseBody.d.results);
 					dataContext.setTrainingSelectedOrgUnit(x.value.responseBody.d.results[0]);
+					break;
+
+				case 'VH_PositionHistory':
+					helperDataContext.setPositionHistoryHelperValue(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_CessationReasons':
+					helperDataContext.setCessationReasons(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_AddressStates':
+					helperDataContext.setAddressStates(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_AddressRelationships':
+					helperDataContext.setAddressRelationships(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_MembershipTypes':
+					helperDataContext.setMembershipTypes(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_MembershipStatuses':
+					helperDataContext.setMembershipStatuses(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_VolunteerStatuses':
+					helperDataContext.setVolunteerStatuses(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_EquityAboriginalValues':
+					helperDataContext.setEquityAboriginalValues(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_EquityRacialEthnicReligiousValues':
+					helperDataContext.setEquityRacialEthnicReligiousValues(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_EquityFirstLanguageValues':
+					helperDataContext.setEquityFirstLanguageValues(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_EquityNESLValues':
+					helperDataContext.setEquityNESLValues(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_EquityDisabilityValues':
+					helperDataContext.setEquityDisabilityValues(x.value.responseBody.d.results);
+					break;
+
+				case 'VH_EquityGenderValues':
+					helperDataContext.setEquityGenderValues(x.value.responseBody.d.results);
 					break;
 			}
 		}

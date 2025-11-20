@@ -289,6 +289,17 @@ const ProfilePage = () => {
                             )}
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
+                        <Divider/>
+                        <List.Item
+                            style={{ height: 80, justifyContent: "center" }}
+                            onPress={() => {
+                                screenFlowModule.onNavigateToScreen('EquityDiversity');
+                            }}
+                            title={() => (
+                                <CustomText variant="bodyLarge">Equity Diversity</CustomText>
+                            )}
+                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                        />
                     </List.Section>
                 </View>
             </View>

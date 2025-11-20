@@ -498,10 +498,10 @@ const TrainingMain = ({ route }: props) => {
 
                 const url = `Z_VOL_MANAGER_SRV/DrillsPrints(Zzplans='${dataContext.trainingSelectedOrgUnit.Plans}')/$value`;
                 const obj = {
+                  cache : false,
                   showSharing: true,
                   displayName: "Training Drills - " + dataContext.trainingSelectedOrgUnit.Short,
-                  filePath: url,
-                  fileName: `Training_Drills_${dataContext.trainingSelectedOrgUnit.Short}`
+                  filePath: url
                 }
                 screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
               }}

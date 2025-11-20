@@ -27,6 +27,8 @@ import trainingIcon from '../assets/menuicons/menu-training.png';
 import allServicesIcon from "../assets/menuicons/menu-all-services.png"
 import headerBg from "../assets/images/header-bg-transparent.png"
 
+import { dataHandlerModule } from '../helper/DataHandlerModule';
+
 
 const NameBanner = () => {
     const theme = useTheme();
@@ -205,7 +207,9 @@ const LegacyServices = () => {
 
 const Services = () => {
     const theme = useTheme();
-    const {services, setCurrentProfile, currentUser} = useDataContext();
+    const appContext = useAppContext();
+    const {services, setCurrentProfile, setVolAdminMembersSearchFilter, currentUser, volAdminLastSelectedOrgUnit, setOrgUnitTeamMembers} = useDataContext();
+    
 
     const iconMapping : any = {
         'menu-skills-maint.png' : skillsMaintIcon,
@@ -224,8 +228,37 @@ const Services = () => {
         "/cfu-unit-details": (TargetPath: string, Title: string) => {
             screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen', {title: Title});
         },
-        "/cfu-manage-members" : (TargetPath: string, Title: string) => {
+        "/cfu-manage-members" : async (TargetPath: string, Title: string) => {
             setCurrentProfile('MyMembers');
+
+
+            //if we are vol admin, we will clear the filters and reset the org unit data before navigating there
+            if (currentUser[0].VolAdmin) {
+                appContext.setShowBusyIndicator(true);
+                appContext.setShowDialog(true);
+
+                setVolAdminMembersSearchFilter({
+                    withdrawn: false,
+                    unit: '',
+                    station: '',
+                    lastName: '',
+                    firstName: '',
+                    pernr: ''
+                });
+
+                const plans= volAdminLastSelectedOrgUnit[0].Zzplans;
+
+                try {
+                    const results = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
+                    setOrgUnitTeamMembers(results.responseBody.d.results);
+                    appContext.setShowDialog(false);
+                } catch (error){
+                    //TODO handle error
+                    console.log('Home section read error', error);
+                    appContext.setShowDialog(false);
+                }
+            }
+
             screenFlowModule.onNavigateToScreen('MyMembers', {title: Title});
         },
         "/cfu-training": (TargetPath: string, Title: string) => {

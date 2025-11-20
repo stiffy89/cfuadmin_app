@@ -53,6 +53,12 @@ const GlobalStyles = StyleSheet.create({
         borderBottomRightRadius: 0,
         borderBottomColor: 'grey',
         borderBottomWidth: 1
+    },
+    allRoundedCorners: {
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
     }
 });
 

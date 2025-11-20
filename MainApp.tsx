@@ -46,6 +46,8 @@ import VolAdminSearch from './pages/VolAdminSearch';
 import VolAdminCeaseMember from './pages/VolAdminCeaseMember';
 import AllServicesListScreen from './pages/AllServicesListScreen';
 import VolunteerNotes from './pages/VolunteerNotes';
+import PositionHistory from './pages/PositionHistory';
+import EquityDiversity from './pages/EquityDiversity';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -508,6 +510,8 @@ export default function MainApp() {
 							<Stack.Screen name='FeedbackScreen' component={FeedbackScreen} options={{animation: "fade",presentation:"transparentModal", cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
 							<Stack.Screen name='AllServicesListScreen' component={AllServicesListScreen} options={{animation: "slide_from_bottom", gestureEnabled: false, cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
 							<Stack.Screen name='VolunteerNotes' component={VolunteerNotes}/>
+							<Stack.Screen name='PositionHistory' component={PositionHistory}/>
+							<Stack.Screen name='EquityDiversity' component={EquityDiversity}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>

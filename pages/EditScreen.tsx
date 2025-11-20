@@ -19,6 +19,7 @@ import GlobalStyles from "../style/GlobalStyles";
 import { useAppContext } from "../helper/AppContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 import { useDataContext } from "../helper/DataContext";
+import { useHelperValuesDataContext } from "../helper/HelperValuesDataContext";
 import GenericFormatter from "../helper/GenericFormatters";
 import { DateTime } from "luxon";
 import { registerTranslation, enGB, DatePickerModal } from 'react-native-paper-dates';
@@ -139,6 +140,7 @@ const ContactDetailsEdit = (data: any) => {
     const dataObj = data.data;
     const appContext = useAppContext();
     const dataContext = useDataContext();
+    const helperDataContext = useHelperValuesDataContext();
 
     const key = Object.keys(dataObj)[0];
     let originalData = dataObj[key];
@@ -600,7 +602,7 @@ const ContactDetailsEdit = (data: any) => {
                         }
                         anchorPosition="top"
                     >
-                        {dataContext.addressStates.map((state, index) => {
+                        {helperDataContext.addressStates.map((state, index) => {
                             return (
                                 <View key={"container_" + index}>
                                     <Menu.Item
@@ -661,6 +663,7 @@ const EmergencyContactsEdit = (data: any) => {
     const theme = useTheme();
     const dataObj = data.data;
     const dataContext = useDataContext();
+    const helperDataContext = useHelperValuesDataContext();
     const appContext = useAppContext();
     const [emergencyContact, setEmergencyContact] = useState(dataObj);
     const [showRelatDropDown, setShowRelatDropDown] = useState(false);
@@ -862,7 +865,7 @@ const EmergencyContactsEdit = (data: any) => {
                     }
                     anchorPosition="top"
                 >
-                    {dataContext.addressRelationships.map((relationship, index) => {
+                    {helperDataContext.addressRelationships.map((relationship, index) => {
                         return (
                             <View key={"container_" + index}>
                                 <Menu.Item
@@ -947,7 +950,7 @@ const EmergencyContactsEdit = (data: any) => {
                     }
                     anchorPosition="top"
                 >
-                    {dataContext.addressStates.map((state, index) => {
+                    {helperDataContext.addressStates.map((state, index) => {
                         return (
                             <View key={"container_" + index}>
                                 <Menu.Item
@@ -1258,6 +1261,7 @@ const VolunteerDetailsEdit = (data: any) => {
 const VolunteerEdit = (data: any) => {
     const appContext = useAppContext();
     const dataContext = useDataContext();
+    const helperDataContext = useHelperValuesDataContext();
     const genericFormatter = new GenericFormatter();
 
     const theme = useTheme();
@@ -1273,19 +1277,33 @@ const VolunteerEdit = (data: any) => {
     const [hasVolStatusError, setHasVolStatusError] = useState(false);
     const [errorVolStatusMsg, setErrorVolStatusMsg] = useState<string>("");
 
+    function CloseOpenedDropDown() {
+        if (showMembershipType) {
+            setShowMembershipType(false);
+        }
+
+        if (showMembershipStatus) {
+            setShowMembershipStatus(false);
+        }
+
+        if (showVolunteerStatus) {
+            setShowVolunteerStatus(false);
+        }
+    }
+
     //membershiptype VH drop down
     const [showMembershipType, setShowMembershipType] = useState(false);
-    const initialSelectedMembershipType = dataContext.membershipTypes.filter(x => x.Mtype === membershipDetail.Zzmemty)[0];
+    const initialSelectedMembershipType = helperDataContext.membershipTypes.filter(x => x.Mtype === membershipDetail.Zzmemty)[0];
     const [selectedMembershipType, setSelectedMembershipType] = useState<any>(initialSelectedMembershipType);
 
     //memberstatus VH drop down
     const [showMembershipStatus, setShowMembershipStatus] = useState(false);
-    const initialSelectedMembershipStatus = dataContext.membershipStatuses.filter(x => x.Statu === membershipDetail.Zzstatu)[0];
+    const initialSelectedMembershipStatus = helperDataContext.membershipStatuses.filter(x => x.Statu === membershipDetail.Zzstatu)[0];
     const [selectedMembershipStatus, setSelectedMembershipStatus] = useState<any>(initialSelectedMembershipStatus);
 
     //volstatus VH drop down
     const [showVolunteerStatus, setShowVolunteerStatus] = useState(false);
-    const initialSelectedVolunteerStatus = dataContext.volunteerStatuses.filter(x => x.Statu === membershipDetail.Zzvstat)[0];
+    const initialSelectedVolunteerStatus = helperDataContext.volunteerStatuses.filter(x => x.Statu === membershipDetail.Zzvstat)[0];
     const [selectedVolunteerStatus, setSelectedVolunteerStatus] = useState<any>(initialSelectedVolunteerStatus);
 
 
@@ -1313,6 +1331,7 @@ const VolunteerEdit = (data: any) => {
                                     return <LucideIcons.ChevronDown />
                                 }}
                                 onPress={() => {
+                                    CloseOpenedDropDown();
                                     setShowMembershipType(!showMembershipType);
                                 }}
                             />
@@ -1322,7 +1341,7 @@ const VolunteerEdit = (data: any) => {
                 {hasMemberTypeError && <HelperText type="error">{errorMemberTypeMsg}</HelperText>}
                 {(showMembershipType) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
-                        {dataContext.membershipTypes.map((x, i) => {
+                        {helperDataContext.membershipTypes.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
@@ -1365,6 +1384,7 @@ const VolunteerEdit = (data: any) => {
                                     return <LucideIcons.ChevronDown />
                                 }}
                                 onPress={() => {
+                                    CloseOpenedDropDown();
                                     setShowMembershipStatus(!showMembershipStatus);
                                 }}
                             />
@@ -1374,7 +1394,7 @@ const VolunteerEdit = (data: any) => {
                 {hasMemberStatusError && <HelperText type="error">{errorMemberStatusMsg}</HelperText>}
                 {(showMembershipStatus) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
-                        {dataContext.membershipStatuses.map((x, i) => {
+                        {helperDataContext.membershipStatuses.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
@@ -1414,6 +1434,7 @@ const VolunteerEdit = (data: any) => {
                                 return <LucideIcons.ChevronDown />
                             }}
                             onPress={() => {
+                                CloseOpenedDropDown();
                                 setShowVolunteerStatus(!showVolunteerStatus);
                             }}
                         />
@@ -1422,7 +1443,7 @@ const VolunteerEdit = (data: any) => {
                 {hasVolStatusError && <HelperText type="error">{errorVolStatusMsg}</HelperText>}
                 {(showVolunteerStatus) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -450, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
-                        {dataContext.volunteerStatuses.map((x, i) => {
+                        {helperDataContext.volunteerStatuses.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
@@ -1543,6 +1564,422 @@ const VolunteerEdit = (data: any) => {
     );
 }
 
+const EquityDiversity = (data : any) => {
+    const theme = useTheme();
+    const appContext = useAppContext();
+    const dataContext = useDataContext();
+    const helperDataContext = useHelperValuesDataContext();
+    const [equityData, setEquityData] = useState(data.data[0]);
+
+    //gender
+    const [showGender, setShowGender] = useState(false);
+    const initialSelectedGender = helperDataContext.equityGenderValues.filter(x => x.DomvalueL === equityData.Gesch)[0];
+    const [selectedGender, setSelectedGender] = useState<any>(initialSelectedGender);
+
+    //aboriginal
+    const [showAboriginal, setShowAboriginal] = useState(false);
+    const initialSelectedAboriginal = helperDataContext.equityAboriginalValues.filter(x => x.Edseq === equityData.Permi)[0];
+    const [selectedAboriginal, setSelectedAboriginal] = useState<any>(initialSelectedAboriginal);
+
+    //racial
+    const [showRacial, setShowRacial] = useState(false);
+    const initialSelectedRacial = helperDataContext.equityRacialEthnicReligiousValues.filter(x => x.Edseq === equityData.Movec)[0];
+    const [selectedRacial, setSelectedRacial] = useState<any>(initialSelectedRacial);
+
+    //first language
+    const [showFirstLanguage, setShowFirstLanguage] = useState(false);
+    const initialSelectedFirstLanguage = helperDataContext.equityFirstLanguageValues.filter(x => x.Edseq === equityData.Fslng)[0];
+    const [selectedFirstLanguage, setSelectedFirstLanguage] = useState<any>(initialSelectedFirstLanguage);
+
+    //NESL
+    const [showNESL, setShowNESL] = useState(false);
+    const initialNESL = helperDataContext.equityNESLValues.filter(x => x.Edseq === equityData.Mslng)[0];
+    const [selectedNESL, setSelectedNESL] = useState<any>(initialNESL);
+
+    //Disability
+    const [showDisability, setShowDisability] = useState(false);
+    const initialSelectedDisability = helperDataContext.equityDisabilityValues.filter(x => x.Edseq === equityData.Disap)[0];
+    const [selectedDisability, setSelectedDisability] = useState<any>(initialSelectedDisability);
+
+    function CloseOpenedDropDown() {
+        if (showGender) {
+            setShowGender(false);
+        }
+
+        if (showAboriginal) {
+            setShowAboriginal(false);
+        }
+
+        if (showDisability) {
+            setShowDisability(false);
+        }
+
+        if (showFirstLanguage) {
+            setShowFirstLanguage(false);
+        }
+
+        if (showNESL) {
+            setShowNESL(false);
+        }
+
+        if (showRacial) {
+            setShowRacial(false);
+        }
+    }
+
+    return (
+        <ScrollView style={{ paddingHorizontal: 20, flex: 1 }}>
+            <CustomText style={{ marginBottom: 20 }} variant="titleLargeBold">
+                Equity Diversity Edit
+            </CustomText>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={selectedNESL.Eddes}
+                    editable={false}
+                    label='Main non-english language spoken'
+                    right={
+                        <TextInput.Icon
+                            icon={() => {
+                                return <LucideIcons.ChevronDown />
+                            }}
+                            onPress={() => {
+                                CloseOpenedDropDown();
+                                setShowNESL(!showNESL);
+                            }}
+                        />
+                    }
+                />
+                {(showNESL) &&
+                    <ScrollView style={{height: 550, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        <List.Section>
+                            {helperDataContext.equityNESLValues.map((x, i) => {
+                                return (
+                                    <React.Fragment key={'Fragment_' + i}>
+                                        <List.Item
+                                            key={i}
+                                            title={`${x.Eddes}`}
+                                            style={{
+                                                backgroundColor: (x.Edseq === selectedNESL.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                            }}
+                                            onPress={async () => {
+                                                setSelectedNESL(x);
+                                                setEquityData({
+                                                    ...equityData,
+                                                    Mslng : x.Edseq
+                                                });
+
+                                                setShowNESL(!showNESL);
+                                            }}
+                                        />
+                                        <Divider key={'divider' + i} />
+                                    </React.Fragment>
+                                )
+                            })}
+                        </List.Section>
+                    </ScrollView>
+                }
+            </View>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={selectedGender.Ddtext}
+                    editable={false}
+                    label='Gender for Equity and Diversity'
+                    right={
+                        <TextInput.Icon
+                            icon={() => {
+                                return <LucideIcons.ChevronDown />
+                            }}
+                            onPress={() => {
+                                CloseOpenedDropDown();
+                                setShowGender(!showGender);
+                            }}
+                        />
+                    }
+                />
+                {(showGender) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {helperDataContext.equityGenderValues.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Ddtext}`}
+                                        style={{
+                                            backgroundColor: (x.DomvalueL === selectedGender.DomvalueL) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedGender(x);
+
+                                            setEquityData({
+                                                ...equityData,
+                                                Gesch : x.DomvalueL
+                                            }); 
+
+                                            setShowGender(!showGender);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={selectedAboriginal.Eddes}
+                    editable={false}
+                    label='Aboriginal or Torres Strait Islander'
+                    right={
+                        <TextInput.Icon
+                            icon={() => {
+                                return <LucideIcons.ChevronDown />
+                            }}
+                            onPress={() => {
+                                CloseOpenedDropDown();
+                                setShowAboriginal(!showAboriginal);
+                            }}
+                        />
+                    }
+                />
+                {(showAboriginal) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {helperDataContext.equityAboriginalValues.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Eddes}`}
+                                        style={{
+                                            backgroundColor: (x.Edseq === selectedAboriginal.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedAboriginal(x);
+                                            setEquityData({
+                                                ...equityData,
+                                                Permi : x.Edseq
+                                            }); 
+
+                                            setShowAboriginal(!showAboriginal);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput}}
+                    mode='flat'
+                    value={selectedRacial.Eddes}
+                    editable={false}
+                    label='Racial/Ethnic/Religious Minority'
+                    right={
+                        <TextInput.Icon
+                            icon={() => {
+                                return <LucideIcons.ChevronDown />
+                            }}
+                            onPress={() => {
+                                CloseOpenedDropDown();
+                                setShowRacial(!showRacial);
+                            }}
+                        />
+                    }
+                />
+                {(showRacial) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {helperDataContext.equityRacialEthnicReligiousValues.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Eddes}`}
+                                        style={{
+                                            backgroundColor: (x.Edseq === selectedRacial.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedRacial(x);
+                                            setEquityData({
+                                                ...equityData,
+                                                Movec : x.Edseq
+                                            });
+
+                                            setShowRacial(!showRacial);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={selectedFirstLanguage.Eddes}
+                    editable={false}
+                    label='First Language'
+                    right={
+                        <TextInput.Icon
+                            icon={() => {
+                                return <LucideIcons.ChevronDown />
+                            }}
+                            onPress={() => {
+                                CloseOpenedDropDown();
+                                setShowFirstLanguage(!showFirstLanguage);
+                            }}
+                        />
+                    }
+                />
+                {(showFirstLanguage) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {helperDataContext.equityFirstLanguageValues.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Eddes}`}
+                                        style={{
+                                            backgroundColor: (x.Edseq === selectedFirstLanguage.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedFirstLanguage(x);
+
+                                            setEquityData({
+                                                ...equityData,
+                                                Fslng : x.Edseq
+                                            });
+
+                                            setShowFirstLanguage(!showFirstLanguage);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    mode='flat'
+                    value={selectedDisability.Eddes}
+                    editable={false}
+                    label='Disability'
+                    right={
+                        <TextInput.Icon
+                            icon={() => {
+                                return <LucideIcons.ChevronDown />
+                            }}
+                            onPress={() => {
+                                CloseOpenedDropDown();
+                                setShowDisability(!showDisability);
+                            }}
+                        />
+                    }
+                />
+                {(showDisability) &&
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -220, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                        {helperDataContext.equityDisabilityValues.map((x, i) => {
+                            return (
+                                <React.Fragment key={'Fragment_' + i}>
+                                    <List.Item
+                                        key={i}
+                                        title={`${x.Eddes}`}
+                                        style={{
+                                            backgroundColor: (x.Edseq === selectedDisability.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                        }}
+                                        onPress={async () => {
+                                            setSelectedDisability(x);
+                                            setEquityData({
+                                                ...equityData,
+                                                Disap : x.Edseq
+                                            });
+
+                                            setShowDisability(!showDisability);
+                                        }}
+                                    />
+                                    <Divider key={'divider' + i} />
+                                </React.Fragment>
+                            )
+                        })}
+                    </List.Section>
+                }
+            </View>
+            <Button
+                style={{
+                    marginTop: 20,
+                    backgroundColor: theme.colors.primary
+                }}
+                mode="elevated"
+                textColor={theme.colors.background}
+                onPress={async () => {
+                    //check to see if keyboard is open, if it is, close it
+                    const keyboardIsVisible = Keyboard.isVisible();
+
+                    if (keyboardIsVisible) {
+                        Keyboard.dismiss();
+                    }
+
+                    appContext.setShowBusyIndicator(true);
+                    appContext.setShowDialog(true);
+
+                    const uriParts = equityData.__metadata.uri.split("Z_ESS_MSS_SRV");
+                    let uriPath = uriParts[1].substring(1);
+
+                    try {
+                        const response = await dataHandlerModule.batchSingleUpdate(
+                            uriPath,
+                            "Z_ESS_MSS_SRV",
+                            equityData
+                        );
+
+                        if (!response.responseBody) {
+                            try {
+                                if (dataContext.currentProfile == 'MyMembers'){
+                                    const updatedData = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${equityData.Pernr}%27%20and%20Zzplans%20eq%20%27${dataContext.myMembersMembershipDetails[0].Zzplans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails')
+                                    dataContext.setMyMemberEmployeeDetails(updatedData.responseBody.d.results);
+                                }
+                                else {
+                                    const updatedData = await dataHandlerModule.batchGet(`EmployeeDetails`, 'Z_ESS_MSS_SRV', 'EmployeeDetails')
+                                    dataContext.setEmployeeDetails(updatedData.responseBody.d.results);
+                                }
+                                
+                                appContext.setShowDialog(false);
+                                screenFlowModule.onGoBack();
+                            }
+                            catch (error) {
+                                //TODO handle error
+                                console.log(error);
+                                appContext.setShowDialog(false);
+                            }
+                        }
+                    }
+                    catch (error) {
+                        //TODO handle error
+                        console.log(error);
+                        appContext.setShowDialog(false);
+                    } 
+                }}
+            >
+                Save
+            </Button>
+        </ScrollView>
+    );
+}
+
 const EditScreen = ({ route, navigation }: props) => {
     const EditPayload = route.params;
     let SelectedEditScreen;
@@ -1587,6 +2024,10 @@ const EditScreen = ({ route, navigation }: props) => {
 
         case "VolunteerData":
             SelectedEditScreen = <VolunteerEdit data={EditPayload.editData} />
+            break;
+
+        case "EquityDiversity":
+            SelectedEditScreen = <EquityDiversity data={EditPayload.editData}/>
             break;
     }
 

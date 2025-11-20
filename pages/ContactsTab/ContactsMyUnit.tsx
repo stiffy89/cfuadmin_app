@@ -107,6 +107,10 @@ const ContactsMyUnit = () => {
                                                             const contactsOrgUnit = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MEMBER_SRV', 'Contacts');
                                                             const filteredList = filterAndFormatList(contactsOrgUnit.responseBody.d.results);
                                                             setContactsList(filteredList);
+
+                                                            //set the selected org plan for printing
+                                                            dataContext.setContactsPrintPlans(plans);
+
                                                             appContext.setShowDialog(false);
                                                         }
                                                         catch (error) {

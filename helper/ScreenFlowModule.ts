@@ -334,6 +334,21 @@ export class ScreenFlowModule {
                         'VolunteerNotes',
                         data
                     )
+                    break;
+
+                case 'PositionHistory':
+                    this.navigator?.navigate(
+                        'PositionHistory',
+                        data
+                    )
+                    break;
+
+                case 'EquityDiversity':
+                    this.navigator?.navigate(
+                        'EquityDiversity',
+                        data
+                    )
+                    break;
             }
         }
     }

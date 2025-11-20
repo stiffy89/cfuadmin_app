@@ -5,7 +5,7 @@ import * as LucideIcons from "lucide-react-native";
 import CustomText from "../assets/CustomText";
 
 import { File, Paths } from 'expo-file-system';
-import {shareAsync} from 'expo-sharing';
+import { shareAsync } from 'expo-sharing';
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/AppTypes";
@@ -58,23 +58,31 @@ const PDFDisplayPage = ({ route }: props) => {
     const params = route.params;
 
     const displayName = params!.displayName;
-    const fileName = params!.fileName;
     const filePath = params!.filePath;
+    const cache = params!.cache;
 
     useEffect(() => {
 
-        const file = new File(Paths.cache, fileName);
-
-        if (params!.showSharing){
+        if (params!.showSharing) {
             setShowSharing(true);
         }
 
-        if (file.exists) {
-            setLocalFilePath(file.uri)
-            setPdfSource(file.uri)
-        } else {
+        //storing the file locally in a file
+        if (cache) {
+            const fileName = params!.fileName;
+            if (!fileName){
+                //TODO handle error here - we need to pass a file name for cache
+                console.log('Error - no filename provided');
+                return;
+            }
 
-            loadPDF(filePath)
+            const file = new File(Paths.cache, fileName);
+
+            if (file.exists) {
+                setLocalFilePath(file.uri)
+                setPdfSource(file.uri)
+            } else {
+                loadPDF(filePath)
                 .then((pdfString) => {
                     setPdfSource(`data:application/pdf;base64,${pdfString}`)
                     storePDF(pdfString, fileName).then(res => setLocalFilePath(res))
@@ -83,11 +91,23 @@ const PDFDisplayPage = ({ route }: props) => {
                     //TODO handle error
                     console.log(error);
                 })
-        } 
+            }
+        }
+        else {
+            loadPDF(filePath)
+            .then((pdfString) => {
+                setPdfSource(`data:application/pdf;base64,${pdfString}`)
+            })
+            .catch((error) => {
+                //TODO handle error
+                console.log(error);
+            })
+        }
+
     }, []);
 
     const shareFile = async () => {
-        if(localFilePath){
+        if (localFilePath) {
             shareAsync(localFilePath)
         }
     };
@@ -99,7 +119,7 @@ const PDFDisplayPage = ({ route }: props) => {
                 <CustomText style={{ marginLeft: 20, marginRight: 60 }} variant='titleMediumBold'>{displayName}</CustomText>
                 {
                     showSharing && (
-                        <IconButton icon={() => <CustomIcon name="Share" color={!localFilePath ? theme.colors.surfaceDisabled : theme.colors.primary} size={25}/>} disabled={!localFilePath} size={20} onPress={shareFile} />
+                        <IconButton icon={() => <CustomIcon name="Share" color={!localFilePath ? theme.colors.surfaceDisabled : theme.colors.primary} size={25} />} disabled={!localFilePath} size={20} onPress={shareFile} />
                     )
                 }
             </View>
