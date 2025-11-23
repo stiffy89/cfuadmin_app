@@ -222,10 +222,9 @@ const VolAdminCeaseMember = ({ route }: props) => {
                                             appContext.setShowDialog(false);
                                             screenFlowModule.onGoBack();
 
-                                        } catch (error){
-                                            //TODO handle error
-                                            console.log(error);
+                                        } catch (error) {
                                             appContext.setShowDialog(false);
+                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                         }
                                     }
                                     else {
@@ -241,24 +240,21 @@ const VolAdminCeaseMember = ({ route }: props) => {
                                             appContext.setShowDialog(false);
                                             screenFlowModule.onGoBack();
                                         }
-                                        catch (error){
-                                            //TODO handle error
-                                            console.log(error);
+                                        catch (error) {
                                             appContext.setShowDialog(false);
+                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                         }
                                     }
                                 }
                                 catch (error) {
-                                    //TODO handle error
                                     appContext.setShowDialog(false);
-                                    throw error;
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                 }
                             }
                         }
                         catch (error) {
-                            //TODO handle error
-                            console.log(error)
                             appContext.setShowDialog(false);
+                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
                         }
                     }}
                 >
@@ -288,8 +284,8 @@ const VolAdminCeaseMember = ({ route }: props) => {
                     endDate: endOfToday,
                     disabledDates: undefined
                 }}
-                onConfirm={({date}) => {
-                    
+                onConfirm={({ date }) => {
+
                     if (!date) {
                         // no date selected, just close the picker
                         setShowPicker(false);

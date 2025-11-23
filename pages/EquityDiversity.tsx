@@ -49,9 +49,7 @@ const EquityDiversity = ({route, navigation} : props) => {
         catch (error) {
             appContext.setShowBusyIndicator(false);
             appContext.setShowDialog(false);
-
-            //TODO handle error
-            console.log(error);
+            screenFlowModule.onNavigateToScreen('ErrorPage', error);
         }
     }
 

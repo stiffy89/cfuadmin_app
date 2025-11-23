@@ -29,7 +29,7 @@ const ContactsMyUnit = () => {
     }, [])
 
     //filter our contacts
-    const filterAndFormatList = (List : any[]) => {
+    const filterAndFormatList = (List: any[]) => {
         const sortedList = [...List].sort((a, b) =>
             a.Nachn.localeCompare(b.Nachn)
         )
@@ -61,7 +61,7 @@ const ContactsMyUnit = () => {
         <>
             {
                 (dataContext.rootOrgUnits.length > 1) && (
-                    <View style={{marginTop: 20}}>
+                    <View style={{ marginTop: 20 }}>
                         <View style={{ marginLeft: 20 }}>
                             <CustomText variant='bodyLargeBold'>{selectedOrgUnit ? selectedOrgUnit.Stext : ""}</CustomText>
                         </View>
@@ -114,13 +114,9 @@ const ContactsMyUnit = () => {
                                                             appContext.setShowDialog(false);
                                                         }
                                                         catch (error) {
-                                                            //TODO handle error
-                                                            appContext.setShowBusyIndicator(false);
                                                             appContext.setShowDialog(false);
-                                                            console.log(error);
+                                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                                         }
-
-
                                                     }}
                                                 />
                                                 <Divider key={'divider' + i} />
@@ -155,7 +151,7 @@ const ContactsMyUnit = () => {
                                                                 }
 
                                                                 screenFlowModule.onNavigateToScreen('MyUnitContactDetail', contactInfo)
-                                                            }} right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />} left={() => <View style={{ backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50 }}><LucideIcons.User color={theme.colors.outline} /></View>} style={{ marginLeft: 20 }} key={'item_' + ii} title={`${contact.Vorna} ${contact.Nachn}`} description={genericFormatter.formatRole(contact.Role)}/>
+                                                            }} right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />} left={() => <View style={{ backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50 }}><LucideIcons.User color={theme.colors.outline} /></View>} style={{ marginLeft: 20 }} key={'item_' + ii} title={`${contact.Vorna} ${contact.Nachn}`} description={genericFormatter.formatRole(contact.Role)} />
                                                             <Divider />
                                                         </React.Fragment>
                                                     )

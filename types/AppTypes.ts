@@ -252,6 +252,7 @@ export type RootStackParamList = {
     VolunteerNotes: Record<string, string> | undefined;
     PositionHistory : PositionHistoryPageProp;
     EquityDiversity : undefined;
+    ErrorPage : any;
 }
 
 export type TabParamList = {

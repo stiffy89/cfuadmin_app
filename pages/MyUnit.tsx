@@ -89,10 +89,8 @@ const MyUnit = ({ route, navigation }: props) => {
                                                                 appContext.setShowDialog(false);
                                                             }
                                                             catch (error) {
-                                                                //TODO handle error
-                                                                appContext.setShowBusyIndicator(false);
                                                                 appContext.setShowDialog(false);
-                                                                console.log(error);
+                                                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                                             }
 
 

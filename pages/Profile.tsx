@@ -227,15 +227,21 @@ const ProfilePage = () => {
                                     const results = await Promise.allSettled(requests);
                                     const passed = results.every(x => x.status == 'fulfilled');
                                     if (!passed) {
-                                        //TODO take them to a critical error page
-                                        appContext.setDialogMessage('Critical error occurred during the initial GET');
+                                        appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                            isAxiosError: false,
+                                            message : "Hang on, we found an error. There was a problem in getting your initial data. Please go back and try again or contact your IT administrator for further assistance."
+                                        });
                                         return;
                                     }
 
                                     const readErrors = results.filter(x => x.value.responseBody.error);
                                     if (readErrors.length > 0) {
-                                        //TODO handle read errors somewhere
-                                        appContext.setDialogMessage('Read error on initialisation');
+                                        appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                            isAxiosError: false,
+                                            message : "Hang on, we found an error. There was a problem in getting your initial data. Please go back and try again or contact your IT administrator for further assistance."
+                                        });
                                     }
 
                                     for (const x of results) {

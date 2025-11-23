@@ -12,12 +12,12 @@ class DataHandlerModule {
     private csrfToken: string | null = null;
 
     private useToken = false;
-    
+
     //TODO remove this for production
     private authType: string = 'Basic';
 
     //TODO remove this for production
-    setAuthType (type : string) {
+    setAuthType(type: string) {
         this.authType = type;
     }
 
@@ -102,7 +102,7 @@ class DataHandlerModule {
     securityInstanceInitialised() {
         return (this.axiosSecurityInstance !== null)
     }
-    
+
 
     async getInitialTokens(idToken: string): Promise<AxiosResponse> {
         try {
@@ -262,13 +262,25 @@ class DataHandlerModule {
                 }
             );
 
-            if (!postResponse) throw new Error('no response from update');
+            if (!postResponse) {
+                const newError = {
+                    isAxiosError: false,
+                    message: 'no response from UPDATE'
+                }
+            
+                throw newError;
+            }
 
             //format the response
             const jsonResponse = this.formatMERGEResponse(postResponse.data);
 
-            if (jsonResponse.error){
-                throw new Error(jsonResponse.error);
+            if (jsonResponse.error) {
+                const newError = {
+                    isAxiosError: false,
+                    message: 'SAP Error - ' + jsonResponse.error.message.value
+                }
+                
+                throw newError;
             }
 
             return {
@@ -401,10 +413,26 @@ class DataHandlerModule {
                 }
             );
 
-            if (!postResponse) throw new Error('no response from update');
+            if (!postResponse) {
+                const newError = {
+                    isAxiosError: false,
+                    message: 'no response from DELETE'
+                }
+            
+                throw newError;
+            }
 
             //format the response
             const jsonResponse = this.formatMERGEResponse(postResponse.data);
+
+            if (jsonResponse.error) {
+                const newError = {
+                    isAxiosError: false,
+                    message: 'SAP Error - ' + jsonResponse.error.message.value
+                }
+                
+                throw newError;
+            }
 
             return {
                 entityName: '',
@@ -522,7 +550,7 @@ class DataHandlerModule {
 
         const token = await AsyncStorage.getItem('localAuthToken');
 
-        
+
         const authString = `${this.authType} ${token}`
 
         try {
@@ -567,11 +595,21 @@ class DataHandlerModule {
             const jsonResponse = this.formatGETResponse(postResponse.data);
 
             if (!jsonResponse) {
-                throw new Error('response body is malformed, cannot parse')
+                const newError = {
+                    isAxiosError: false,
+                    message: 'cannot parse the malformed response body'
+                }
+            
+                throw newError;
             }
 
-            if (jsonResponse.error){
-                throw new Error('SAP error - ' + jsonResponse.error.message.value);
+            if (jsonResponse.error) {
+                const newError = {
+                    isAxiosError: false,
+                    message: 'SAP Error - ' + jsonResponse.error.message.value
+                }
+                
+                throw newError;
             }
 
             return {
@@ -955,6 +993,29 @@ class DataHandlerModule {
 
             return response;
         } catch (error) {
+            throw error
+        }
+    }
+
+    async testErrorSimulation(statusCode: number): Promise<void> {
+        try {
+            // Fake an axios-style error
+            throw {
+                isAxiosError: true,
+                response: { status: statusCode, data: { message: 'Simulated internal error' } },
+                message: 'Simulated AxiosError',
+            };
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async testSAPErrorSimulation(): Promise<void> {
+        try {
+            const userInfo = await this.batchGet('User','Z_ESS_MSS_SRV', 'Users');
+            console.log(userInfo);
+        }
+        catch (error) {
             throw error
         }
     }

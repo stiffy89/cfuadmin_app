@@ -104,10 +104,8 @@ const VolAdminSearch = ({ route }: props) => {
                                     appContext.setShowDialog(false);
                                 }
                                 catch (error) {
-                                    //TODO - handle error
-                                    console.log(error);
-                                    appContext.setShowBusyIndicator(false);
                                     appContext.setShowDialog(false);
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                 }
                             }}
                         />
@@ -152,10 +150,8 @@ const VolAdminSearch = ({ route }: props) => {
                                     appContext.setShowDialog(false);
                                 }
                                 catch (error) {
-                                    //TODO - handle error
-                                    console.log(error);
-                                    appContext.setShowBusyIndicator(false);
                                     appContext.setShowDialog(false);
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                 }
                             }}
                         />
@@ -222,10 +218,8 @@ const VolAdminSearch = ({ route }: props) => {
                                         screenFlowModule.onGoBack();
                                     }
                                     catch (error) {
-                                        //TODO - handle error
-                                        console.log(error);
-                                        appContext.setShowBusyIndicator(false);
                                         appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                     }
                                 }}
                             />
@@ -326,9 +320,8 @@ const VolAdminSearch = ({ route }: props) => {
 
                                     }
                                     catch (error) {
-                                        //TODO handle error
-                                        console.log(error);
                                         appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                     }
                                 }}
                             >
@@ -417,9 +410,8 @@ const VolAdminSearch = ({ route }: props) => {
 
                                                 screenFlowModule.onGoBack();
                                             } catch (error) {
-                                                appContext.setShowBusyIndicator(false);
                                                 appContext.setShowDialog(false);
-                                                //TODO handle error
+                                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                             }
                                         }}
                                     />
@@ -506,9 +498,8 @@ const VolAdminSearch = ({ route }: props) => {
 
                                                 screenFlowModule.onGoBack();
                                             } catch (error) {
-                                                appContext.setShowBusyIndicator(false);
                                                 appContext.setShowDialog(false);
-                                                //TODO handle error
+                                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                             }
                                         }}
                                     />

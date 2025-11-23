@@ -48,9 +48,8 @@ const WithdrawnSwitch = () => {
                     appContext.setShowDialog(false);
                 }
                 catch (error) {
-                    //TODO deal with the error
-                    console.log(error);
                     appContext.setShowDialog(false);
+                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                 }
             }} />
             <CustomText >Show Withdrawn Members</CustomText>
@@ -130,8 +129,8 @@ const FilterTokens = () => {
                                         dataContext.setVolAdminMembersSearchFilter(newFilter);
                                         appContext.setShowDialog(false);
                                     } catch (error) {
-                                        //TODO handle error
-                                        console.log(error)
+                                        appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                     }
                                 }
                                 else {
@@ -147,8 +146,8 @@ const FilterTokens = () => {
                                         dataContext.setVolAdminMembersSearchFilter(newFilter);
                                         appContext.setShowDialog(false);
                                     } catch (error) {
-                                        //TODO handle error
-                                        console.log(error)
+                                        appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                     }
                                 }
                             }}
@@ -340,13 +339,9 @@ const MyMembers = ({ route }: props) => {
                                                         appContext.setShowDialog(false);
                                                     }
                                                     catch (error) {
-                                                        //TODO handle error
-                                                        appContext.setShowBusyIndicator(false);
                                                         appContext.setShowDialog(false);
-                                                        console.log(error);
+                                                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                                     }
-
-
                                                 }}
                                             />
                                             <Divider key={'divider' + i} />
@@ -424,12 +419,9 @@ const MyMembers = ({ route }: props) => {
                                                             appContext.setShowBusyIndicator(false);
                                                         }
                                                         catch (error) {
-                                                            //TODO handle error
                                                             appContext.setShowDialog(false);
-                                                            appContext.setShowBusyIndicator(false);
-                                                            throw error;
+                                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                                         }
-
                                                     }}
                                                     right={() => (
                                                         <LucideIcons.ChevronRight

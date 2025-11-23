@@ -41,13 +41,13 @@ const ByDrill = () => {
                     appContext.setShowDialog(true);
 
                     let plans = '';
-                    
-                    if (dataContext.currentUser[0].VolAdmin){
+
+                    if (dataContext.currentUser[0].VolAdmin) {
                       plans = dataContext.volAdminLastSelectedOrgUnit[0].Zzplans;
                     } else {
                       plans = dataContext.trainingSelectedOrgUnit.Plans;
                     }
-                    
+
                     const short = drill.Short;
 
                     try {
@@ -60,15 +60,6 @@ const ByDrill = () => {
                       appContext.setShowBusyIndicator(false);
                       appContext.setShowDialog(false);
 
-                      if (memberDrillCompletions.responseBody.error) {
-                        console.log(
-                          "MemberDrillCompletions read error,",
-                          memberDrillCompletions.responseBody.error
-                        );
-                        return;
-                        //TODO handle error
-                      }
-
                       const drillData = {
                         drillObj: drill,
                         drillCompletions:
@@ -80,9 +71,8 @@ const ByDrill = () => {
                         drillData
                       );
                     } catch (error) {
-                      console.log("MemberDrillCompletions read error,", error);
-                      return;
-                      //TODO handle error
+                      appContext.setShowDialog(false);
+                      screenFlowModule.onNavigateToScreen('ErrorPage', error);
                     }
                   }}
                   right={() => (
@@ -245,17 +235,21 @@ const ByTeamMember = () => {
                               const results = await Promise.allSettled(requests);
                               const passed = results.every(x => x.status == 'fulfilled');
                               if (!passed) {
-                                //TODO
-                                appContext.setShowBusyIndicator(false);
-                                appContext.setDialogMessage('Error in GET call my members training')
+                                appContext.setShowDialog(false);
+                                screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                  isAxiosError: false,
+                                  message: "Hang on, we found an error. There was a problem in getting your data. Please go back and try again or contact your IT administrator for further assistance."
+                                });
                                 return;
                               }
 
                               const readErrors = results.filter(x => x.value.responseBody.error);
                               if (readErrors.length > 0) {
-                                //TODO handle read errors somewhere SAP error
-                                appContext.setShowBusyIndicator(false);
-                                appContext.setDialogMessage('SAP Error in GET my members training');
+                                appContext.setShowDialog(false);
+                                screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                  isAxiosError: false,
+                                  message: "Hang on, we found an error. There was a problem in getting your data. Please go back and try again or contact your IT administrator for further assistance."
+                                });
                               }
 
                               const memberTrainingDataObj = {
@@ -287,8 +281,8 @@ const ByTeamMember = () => {
                               screenFlowModule.onNavigateToScreen('TrainingCompletionByUser', memberTrainingDataObj)
                             }
                             catch (error) {
-                              //TODO handle error
-                              console.log(error)
+                              appContext.setShowDialog(false);
+                              screenFlowModule.onNavigateToScreen('ErrorPage', error);
                             }
                           }}
                           right={() => (
@@ -402,8 +396,8 @@ const FilterTokens = () => {
                     dataContext.setVolAdminTrainingSearchFilter(newFilter);
                     appContext.setShowDialog(false);
                   } catch (error) {
-                    //TODO handle error
-                    console.log(error)
+                    appContext.setShowDialog(false);
+                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                   }
                 }
                 else {
@@ -419,8 +413,8 @@ const FilterTokens = () => {
                     dataContext.setVolAdminTrainingSearchFilter(newFilter);
                     appContext.setShowDialog(false);
                   } catch (error) {
-                    //TODO handle error
-                    console.log(error)
+                    appContext.setShowDialog(false);
+                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                   }
                 }
               }}
@@ -506,7 +500,7 @@ const TrainingMain = ({ route }: props) => {
 
                 const url = `Z_VOL_MANAGER_SRV/DrillsPrints(Zzplans='${dataContext.trainingSelectedOrgUnit.Plans}')/$value`;
                 const obj = {
-                  cache : false,
+                  cache: false,
                   showSharing: true,
                   displayName: "Training Drills - " + dataContext.trainingSelectedOrgUnit.Short,
                   filePath: url
@@ -607,12 +601,9 @@ const TrainingMain = ({ route }: props) => {
                               appContext.setShowDialog(false);
                             }
                             catch (error) {
-                              //TODO handle error
-                              console.log(error);
-                              appContext.setShowBusyIndicator(false);
                               appContext.setShowDialog(false);
+                              screenFlowModule.onNavigateToScreen('ErrorPage', error);
                             }
-
                           }}
                         />
                         <Divider key={'divider' + i} />
@@ -672,23 +663,23 @@ const TrainingMain = ({ route }: props) => {
           },
         })}
       >
-        <Tab.Screen 
-          name="TrainingListByUser" 
-          component={ByTeamMember} 
+        <Tab.Screen
+          name="TrainingListByUser"
+          component={ByTeamMember}
           listeners={
             //only attach listener if vol admin
             (dataContext.currentUser[0].VolAdmin) ?
-            ({ navigation, route }) => ({
-              tabPress: (e) => {
-                //either show current unit or the search chips
-                if (dataContext.volAdminTrainingSearchFilter.firstName || dataContext.volAdminTrainingSearchFilter.lastName || dataContext.volAdminTrainingSearchFilter.pernr) {
-                  setShowTeamMemberSearch(true);
+              ({ navigation, route }) => ({
+                tabPress: (e) => {
+                  //either show current unit or the search chips
+                  if (dataContext.volAdminTrainingSearchFilter.firstName || dataContext.volAdminTrainingSearchFilter.lastName || dataContext.volAdminTrainingSearchFilter.pernr) {
+                    setShowTeamMemberSearch(true);
+                  }
+                  else {
+                    setShowTeamMemberSearch(false);
+                  }
                 }
-                else {
-                  setShowTeamMemberSearch(false);
-                }
-              }
-            }) : undefined
+              }) : undefined
           }
         />
         <Tab.Screen
@@ -697,12 +688,12 @@ const TrainingMain = ({ route }: props) => {
           listeners={
             //only attach listener if vol admin
             (dataContext.currentUser[0].VolAdmin) ?
-            ({ navigation, route }) => ({
-              tabPress: (e) => {
-                setShowTeamMemberSearch(false);
-              }
-            }) : undefined
-          } 
+              ({ navigation, route }) => ({
+                tabPress: (e) => {
+                  setShowTeamMemberSearch(false);
+                }
+              }) : undefined
+          }
         />
       </Tab.Navigator>
     </>

@@ -349,6 +349,13 @@ export class ScreenFlowModule {
                         data
                     )
                     break;
+
+                case 'ErrorPage':
+                    this.navigator?.navigate(
+                        'ErrorPage',
+                        data
+                    )
+                    break;
             }
         }
     }

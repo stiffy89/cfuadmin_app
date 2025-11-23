@@ -253,9 +253,8 @@ const Services = () => {
                     setOrgUnitTeamMembers(results.responseBody.d.results);
                     appContext.setShowDialog(false);
                 } catch (error){
-                    //TODO handle error
-                    console.log('Home section read error', error);
                     appContext.setShowDialog(false);
+                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                 }
             }
 

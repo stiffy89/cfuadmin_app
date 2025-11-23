@@ -119,9 +119,8 @@ const MyDetailsEdit = (data: any) => {
                                 );
                             }
                         } catch (error) {
-                            //TODO handle error
                             appContext.setShowDialog(false);
-                            console.log(error);
+                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
                         }
 
                         setErrorMsg("");
@@ -1238,16 +1237,14 @@ const VolunteerDetailsEdit = (data: any) => {
                                     screenFlowModule.onGoBack();
                                 }
                                 catch (error) {
-                                    //TODO handle error
-                                    console.log(error);
                                     appContext.setShowDialog(false);
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                 }
                             }
                         }
                         catch (error) {
-                            //TODO handle error
-                            console.log(error);
                             appContext.setShowDialog(false);
+                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
                         }
                     }
                 }}
@@ -1545,16 +1542,14 @@ const VolunteerEdit = (data: any) => {
                                 screenFlowModule.onGoBack();
                             }
                             catch (error) {
-                                //TODO handle error
-                                console.log(error);
                                 appContext.setShowDialog(false);
+                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
                             }
                         }
                     }
                     catch (error) {
-                        //TODO handle error
-                        console.log(error);
                         appContext.setShowDialog(false);
+                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
                     } 
                 }}
             >
@@ -1961,16 +1956,14 @@ const EquityDiversity = (data : any) => {
                                 screenFlowModule.onGoBack();
                             }
                             catch (error) {
-                                //TODO handle error
-                                console.log(error);
                                 appContext.setShowDialog(false);
+                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
                             }
                         }
                     }
                     catch (error) {
-                        //TODO handle error
-                        console.log(error);
                         appContext.setShowDialog(false);
+                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
                     } 
                 }}
             >

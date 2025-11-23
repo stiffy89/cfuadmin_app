@@ -23,19 +23,19 @@ const TrainingCompletionByUser = ({ route }: props) => {
     const genericFormatter = new GenericFormatter();
 
     let brigadeInitialData = route.params!.brigades[0];
-    let memberInitialData : any = route.params!.memberData;
+    let memberInitialData: any = route.params!.memberData;
     let volInitialStatuses = route.params!.volunteerStatuses;
     let initialTrainingDetails = route.params!.trainingDetails[0];
-    
+
     //check to see if our member data is from a team member search (vol admin searching) because data is coming from
     ///Brigades entity rather than /MemberDrillCompletions -> do this by checking the path of the memberData uri being passed in
-    if (memberInitialData.__metadata.id.includes('Brigades')){
+    if (memberInitialData.__metadata.id.includes('Brigades')) {
         //split up Ename to first and last name so that the binding for first and last name is the same as /MemberDrillCompletions
         let Ename = memberInitialData.Ename.split(" ");
         memberInitialData.FirstName = Ename[0];
         memberInitialData.LastName = Ename[1];
     }
-    
+
 
     //const member = route.params!.memberData;
     const [isEditing, setIsEditing] = useState(false);
@@ -133,7 +133,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
             <Portal>
                 <Dialog visible={showCancelDialog} dismissable={false}>
                     <Dialog.Title>{
-                    showDialogActionButton ? '' : 'Cancel Changes'}</Dialog.Title>
+                        showDialogActionButton ? '' : 'Cancel Changes'}</Dialog.Title>
                     <Dialog.Content>
                         <CustomText variant="bodyMedium">{dialogMessage}</CustomText>
                     </Dialog.Content>
@@ -296,9 +296,9 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                                 key={i}
                                                 title={x.Stext}
                                                 onPress={() => {
-                                                    if (x.Statu == '02'){
+                                                    if (x.Statu == '02') {
                                                         //check to see if we are currently 02
-                                                        if (initialTrainingDetails.Zzvstat !== '02'){
+                                                        if (initialTrainingDetails.Zzvstat !== '02') {
                                                             //check to see if trainingDetails all have complete dates
                                                             const startDates = ['Start1', 'Start2', 'Start3', 'Start4', 'Start5', 'Start6'];
 
@@ -306,7 +306,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                                                 return trainingDetails[x] //-> if its not null, then return true and we can pass
                                                             });
 
-                                                            if (!passed){
+                                                            if (!passed) {
                                                                 setDialogMessage('To change to Operational status, all six drills must be completed');
                                                                 setShowDialogActionButton(false);
                                                                 setShowCancelDialog(true);
@@ -315,8 +315,8 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                                             }
                                                         }
                                                     }
-                                                    
-                                                    
+
+
                                                     setTrainingDetails({
                                                         ...trainingDetails,
                                                         Stext: x.Stext,
@@ -722,17 +722,21 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                 const updatePassed = updateResults.every(x => x.status == 'fulfilled');
 
                                 if (!updatePassed) {
-                                    //TODO take them to a critical error page
-                                    appContext.setShowBusyIndicator(false);
-                                    appContext.setDialogMessage('Critical error occurred during training detail update');
+                                    appContext.setShowDialog(false);
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                        isAxiosError: false,
+                                        message: "Hang on, we found an error. There was a problem in getting updating your data. Please go back and try again or contact your IT administrator for further assistance."
+                                    });
                                     return;
                                 }
 
                                 const updateSapErrors = updateResults.filter(x => x.value.responseBody.error);
                                 if (updateSapErrors.length > 0) {
-                                    //TODO handle read errors somewhere
-                                    appContext.setShowBusyIndicator(false);
-                                    appContext.setDialogMessage('There were SAP errors during training detail update');
+                                    appContext.setShowDialog(false);
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                        isAxiosError: false,
+                                        message : "Hang on, we found an error. There was a problem in updating your data. Please go back and try again or contact your IT administrator for further assistance."
+                                    });
                                     return;
                                 }
 
@@ -751,17 +755,22 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                 const readPassed = readResults.every(x => x.status == 'fulfilled');
 
                                 if (!readPassed) {
-                                    //TODO
-                                    appContext.setShowBusyIndicator(false);
-                                    appContext.setDialogMessage('Error in GET call my members training')
+                                    appContext.setShowDialog(false);
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                        isAxiosError: false,
+                                        message : "Hang on, we found an error. There was a problem in getting your data. Please go back and try again or contact your IT administrator for further assistance."
+                                    });
                                     return;
                                 }
 
                                 const readErrors = readResults.filter(x => x.value.responseBody.error);
                                 if (readErrors.length > 0) {
-                                    //TODO handle read errors somewhere SAP error
-                                    appContext.setShowBusyIndicator(false);
-                                    appContext.setDialogMessage('SAP Error in GET my members training');
+                                    appContext.setShowDialog(false);
+                                    screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                        isAxiosError: false,
+                                        message : "Hang on, we found an error. There was a problem in getting your initial data. Please go back and try again or contact your IT administrator for further assistance."
+                                    });
+                                    return;
                                 }
 
                                 appContext.setShowBusyIndicator(false);

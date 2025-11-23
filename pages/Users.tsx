@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { screenFlowModule } from '../helper/ScreenFlowModule';
+import { ScreenFlowModule, screenFlowModule } from '../helper/ScreenFlowModule';
 import { useAppContext } from '../helper/AppContext';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { useDataContext } from '../helper/DataContext';
@@ -23,19 +23,12 @@ const Users = () => {
 
 		try {
 			const userInfo = await dataHandlerModule.batchGet('Users', 'Z_ESS_MSS_SRV', 'Users');
-			if (userInfo.responseBody.error) {
-				//TODO handle SAP error
-				console.log('SAP Error')
-				return;
-			}
-			else {
-				dataContext.setCurrentUser(userInfo.responseBody.d.results);
-				user = userInfo.responseBody.d.results[0]
-			}
+			dataContext.setCurrentUser(userInfo.responseBody.d.results);
+			user = userInfo.responseBody.d.results[0]
 		}
 		catch (error) {
-			//TODO handle error
-			console.log(error);
+			appContext.setShowDialog(false);
+			screenFlowModule.onNavigateToScreen('ErrorPage', error);
 			return;
 		}
 
@@ -54,8 +47,8 @@ const Users = () => {
 				zzplans = brigadesResult.responseBody.d.results[0].Zzplans;
 			}
 			catch (error) {
-				//TODO handle the exception
-				console.log(error)
+				appContext.setShowDialog(false);
+				screenFlowModule.onNavigateToScreen('ErrorPage', error);
 				return;
 			}
 		}
@@ -70,8 +63,8 @@ const Users = () => {
 				dataContext.setVolAdminLastSelectedOrgUnit(brigadeSummaryResult.responseBody.d.results);
 			}
 			catch (error) {
-				//TODO handle the exception
-				console.log(error);
+				appContext.setShowDialog(false);
+				screenFlowModule.onNavigateToScreen('ErrorPage', error);
 				return;
 			}
 		}
@@ -126,18 +119,23 @@ const Users = () => {
 		const passed = results.every(x => x.status == 'fulfilled');
 
 		if (!passed) {
-			//TODO take them to a critical error page
-			appContext.setDialogMessage('Critical error occurred during the initial GET');
-			appContext.setShowDialog(true);
+			appContext.setShowDialog(false);
+			screenFlowModule.onNavigateToScreen('ErrorPage', {
+				isAxiosError: false,
+				message : "Hang on, we found an error. There was a problem in getting your initial data. Please go back and try again or contact your IT administrator for further assistance."
+			});
 			return;
 		}
 
 		//check to see if we have any read errors from server
 		const readErrors = results.filter(x => x.value.responseBody.error);
 		if (readErrors.length > 0) {
-			//TODO handle read errors somewhere
-			appContext.setShowDialog(true);
-			appContext.setDialogMessage('Read error on initialisation');
+			appContext.setShowDialog(false);
+			screenFlowModule.onNavigateToScreen('ErrorPage', {
+				isAxiosError: false,
+				message : "Hang on, we found an error. There was a problem in getting your initial data. Please go back and try again or contact your IT administrator for further assistance."
+			});
+			return;
 		}
 
 		for (const x of results) {
@@ -391,6 +389,34 @@ const Users = () => {
 				}}
 			>
 				Okta Login Ernox
+			</Button>
+			<Button
+				style={{ marginBottom: 20 }}
+				mode='outlined'
+				onPress={async () => {
+					try {
+						await dataHandlerModule.testErrorSimulation(601);
+					}
+					catch (error : any) {
+						screenFlowModule.onNavigateToScreen('ErrorPage', error);
+					}
+				}}
+			>
+				Axios Error
+			</Button>
+			<Button
+			style={{ marginBottom: 20 }}
+				mode='outlined'
+				onPress={async () => {
+					try {
+						await dataHandlerModule.testSAPErrorSimulation();
+					}
+					catch (error : any) {
+						screenFlowModule.onNavigateToScreen('ErrorPage', error);
+					}
+				}}
+			>
+				SAP Error
 			</Button>
 		</View>
 	)

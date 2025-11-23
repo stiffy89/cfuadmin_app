@@ -301,47 +301,30 @@ const TrainingCompletionByDrill = ({ route }: props) => {
                   //if we have any fails - its a critical error
                   const passed = results.every(x => x.status == 'fulfilled');
                   if (!passed) {
-                    //TODO take them to a critical error page
-                    appContext.setShowBusyIndicator(false);
-                    appContext.setDialogMessage('Critical error occurred during training history update');
+                    appContext.setShowDialog(false);
+                    screenFlowModule.onNavigateToScreen('ErrorPage', {
+                      isAxiosError: false,
+                      message: "Hang on, we found an error. There was a problem in updating your data. Please go back and try again or contact your IT administrator for further assistance."
+                    });
                     return;
                   }
 
                   const sapErrors = results.filter(x => x.value.responseBody.error);
                   if (sapErrors.length > 0) {
-                    //TODO handle read errors somewhere
-                    appContext.setShowBusyIndicator(false);
-                    appContext.setDialogMessage('There were SAP errors during training history update');
+                    appContext.setShowDialog(false);
+                    screenFlowModule.onNavigateToScreen('ErrorPage', {
+                      isAxiosError: false,
+                      message: "Hang on, we found an error. There was a problem in updating your data. Please go back and try again or contact your IT administrator for further assistance."
+                    });
                     return;
                   }
 
                   const plans = dataContext.trainingSelectedOrgUnit.Plans;
 
-                  const memberDrillCompletions =
-                    await dataHandlerModule.batchGet(
-                      `MemberDrillCompletions?$filter=Short%20eq%20%27${route.params?.drillObj.Short}%27%20and%20Zzplans%20eq%20%27${plans}%27`,
-                      "Z_VOL_MANAGER_SRV",
-                      "MemberDrillCompletions"
-                    );
-
-                  if (memberDrillCompletions.responseBody.error) {
-                    console.log(
-                      "MemberDrillCompletions read error,",
-                      memberDrillCompletions.responseBody.error
-                    );
-                    return;
-                    //TODO handle error
-                  }
-
+                  const memberDrillCompletions = await dataHandlerModule.batchGet(`MemberDrillCompletions?$filter=Short%20eq%20%27${route.params?.drillObj.Short}%27%20and%20Zzplans%20eq%20%27${plans}%27`, "Z_VOL_MANAGER_SRV", "MemberDrillCompletions");
+                  
                   const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
-                  if (memberDrillCompletions.responseBody.error) {
-                    console.log(
-                      "drill details read error,",
-                      memberDrillCompletions.responseBody.error
-                    );
-                    return;
-                    //TODO handle error
-                  }
+                  
 
                   drillCompletions = memberDrillCompletions.responseBody.d.results
                   setTrainingCompletions(drillCompletions);
