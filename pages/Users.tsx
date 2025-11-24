@@ -394,29 +394,31 @@ const Users = () => {
 				style={{ marginBottom: 20 }}
 				mode='outlined'
 				onPress={async () => {
-					try {
-						await dataHandlerModule.testErrorSimulation(601);
-					}
-					catch (error : any) {
-						screenFlowModule.onNavigateToScreen('ErrorPage', error);
-					}
+					authModule.onFRNSWLogin()
+						.then(async (result: OktaLoginResult) => {
+							const oktaIDToken = result.response.idToken;
+
+							if (oktaIDToken) {
+								dataHandlerModule.setAuthType('Bearer');
+								await AsyncStorage.removeItem('localAuthToken');
+								const tokenResponse = await dataHandlerModule.getFRNSWInitialTokens(oktaIDToken);
+								const newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+								AsyncStorage.setItem('localAuthToken', newAccessToken);
+								screenFlowModule.onNavigateToScreen('SplashScreen');
+								onGetInitialLoad();
+							}
+							else {
+								appContext.setDialogMessage('No okta ID token');
+								appContext.setShowDialog(true);
+							}
+						})
+						.catch((error) => {
+							appContext.setDialogMessage('Okta ID token fetch error');
+							appContext.setShowDialog(true);
+						})
 				}}
 			>
-				Axios Error
-			</Button>
-			<Button
-			style={{ marginBottom: 20 }}
-				mode='outlined'
-				onPress={async () => {
-					try {
-						await dataHandlerModule.testSAPErrorSimulation();
-					}
-					catch (error : any) {
-						screenFlowModule.onNavigateToScreen('ErrorPage', error);
-					}
-				}}
-			>
-				SAP Error
+				FRNSW Login
 			</Button>
 		</View>
 	)

@@ -108,16 +108,45 @@ class DataHandlerModule {
         try {
             const queryParams = {
                 grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
-                client_id: '0oatd4xccfgbbP7uj697',
+                client_id: '0oatd4xccfgbbP7uj697',    //-> Ernox okta client ID
                 subject_token_type: 'id_token',
                 subject_token: idToken
             }
 
             const sUrl = '/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange&client_id=0oatd4xccfgbbP7uj697&subject_token_type=id_token&subject_token=' + idToken;
+            
 
             /*    const response = await this.axiosSecurityInstance?.post('/token', {
                     params : queryParams
                 }); */
+
+            const response = await this.axiosSecurityInstance?.post(sUrl);
+
+            if (!response) {
+                throw new Error('get initial tokens error')
+            }
+
+            //if we need to handle status or headers, could do them here
+            const status = response.status;
+            const responseHeaders = response.headers;
+
+            return response;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+
+    async getFRNSWInitialTokens(idToken: string): Promise<AxiosResponse> {
+        try {
+            const queryParams = {
+                grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
+                client_id : '0oarhcna0itjMMgM05d7',     //-> FRNSW okta client ID
+                subject_token_type: 'id_token',
+                subject_token: idToken
+            }
+
+            const sUrl = '/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange&client_id=0oarhcna0itjMMgM05d7&subject_token_type=id_token&subject_token=' + idToken;
 
             const response = await this.axiosSecurityInstance?.post(sUrl);
 
@@ -577,12 +606,7 @@ class DataHandlerModule {
                 header['client-id'] = 'CFU2APP'
             }
 
-            //run the create call
-            const axiosInstance = axios.create({
-                baseURL: 'https://portaluat.fire.nsw.gov.au/sap/opu/odata/sap/'
-            });
-
-            const postResponse = await axiosInstance.post(serviceName + '/$batch',
+            const postResponse = await this.axiosInstance?.post(serviceName + '/$batch',
                 batchString,
                 {
                     headers: header

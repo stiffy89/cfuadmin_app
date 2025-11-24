@@ -30,34 +30,7 @@ const ProfileHeader = () => {
                 <Button
                     mode="contained"
                     onPress={async () => {
-                        setCardModalVisible(true)
-                        if (!dataHandlerModule.securityInstanceInitialised()) {
-                            return;
-                        }
-
-                        const volRolesBatchBody =
-                            dataHandlerModule.getBatchBody("VolunteerRoles");
-
-                        const membershipDetailsBatchBody =
-                            dataHandlerModule.getBatchBody("MembershipDetails");
-
-                        const batchBodyArray = [
-                            membershipDetailsBatchBody,
-                            volRolesBatchBody,
-                        ];
-
-                        try {
-                            const responseBody = await dataHandlerModule.batchGet(
-                                "MembershipDetailsss",
-                                "Z_VOL_MEMBER_SRV",
-                                "MembershipDetails"
-                            );
-
-                            console.log(responseBody);
-                        } catch (error) {
-                            //TODO handle error
-                            throw error;
-                        }
+                        setCardModalVisible(true);
                     }}
                 >
                     ID Card
