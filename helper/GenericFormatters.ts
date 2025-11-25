@@ -87,4 +87,25 @@ export default class GenericFormatter {
 
         return `datetime'${encoded}'`;
     }
+
+    formatRole(role : string) {
+        if (!role){
+            return ''
+        }
+        else if (role.toLowerCase().includes('tc')){
+            return 'Team Coordinator'
+        }
+        else if (role.toLowerCase().includes('sc')){
+            return 'Secondary Contact'
+        }
+        else if (role.toLowerCase().includes('secondary')){
+            return 'Secondary Contact'
+        }
+        else if (role.toLowerCase().includes('coordinator')){
+            return 'Team Coordinator'
+        }
+        else {
+            return '';
+        }
+    }
 }

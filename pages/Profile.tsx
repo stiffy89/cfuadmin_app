@@ -16,7 +16,7 @@ import { screenFlowModule } from "../helper/ScreenFlowModule";
 
 import { authModule } from "../helper/AuthModule";
 import { OktaLoginResult } from "../types/AppTypes";
-import { DummyData } from "../data/DummyData";
+
 
 const ProfileHeader = () => {
     const { setCardModalVisible } = useAppContext();
@@ -30,34 +30,7 @@ const ProfileHeader = () => {
                 <Button
                     mode="contained"
                     onPress={async () => {
-                        setCardModalVisible(true)
-                        if (!dataHandlerModule.securityInstanceInitialised()) {
-                            return;
-                        }
-
-                        const volRolesBatchBody =
-                            dataHandlerModule.getBatchBody("VolunteerRoles");
-
-                        const membershipDetailsBatchBody =
-                            dataHandlerModule.getBatchBody("MembershipDetails");
-
-                        const batchBodyArray = [
-                            membershipDetailsBatchBody,
-                            volRolesBatchBody,
-                        ];
-
-                        try {
-                            const responseBody = await dataHandlerModule.batchGet(
-                                "MembershipDetailsss",
-                                "Z_VOL_MEMBER_SRV",
-                                "MembershipDetails"
-                            );
-
-                            console.log(responseBody);
-                        } catch (error) {
-                            //TODO handle error
-                            throw error;
-                        }
+                        setCardModalVisible(true);
                     }}
                 >
                     ID Card
@@ -227,15 +200,21 @@ const ProfilePage = () => {
                                     const results = await Promise.allSettled(requests);
                                     const passed = results.every(x => x.status == 'fulfilled');
                                     if (!passed) {
-                                        //TODO take them to a critical error page
-                                        appContext.setDialogMessage('Critical error occurred during the initial GET');
+                                        appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                            isAxiosError: false,
+                                            message : "Hang on, we found an error. There was a problem in getting your initial data. Please go back and try again or contact your IT administrator for further assistance."
+                                        });
                                         return;
                                     }
 
                                     const readErrors = results.filter(x => x.value.responseBody.error);
                                     if (readErrors.length > 0) {
-                                        //TODO handle read errors somewhere
-                                        appContext.setDialogMessage('Read error on initialisation');
+                                        appContext.setShowDialog(false);
+                                        screenFlowModule.onNavigateToScreen('ErrorPage', {
+                                            isAxiosError: false,
+                                            message : "Hang on, we found an error. There was a problem in getting your initial data. Please go back and try again or contact your IT administrator for further assistance."
+                                        });
                                     }
 
                                     for (const x of results) {
@@ -289,21 +268,15 @@ const ProfilePage = () => {
                             )}
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
-                        <Divider />
+                        <Divider/>
                         <List.Item
                             style={{ height: 80, justifyContent: "center" }}
                             onPress={() => {
-                                getPageData(
-                                    `Brigades?$filter=Zzplans%20eq%20%27${dataContext.membershipDetails[0].Zzplans}%27`,
-                                    "Z_VOL_MEMBER_SRV",
-                                    "Brigades",
-                                    (data) => {
-                                        dataContext.setMyOrgUnitDetails(data);
-                                        screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen')
-                                    }
-                                )
+                                screenFlowModule.onNavigateToScreen('EquityDiversity');
                             }}
-                            title={() => <CustomText variant="bodyLarge">My Unit</CustomText>}
+                            title={() => (
+                                <CustomText variant="bodyLarge">Equity Diversity</CustomText>
+                            )}
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                     </List.Section>

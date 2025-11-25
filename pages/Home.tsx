@@ -27,6 +27,8 @@ import trainingIcon from '../assets/menuicons/menu-training.png';
 import allServicesIcon from "../assets/menuicons/menu-all-services.png"
 import headerBg from "../assets/images/header-bg-transparent.png"
 
+import { dataHandlerModule } from '../helper/DataHandlerModule';
+
 
 const NameBanner = () => {
     const theme = useTheme();
@@ -62,150 +64,11 @@ const NameBanner = () => {
     )
 }
 
-const LegacyServices = () => {
-    const theme = useTheme();
-    const {services, setCurrentProfile, currentUser} = useDataContext();
-
-    //map our services into an array of tiles
-    const Tiles = services.map((x) => {
-        const iconMapping : any = {
-            'menu-skills-maint.png' : skillsMaintIcon,
-            'menu-resources.png' : resourcesIcon,
-            'menu-default.png' : defaultIcon,
-            'menu-forms.png' : formIcon,
-            'menu-training.png' : trainingIcon
-        }
-
-        const imageIcon = iconMapping[x.IconFilename];
-        
-        if (x.TargetPath == '/cfu-my-members'){
-            return (
-                <Pressable
-                    onPress={() => {
-                        setCurrentProfile('MyMembers');
-                        screenFlowModule.onNavigateToScreen('MyMembers');
-                    }}
-                >
-                    <View style={{alignItems: 'center', padding: 10}}>
-                        <Image
-                            source={imageIcon}
-                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                        />
-                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
-                    </View>
-                </Pressable>
-            )
-        }
-        else if (x.TargetPath == '/cfu-unit-details'){
-            return (
-                <Pressable
-                    onPress={() => {
-                        screenFlowModule.onNavigateToScreen('MyUnitDetailScreen');
-                    }}
-                >
-                    <View style={{alignItems: 'center', padding: 10}}>
-                        <Image
-                            source={imageIcon}
-                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                        />
-                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
-                    </View>
-                </Pressable>
-            )
-        }
-        else if (x.TargetPath == '/cfu-training'){
-            return (
-                <Pressable
-                    onPress={() => {
-                        screenFlowModule.onNavigateToScreen('TrainingMain');
-                    }}
-                >
-                    <View style={{alignItems: 'center', padding: 10}}>
-                        <Image
-                            source={imageIcon}
-                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                        />
-                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
-                    </View>
-                </Pressable>
-            )
-        }
-        else if (x.TargetPath == '/cfu-resources'){
-            return (
-                <Pressable
-                    onPress={() => {
-                        screenFlowModule.onNavigateToScreen('Resources');
-                    }}
-                >
-                    <View style={{alignItems: 'center', padding: 10}}>
-                        <Image
-                            source={imageIcon}
-                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                        />
-                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
-                    </View>
-                </Pressable>
-            )
-        }
-        else if (x.TargetPath == '/cfu-skills-maint'){
-            return (
-                <Pressable
-                    onPress={() => {
-                        screenFlowModule.onNavigateToScreen('SkillsMaintenancePage');
-                    }}
-                >
-                    <View style={{alignItems: 'center', padding: 10}}>
-                        <Image
-                            source={imageIcon}
-                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                        />
-                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
-                    </View>
-                </Pressable>
-            )
-        }else if(x.TargetPath.includes("/forms-launcher")){
-            return (
-                <Pressable
-                    onPress={() => {
-                        screenFlowModule.onNavigateToScreen('FormServicePage', {formLaunchId: x.TargetPath.substring(x.TargetPath.lastIndexOf("/") + 1)});
-                    }}
-                >
-                    <View style={{alignItems: 'center', padding: 10}}>
-                        <Image
-                            source={imageIcon}
-                            style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                        />
-                        <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
-                    </View>
-                </Pressable>
-            )
-        }
-        else {
-            return (
-                <View style={{alignItems: 'center', padding: 10}}>
-                    <Image
-                        source={imageIcon}
-                        style={{ width: 30, height: 30, resizeMode: 'contain' }}
-                    />
-                    <CustomText variant='bodySmall' style={{marginTop: 10, textAlign: 'center'}}>{x.Title}</CustomText>
-                </View>
-            )
-        }
-    });
-
-    return (
-        <View style={{marginVertical: 20}}>
-            <CustomText style={{marginVertical: 15, color: theme.colors.primary, paddingHorizontal: 15}} variant='titleLargeBold'>Services</CustomText>
-            {
-                Grid(Tiles, 3, undefined, '#fff', true)
-            }
-        </View>
-    )
-}
-
 const Services = () => {
     const theme = useTheme();
-    const {services, setCurrentProfile, currentUser} = useDataContext();
+    const appContext = useAppContext();
+    const {services, setCurrentProfile, setVolAdminMembersSearchFilter, currentUser, volAdminLastSelectedOrgUnit, setOrgUnitTeamMembers} = useDataContext();
+    
 
     const iconMapping : any = {
         'menu-skills-maint.png' : skillsMaintIcon,
@@ -222,10 +85,38 @@ const Services = () => {
             screenFlowModule.onNavigateToScreen('AllServicesListScreen', {title: Title});
         },
         "/cfu-unit-details": (TargetPath: string, Title: string) => {
-            // screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen', {title: Title});
+            screenFlowModule.onNavigateToScreen('MyUnitDetailsScreen', {title: Title});
         },
-        "/cfu-manage-members" : (TargetPath: string, Title: string) => {
+        "/cfu-manage-members" : async (TargetPath: string, Title: string) => {
             setCurrentProfile('MyMembers');
+
+
+            //if we are vol admin, we will clear the filters and reset the org unit data before navigating there
+            if (currentUser[0].VolAdmin) {
+                appContext.setShowBusyIndicator(true);
+                appContext.setShowDialog(true);
+
+                setVolAdminMembersSearchFilter({
+                    withdrawn: false,
+                    unit: '',
+                    station: '',
+                    lastName: '',
+                    firstName: '',
+                    pernr: ''
+                });
+
+                const plans= volAdminLastSelectedOrgUnit[0].Zzplans;
+
+                try {
+                    const results = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
+                    setOrgUnitTeamMembers(results.responseBody.d.results);
+                    appContext.setShowDialog(false);
+                } catch (error){
+                    appContext.setShowDialog(false);
+                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                }
+            }
+
             screenFlowModule.onNavigateToScreen('MyMembers', {title: Title});
         },
         "/cfu-training": (TargetPath: string, Title: string) => {

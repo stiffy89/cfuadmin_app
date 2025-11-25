@@ -62,6 +62,44 @@ export type ServiceData = {
     title: string;
 }
 
+export type VolAdminSearchFilter = {
+    withdrawn : boolean, 
+    unit : string, 
+    station : string, 
+    lastName : string, 
+    firstName : string, 
+    pernr : string
+}
+
+export type HelperValuesDataContextType = {
+    cessationReasons : any [];
+    setCessationReasons : (val : any[]) => void;
+    addressStates: any[];
+    setAddressStates: (val: any[]) => void;
+    addressRelationships: any[];
+    setAddressRelationships: (val: any[]) => void;
+    membershipTypes: any[];
+    setMembershipTypes: (val: any[]) => void;
+    membershipStatuses: any[];
+    setMembershipStatuses: (val: any[]) => void;
+    volunteerStatuses: any[];
+    setVolunteerStatuses: (val: any[]) => void;
+    positionHistoryHelperValue : any[];
+    setPositionHistoryHelperValue : (val : any) => void;
+    equityGenderValues : any[];
+    setEquityGenderValues : (val : any) => void;
+    equityAboriginalValues : any[];
+    setEquityAboriginalValues : (val : any) => void;
+    equityRacialEthnicReligiousValues : any [];
+    setEquityRacialEthnicReligiousValues : (val : any) => void;
+    equityFirstLanguageValues : any[];
+    setEquityFirstLanguageValues : (val : any) => void;
+    equityNESLValues : any [];
+    setEquityNESLValues : (val : any) => void;
+    equityDisabilityValues : any [];
+    setEquityDisabilityValues : (val : any) => void;
+}
+
 export type DataContextType = {
     services: any[];
     setServices: (val: any[]) => void;
@@ -92,12 +130,6 @@ export type DataContextType = {
 
     myOrgUnitDetails : any [];
     setMyOrgUnitDetails : (val : any[]) => void;
-
-    addressStates: any[];
-    setAddressStates: (val: any[]) => void;
-
-    addressRelationships: any[];
-    setAddressRelationships: (val: any[]) => void;
 
     brigadeSummary: any[];
     setBrigadeSummary: (val: any[]) => void;
@@ -134,6 +166,24 @@ export type DataContextType = {
 
     volAdminLastSelectedOrgUnit: any;
     setVolAdminLastSelectedOrgUnit: (val: any[]) => void; //sets the last selected org unit for the vol admin user
+
+    volAdminMembersSearchFilter: VolAdminSearchFilter; //search filter for manage members
+    setVolAdminMembersSearchFilter: (val : VolAdminSearchFilter) => void;
+
+    volAdminTrainingSearchFilter: VolAdminSearchFilter; //search filter for manage members
+    setVolAdminTrainingSearchFilter: (val : VolAdminSearchFilter) => void;
+
+    volAdminMemberDetailSearchResults: any;
+    setVolAdminMemberDetailSearchResults: (val: any[]) => void; //this is specifically for results that is returned for firstname, lastname, pernr searches as vol admin
+
+    volAdminCeasedSelectedMember : any;
+    setVolAdminCeasedSelectedMember : (val : any) => void; //if we select a ceased member, in manage members, we need to store the data so we can get their zzplans as MembershipDetails is empty
+
+    volAdminMemberNotes : any[];
+    setVolAdminMemberNotes : (val : any) => void; //vol admin's have the capability to keep notes on users
+
+    contactsPrintPlans : string;
+    setContactsPrintPlans : (val : any) => void; //hold the value of the plans for contact book printing
 }
 
 export type OktaLoginResult = {
@@ -159,10 +209,16 @@ interface MemberData {
 }
 
 type PDFDisplayPageProp = {
+    cache : boolean;
     showSharing : boolean;
     displayName : string;
-    fileName : string;
+    fileName? : string;
     filePath : string;
+}
+
+type PositionHistoryPageProp = {
+    pernr : string;
+    history : any;
 }
 
 export type RootStackParamList = {
@@ -184,7 +240,7 @@ export type RootStackParamList = {
     MedalsAndAwardsScreen: Record<string, string> | undefined;
     SkillsMaintenance: NavigatorScreenParams<SkillsMaintenanceStackParamList>;
     FormService:NavigatorScreenParams<FormServiceStackParamList>;
-    TrainingMain: undefined;
+    TrainingMain: Record<string, string> | undefined;
     TrainingCompletionByDrill: DrillData | undefined;
     TrainingCompletionByUser: MemberData | undefined;
     Users: undefined;
@@ -193,6 +249,12 @@ export type RootStackParamList = {
     VolAdminSearch: Record<string, string> | undefined;
     VolAdminCeaseMember : any | undefined;
     AllServicesListScreen: Record<string, string> | undefined;
+    VolunteerNotes: Record<string, string> | undefined;
+    PositionHistory : PositionHistoryPageProp;
+    EquityDiversity : undefined;
+    ErrorPage : any;
+    ExternalLoginPage : undefined;
+    ExternalHomePage : undefined;
 }
 
 export type TabParamList = {

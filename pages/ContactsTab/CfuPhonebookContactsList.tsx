@@ -7,6 +7,7 @@ import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule } from '../../helper/ScreenFlowModule';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ContactsStackParamList } from '../../types/AppTypes';
+import GenericFormatter from '../../helper/GenericFormatters';
 
 type props = StackScreenProps<ContactsStackParamList, 'CfuPhonebookContactsList'>; 
 
@@ -14,36 +15,22 @@ const CfuPhonebookContactsList = ({route} : props) => {
     const params = route.params;
     const suburbName = params?.suburbName;
     const suburbContacts = params?.suburbContacts;
-
-    const [searchValue, setSearchValue] = useState('');
     type listType = Record<string, Record<string, string>[]> | undefined;
 
     const [contactsList, setContactsList] = useState<listType>(undefined);
 
+    const genericFormatter = new GenericFormatter();
+
     useEffect(() => {
         if (suburbContacts && suburbContacts.length > 0){
-            const filteredList = filterAndFormatList('');
+            const filteredList = filterAndFormatList();
             setContactsList(filteredList);
         }
     }, [])
 
     //filter our contacts
-    const filterAndFormatList = (query : string) => {
-        
-        let filteredList : any[];
-
-        if (query){
-            filteredList = suburbContacts?.filter((x : any) => {
-                if (x.FirstName.toLowerCase().includes(query.toLowerCase()) || x.Surname.toLowerCase().includes(query.toLowerCase())) {
-                    return x;
-                }
-            })
-        }
-        else {
-            filteredList = suburbContacts;
-        }
-
-        const sortedList = [...filteredList].sort((a, b) => 
+    const filterAndFormatList = () => {
+        const sortedList = [...suburbContacts].sort((a, b) => 
             a.Surname.localeCompare(b.Surname)
         )
 
@@ -77,11 +64,6 @@ const CfuPhonebookContactsList = ({route} : props) => {
                 <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>Contacts</CustomText>
             </View>
             <View style={{alignItems: 'center', borderBottomColor: theme.colors.onSurfaceDisabled, borderBottomWidth: 1, paddingBottom: 10}}><CustomText variant='bodyLargeBold'>{suburbName}</CustomText></View>
-            <Searchbar style={{marginVertical: 20, marginHorizontal: 20, backgroundColor: theme.colors.surfaceVariant}} placeholder='Search Members' value={searchValue} onChangeText={(text) => {
-                const filterResult = filterAndFormatList(text);
-                setContactsList(filterResult);
-                setSearchValue(text);
-            }}/>
             {
                 (contactsList) && (
                     <List.Section>
@@ -102,7 +84,7 @@ const CfuPhonebookContactsList = ({route} : props) => {
                                                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} 
                                                             left={() => <View style={{backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50}}><LucideIcons.User color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} 
                                                             title={`${contact.FirstName} ${contact.Surname}`}
-                                                            description={contact.Role}
+                                                            description={genericFormatter.formatRole(contact.Role)}
                                                         />
                                                         <Divider/>
                                                     </React.Fragment>

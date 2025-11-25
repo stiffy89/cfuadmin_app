@@ -289,7 +289,8 @@ export class ScreenFlowModule {
                 
                 case 'TrainingMain':
                     this.navigator?.navigate(
-                        'TrainingMain'
+                        'TrainingMain',
+                        data
                     );
                     break;
 
@@ -326,6 +327,46 @@ export class ScreenFlowModule {
                         'VolAdminCeaseMember',
                         data
                     );
+                    break;
+
+                case 'VolunteerNotes':
+                    this.navigator?.navigate(
+                        'VolunteerNotes',
+                        data
+                    )
+                    break;
+
+                case 'PositionHistory':
+                    this.navigator?.navigate(
+                        'PositionHistory',
+                        data
+                    )
+                    break;
+
+                case 'EquityDiversity':
+                    this.navigator?.navigate(
+                        'EquityDiversity',
+                        data
+                    )
+                    break;
+
+                case 'ErrorPage':
+                    this.navigator?.navigate(
+                        'ErrorPage',
+                        data
+                    )
+                    break;
+
+                case 'ExternalLoginPage':
+                    this.navigator?.navigate(
+                        'ExternalLoginPage'
+                    )
+                    break;
+
+                case 'ExternalHomePage':
+                    this.navigator?.navigate(
+                        'ExternalHomePage'
+                    )
                     break;
             }
         }

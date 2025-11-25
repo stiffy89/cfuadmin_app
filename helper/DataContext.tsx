@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { DataContextType, ServiceData, UserData } from '../types/AppTypes';
+import { DataContextType, VolAdminSearchFilter, ServiceData, UserData } from '../types/AppTypes';
 
 // create the context
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -17,8 +17,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [myUnitContacts, setMyUnitContacts] = useState<any>([]);
     const [cfuPhonebookSuburbs, setCfuPhonebookSuburbs] = useState<any>([]);
     const [employeeAddresses, setEmployeeAddresses] = useState<any>([]);
-    const [addressStates, setAddressStates] = useState<any>([]);
-    const [addressRelationships, setAddressRelationships] = useState<any>([]);
     const [brigadeSummary, setBrigadeSummary] = useState<any>([]);
     const [rootOrgUnits, setRootOrgUnits] = useState<any>([]);
     const [orgUnitTeamMembers, setOrgUnitTeamMembers] = useState<any>([]);
@@ -30,8 +28,30 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     const [memberDrillCompletion, setMemberDrillCompletion] = useState<any>([]); //<-- drill completions by members per org unit
     const [trainingSelectedOrgUnit, setTrainingSelectedOrgUnit] = useState<any>([]); //<-- this sets the selected org unit (be it root or drop down)
     const [volAdminLastSelectedOrgUnit, setVolAdminLastSelectedOrgUnit] = useState<any>([]) //<-- this is the vol admin last selected org unit
+    const [volAdminMemberDetailSearchResults, setVolAdminMemberDetailSearchResults] = useState<any>([]) ////this is specifically for results that is returned for firstname, lastname, pernr searches as vol admin
+    const [volAdminCeasedSelectedMember, setVolAdminCeasedSelectedMember] = useState<any | undefined>(undefined) //sets the selection of a ceased member in manage members
+    const [volAdminMemberNotes, setVolAdminMemberNotes] = useState<any>([]) //sets the member notes for vol admins
+    const [contactsPrintPlans, setContactsPrintPlans] = useState<string>('') //sets the plans for the contacts for printing
 
-   
+    const [volAdminMembersSearchFilter, setVolAdminMembersSearchFilter] = useState<VolAdminSearchFilter>({
+        withdrawn : false, 
+        unit : '', 
+        station : '', 
+        lastName : '', 
+        firstName : '', 
+        pernr : ''
+    })
+
+    const [volAdminTrainingSearchFilter, setVolAdminTrainingSearchFilter] = useState<VolAdminSearchFilter>({
+        withdrawn : false, 
+        unit : '', 
+        station : '', 
+        lastName : '', 
+        firstName : '', 
+        pernr : ''
+    })
+
+
     const value: DataContextType = {
         services,
         setServices,
@@ -51,10 +71,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         setMedalsAwards,
         employeeAddresses,
         setEmployeeAddresses,
-        addressStates,
-        setAddressStates,
-        addressRelationships,
-        setAddressRelationships,
         myUnitContacts,
         setMyUnitContacts,
         cfuPhonebookSuburbs,
@@ -80,7 +96,19 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         trainingSelectedOrgUnit,
         setTrainingSelectedOrgUnit,
         volAdminLastSelectedOrgUnit,
-        setVolAdminLastSelectedOrgUnit
+        setVolAdminLastSelectedOrgUnit,
+        volAdminMembersSearchFilter,
+        setVolAdminMembersSearchFilter,
+        volAdminTrainingSearchFilter,
+        setVolAdminTrainingSearchFilter,
+        volAdminMemberDetailSearchResults,
+        setVolAdminMemberDetailSearchResults,
+        volAdminCeasedSelectedMember,
+        setVolAdminCeasedSelectedMember,
+        volAdminMemberNotes,
+        setVolAdminMemberNotes,
+        contactsPrintPlans,
+        setContactsPrintPlans
     };
 
     return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

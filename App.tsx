@@ -3,8 +3,8 @@ import { ThemeProvider } from './assets/ThemeContext';
 import { AppProvider} from './helper/AppContext';
 import { SecurityProvider } from './helper/SecurityContext';
 import { DataProvider } from './helper/DataContext';
+import { HelperValuesDataProvider } from './helper/HelperValuesDataContext';
 import MainApp from './MainApp';
-import { dataHandlerModule } from './helper/DataHandlerModule';
 
 export default function App() {
   return (
@@ -12,7 +12,9 @@ export default function App() {
       <AppProvider>
         <SecurityProvider>
           <DataProvider>
-            <MainApp/>
+            <HelperValuesDataProvider>
+              <MainApp/>
+            </HelperValuesDataProvider>
           </DataProvider>
         </SecurityProvider>
       </AppProvider>
