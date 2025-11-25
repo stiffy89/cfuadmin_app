@@ -347,11 +347,11 @@ export default function MainApp() {
 							//check to see if we have an installation id - if we don't - then take them to the set up page
 							const installationId = await AsyncStorage.getItem('installation_id');
 							if (!installationId){
-								onAppWake();
+//								onAppWake();
 							}
 						}}
 					>
-						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+						<Stack.Navigator initialRouteName='Users' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='MyMembers' component={MyMembers}/>

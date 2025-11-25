@@ -22,9 +22,9 @@ const Users = () => {
 		let user;
 
 		try {
-			const userInfo = await dataHandlerModule.batchGet('Users', 'Z_ESS_MSS_SRV', 'Users');
-			dataContext.setCurrentUser(userInfo.responseBody.d.results);
-			user = userInfo.responseBody.d.results[0]
+			const userInfo = await dataHandlerModule.getInitialUserData();
+			dataContext.setCurrentUser(userInfo.data.d.results);
+			user = userInfo.data.d.results[0]
 		}
 		catch (error) {
 			appContext.setShowDialog(false);

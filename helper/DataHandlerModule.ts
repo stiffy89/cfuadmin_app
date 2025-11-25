@@ -59,7 +59,7 @@ class DataHandlerModule {
             }
 
             const sUrl = '/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange&client_id=0oatd4xccfgbbP7uj697&subject_token_type=id_token&subject_token=' + idToken;
-            
+
 
             /*    const response = await this.axiosSecurityInstance?.post('/token', {
                     params : queryParams
@@ -86,7 +86,7 @@ class DataHandlerModule {
         try {
             const queryParams = {
                 grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
-                client_id : '0oarhcna0itjMMgM05d7',     //-> FRNSW okta client ID
+                client_id: '0oarhcna0itjMMgM05d7',     //-> FRNSW okta client ID
                 subject_token_type: 'id_token',
                 subject_token: idToken
             }
@@ -173,12 +173,38 @@ class DataHandlerModule {
         }
     }
 
+    async getInitialUserData(): Promise<AxiosResponse> {
+        try {
+            const token = await AsyncStorage.getItem('localAuthToken');
+            const authString = `${this.authType} ${token}`
+
+            const response = await this.axiosInstance?.get('/Z_ESS_MSS_SRV/Users', {
+                headers: {
+                    'x-csrf-token': 'Fetch',
+                    'Authorization': authString
+                }
+            })
+
+            if (!response) {
+                throw new Error('cannot get entity, no response')
+            }
+
+            if (response.headers['x-csrf-token']) {
+                await AsyncStorage.setItem('csrf-token', response.headers['x-csrf-token']);
+            }
+
+            return response;
+        } catch (error) {
+            throw error
+        }
+    }
+
     async fetchCsrfToken(): Promise<AxiosResponse> {
         //TODO need to fix this up eventually
         try {
-            const token = await SecureStore.getItemAsync('access_token');
+            const token = await AsyncStorage.getItem('localAuthToken');
             const authString = `${this.authType} ${token}`
-            const response = await this.axiosInstance?.get('/Z_VOL_MEMBER_SRV/MembershipDetails', {
+            const response = await this.axiosInstance?.get('/Z_ESS_MSS_SRV/Users', {
                 headers: {
                     'x-csrf-token': 'Fetch',
                     'Authorization': authString
@@ -202,6 +228,9 @@ class DataHandlerModule {
         const batchSeparator = batchBodyObj.batch;
 
         let csrfToken = await AsyncStorage.getItem('csrf-token');
+        csrfToken = 'blah';
+
+        let csrfRefreshPromise: Promise<void> | null = null;
 
         if (!csrfToken) {
             const csrfResponse = await this.fetchCsrfToken();
@@ -231,7 +260,7 @@ class DataHandlerModule {
                     isAxiosError: false,
                     message: 'no response from UPDATE'
                 }
-            
+
                 throw newError;
             }
 
@@ -243,7 +272,7 @@ class DataHandlerModule {
                     isAxiosError: false,
                     message: 'SAP Error - ' + jsonResponse.error.message.value
                 }
-                
+
                 throw newError;
             }
 
@@ -293,7 +322,7 @@ class DataHandlerModule {
                         if (!retryResponse) throw new Error('no response from update');
 
                         //format the response
-                        const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+                        const retryJsonResponse = this.formatMERGEResponse(retryResponse.data);
 
                         if (!retryJsonResponse) {
                             throw new Error('response body is malformed, cannot parse')
@@ -311,32 +340,55 @@ class DataHandlerModule {
                 }
                 else if (status == 403) {
                     //try getting csrf token
-                    const csrfResponse = await this.fetchCsrfToken()
-                    const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
-                    await AsyncStorage.setItem('csrf-token', newCsrfToken);
-                    const retryResponse = await this.axiosInstance?.post(serviceName + '/$batch',
+                    if (!csrfRefreshPromise) {
+                        csrfRefreshPromise = (async () => {
+                            console.log('Refreshing CSRF token...');
+                            const csrfResponse = await this.fetchCsrfToken();
+                            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                            if (!newCsrfToken) throw new Error('No CSRF token returned');
+
+                            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+                            console.log('CSRF token refreshed.');
+                            csrfRefreshPromise = null;
+                        })().catch(err => {
+                            csrfRefreshPromise = null;
+                            throw err;
+                        });
+                    }
+
+                    // Wait for the CSRF refresh to complete (even if another request started it)
+                    await csrfRefreshPromise;
+
+                    const retryCSRFResponse = await this.axiosInstance?.post(serviceName + '/$batch',
                         batchBodyString,
                         {
                             headers: {
                                 'Content-Type': `multipart/mixed; boundary=${batchSeparator}`,
-                                'x-csrf-token': csrfToken,
+                                'x-csrf-token': await AsyncStorage.getItem('csrf-token'),
                                 'Authorization': authString
                             }
                         }
                     );
 
-                    if (!retryResponse) throw new Error('no response from update');
+                    if (!retryCSRFResponse) {
+                        throw new Error('no response from update');
+                    }
 
-                    //format the response
-                    const retryJsonResponse = this.formatGETResponse(retryResponse.data);
 
-                    if (!retryJsonResponse) {
-                        throw new Error('response body is malformed, cannot parse')
+                    const retryCSRFJsonResponse = this.formatMERGEResponse(retryCSRFResponse.data);
+
+                    if (retryCSRFJsonResponse.error) {
+                        const newCSRFError = {
+                            isAxiosError: false,
+                            message: 'SAP Error - ' + retryCSRFJsonResponse.error.message.value
+                        }
+
+                        throw newCSRFError;
                     }
 
                     return {
                         entityName: '',
-                        responseBody: retryJsonResponse
+                        responseBody: retryCSRFJsonResponse
                     }
                 }
             }
@@ -382,7 +434,7 @@ class DataHandlerModule {
                     isAxiosError: false,
                     message: 'no response from DELETE'
                 }
-            
+
                 throw newError;
             }
 
@@ -394,7 +446,7 @@ class DataHandlerModule {
                     isAxiosError: false,
                     message: 'SAP Error - ' + jsonResponse.error.message.value
                 }
-                
+
                 throw newError;
             }
 
@@ -444,7 +496,7 @@ class DataHandlerModule {
                         if (!retryResponse) throw new Error('no response from update');
 
                         //format the response
-                        const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+                        const retryJsonResponse = this.formatMERGEResponse(retryResponse.data);
 
                         if (!retryJsonResponse) {
                             throw new Error('response body is malformed, cannot parse')
@@ -479,7 +531,7 @@ class DataHandlerModule {
                     if (!retryResponse) throw new Error('no response from update');
 
                     //format the response
-                    const retryJsonResponse = this.formatGETResponse(retryResponse.data);
+                    const retryJsonResponse = this.formatMERGEResponse(retryResponse.data);
 
                     if (!retryJsonResponse) {
                         throw new Error('response body is malformed, cannot parse')
@@ -502,18 +554,8 @@ class DataHandlerModule {
 
         let batchString = `--${batch}\n` + this.getBatchBody(path) + `--${batch}--`;
 
-        let csrfToken = await AsyncStorage.getItem('csrf-token');
-        let csrfRefreshPromise: Promise<void> | null = null;
-
-        if (!csrfToken) {
-            const csrfResponse = await this.fetchCsrfToken();
-            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
-            await AsyncStorage.setItem('csrf-token', newCsrfToken);
-            csrfToken = newCsrfToken;
-        }
-
-        const token = await SecureStore.getItemAsync('access_token');
-
+        //const token = await SecureStore.getItemAsync('access_token');
+        const token = await AsyncStorage.getItem('localAuthToken')
         const authString = `${this.authType} ${token}`
 
         try {
@@ -545,7 +587,7 @@ class DataHandlerModule {
                     isAxiosError: false,
                     message: 'cannot parse the malformed response body'
                 }
-            
+
                 throw newError;
             }
 
@@ -554,7 +596,7 @@ class DataHandlerModule {
                     isAxiosError: false,
                     message: 'SAP Error - ' + jsonResponse.error.message.value
                 }
-                
+
                 throw newError;
             }
 
@@ -595,7 +637,6 @@ class DataHandlerModule {
                             {
                                 headers: {
                                     'Content-Type': `multipart/mixed; boundary=${batch}`,
-                                    'x-csrf-token': csrfToken,
                                     'Authorization': authString
                                 }
                             }
@@ -619,47 +660,6 @@ class DataHandlerModule {
                         console.error("Token refresh or retry failed:", error);
                         throw error;
                     }
-                }
-                else if (status == 403) {
-                    //try getting csrf token
-                    if (!csrfRefreshPromise) {
-                        csrfRefreshPromise = (async () => {
-                            console.log('Refreshing CSRF token...');
-                            const csrfResponse = await this.fetchCsrfToken();
-                            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
-                            if (!newCsrfToken) throw new Error('No CSRF token returned');
-
-                            await AsyncStorage.setItem('csrf-token', newCsrfToken);
-                            console.log('CSRF token refreshed.');
-                            csrfRefreshPromise = null;
-                        })().catch(err => {
-                            csrfRefreshPromise = null;
-                            throw err;
-                        });
-                    }
-
-                    // Wait for the CSRF refresh to complete (even if another request started it)
-                    await csrfRefreshPromise;
-
-                    // Re-run the request after refresh
-                    const retryResponse = await this.axiosInstance?.post(
-                        serviceName + '/$batch',
-                        batchString,
-                        {
-                            headers: {
-                                'Content-Type': `multipart/mixed; boundary=${batch}`,
-                                'x-csrf-token': await AsyncStorage.getItem('csrf-token'),
-                                'Authorization': authString,
-                            },
-                        }
-                    );
-
-                    if (!retryResponse) throw new Error('no response from update');
-
-                    const retryJsonResponse = this.formatGETResponse(retryResponse.data);
-                    if (!retryJsonResponse) throw new Error('response body is malformed');
-
-                    return { entityName, responseBody: retryJsonResponse };
                 }
             }
 

@@ -700,7 +700,8 @@ const EmergencyContactsEdit = (data: any) => {
                     );
                 }
             } catch (error) {
-                console.log(error);
+                appContext.setShowDialog(false);
+                screenFlowModule.onNavigateToScreen('ErrorPage', error);
             }
         }
 

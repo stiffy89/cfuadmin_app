@@ -14,14 +14,14 @@ const SplashScreen = () => {
             <View style={GlobalStyles.backgroundOverlay}/>
             <CustomText variant='titleLargeBold' style={{zIndex: 10, color: theme.colors.background, marginBottom: 40}}>Loading your App</CustomText>
             <ActivityIndicator animating={true} color={theme.colors.background} size='large'/>
-            {/* TODO remove this for production */}
+            {/* TODO remove this for production 
             <Button 
                 style={{marginTop: 20}}
                 mode='contained'
                 onPress={async () => {
                     await AsyncStorage.removeItem('installation_id');
                 }}
-            >Clear Installation Id</Button>
+            >Clear Installation Id</Button> */}
         </ImageBackground>
     )
 }
