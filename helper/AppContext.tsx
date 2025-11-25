@@ -16,7 +16,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [dialogActionFunction, setDialogActionFunction] = useState<(() => void) | undefined>(undefined);
   
   const [lastAppState, setLastAppState] = useState<string>('none');
-  const [authenticationMode, setAuthenticationMode] = useState<AuthenticationMode>('bypass');
+  const [authenticationMode, setAuthenticationMode] = useState<AuthenticationMode>('authenticate');
 
   const [cardModalVisible, setCardModalVisible] = useState(false)
 

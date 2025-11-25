@@ -433,24 +433,6 @@ const Users = () => {
 			<Button
 				style={{ marginBottom: 20 }}
 				mode='outlined'
-				onPress={async () => {
-					const refreshToken = await AsyncStorage.getItem('localRefreshToken');
-
-					if (refreshToken){
-						const refreshedAccessToken = await dataHandlerModule.getRefreshedAccessToken(refreshToken);
-						console.log(refreshedAccessToken);
-					}
-					else {
-						console.log('no refresh token saved')
-					}
-					
-				}}
-			>
-				FRNSW Refresh Token
-			</Button>
-			<Button
-				style={{ marginBottom: 20 }}
-				mode='outlined'
 				onPress={() => {
 					if (lastTimePressed && (Date.now() - lastTimePressed <= 2000)) {
 						presses += 1;

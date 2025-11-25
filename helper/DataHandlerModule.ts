@@ -2,6 +2,7 @@
 import axios, { AxiosInstance, AxiosResponse, isAxiosError } from 'axios';
 import { authModule } from './AuthModule';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
 import { batchGETResponse } from '../types/AppTypes';
 
@@ -33,65 +34,9 @@ class DataHandlerModule {
         //clear cookies
         const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking').default;
         RCTNetworking.clearCookies((result: any) => {
-            console.log('Network cookies cleared')
+            console.log('Network cookies cleared');
         })
 
-        //update the csrf token for now
-        try {
-            const csrfResponse = await this.fetchCsrfToken()
-            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
-            this.csrfToken = newCsrfToken
-            await AsyncStorage.setItem('csrf-token', newCsrfToken);
-        }
-        catch (error) {
-            console.log('csrf token init error')
-        }
-
-        /*    try {
-                const oktaLoginResponse = await authModule.onOktaLogin();
-                const idToken = oktaLoginResponse.response.idToken;
-                if (!idToken) throw new Error('No idToken returned');
-    
-                const tokenResponse = await this.getInitialTokens(idToken);
-                const newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
-                const newRefreshToken = tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
-    
-                await AsyncStorage.setItem('access-token', newAccessToken);
-                await AsyncStorage.setItem('refresh-token', newRefreshToken);
-    
-                const csrfResponse = await this.readEntity('/Z_VOL_MEMBER_SRV/MembershipDetails');
-                const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
-                await AsyncStorage.setItem('csrf-token', newCsrfToken);
-    
-                return true;
-    
-            } catch (error) {
-                throw new Error("Token refresh or retry failed: " + error);
-            } */
-
-        /*        const accessToken = await AsyncStorage.getItem('access-token's);
-        
-                if (!accessToken) {
-                    //go get auth token
-                    try {
-                        const oktaLoginResponse = await authModule.onOktaLogin();
-                        const idToken = oktaLoginResponse.response.idToken;
-                        if (!idToken) throw new Error('No idToken returned');
-        
-                        const tokenResponse = await this.getInitialTokens(idToken);
-                        const newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
-                        const newRefreshToken = tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
-        
-                        await AsyncStorage.setItem('access-token', newAccessToken);
-                        await AsyncStorage.setItem('refresh-token', newRefreshToken);
-        
-                        return true;
-        
-                    } catch (error) {
-                        throw new Error("Token refresh or retry failed: " + error);
-                    }
-                }
-        */
         return true;
     }
 
@@ -186,8 +131,6 @@ class DataHandlerModule {
         }
     }
 
-
-
     batchBodyFormatter(action: string, urlPath: string, data: any) {
         const changeSet = 'changeset_' + Crypto.randomUUID();
         const batch = 'batch_' + Crypto.randomUUID();
@@ -202,12 +145,6 @@ class DataHandlerModule {
         }
 
         return batchBodyObj;
-    }
-
-    updateBatchBody(urlPath: string, data: any) {
-        const dataStr = JSON.stringify(data);
-        const batchBody = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nMERGE ${urlPath} HTTP/1.1\nsap-context-id-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\nContent-Type: application/json\nContent-Length: 10000\n\n${dataStr}`;
-        return batchBody;
     }
 
     getBatchBody(urlPath: string) {
@@ -239,10 +176,8 @@ class DataHandlerModule {
     async fetchCsrfToken(): Promise<AxiosResponse> {
         //TODO need to fix this up eventually
         try {
-            const token = await AsyncStorage.getItem('localAuthToken');
-
+            const token = await SecureStore.getItemAsync('access_token');
             const authString = `${this.authType} ${token}`
-
             const response = await this.axiosInstance?.get('/Z_VOL_MEMBER_SRV/MembershipDetails', {
                 headers: {
                     'x-csrf-token': 'Fetch',
@@ -577,27 +512,14 @@ class DataHandlerModule {
             csrfToken = newCsrfToken;
         }
 
-        const token = await AsyncStorage.getItem('localAuthToken');
-
+        const token = await SecureStore.getItemAsync('access_token');
 
         const authString = `${this.authType} ${token}`
 
         try {
-            let accessToken;
-
-            if (this.useToken) {
-                if (passedAccessToken) {
-                    accessToken = passedAccessToken;
-                }
-                else {
-                    accessToken = await AsyncStorage.getItem('access-token');
-                }
-            }
-
 
             let header: any = {
                 'Content-Type': `multipart/mixed; boundary=${batch}`,
-                //    'x-csrf-token': csrfToken,
                 'Authorization': authString,
                 'Cache-Control': 'no-cache, no-store, must-revalidate'
             }
@@ -1017,29 +939,6 @@ class DataHandlerModule {
 
             return response;
         } catch (error) {
-            throw error
-        }
-    }
-
-    async testErrorSimulation(statusCode: number): Promise<void> {
-        try {
-            // Fake an axios-style error
-            throw {
-                isAxiosError: true,
-                response: { status: statusCode, data: { message: 'Simulated internal error' } },
-                message: 'Simulated AxiosError',
-            };
-        } catch (error) {
-            throw error
-        }
-    }
-
-    async testSAPErrorSimulation(): Promise<void> {
-        try {
-            const userInfo = await this.batchGet('User','Z_ESS_MSS_SRV', 'Users');
-            console.log(userInfo);
-        }
-        catch (error) {
             throw error
         }
     }

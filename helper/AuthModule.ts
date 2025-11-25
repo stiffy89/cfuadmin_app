@@ -110,8 +110,8 @@ export class AuthModule {
         //to ensure close login widget
         WebBrowser.maybeCompleteAuthSession();
 
-        let redirectURI = (Constants.executionEnvironment == 'standalone' || Constants.executionEnvironment == 'bare') ? Platform.OS == "android" ?  AuthSession.makeRedirectUri({path: "redirect"}) : 'com.ernox.login://callback' : AuthSession.makeRedirectUri({ preferLocalhost: true });
-        //let redirectURI = 'com.cfu.cfuadminapplication://callback';
+        //let redirectURI = (Constants.executionEnvironment == 'standalone' || Constants.executionEnvironment == 'bare') ? Platform.OS == "android" ?  AuthSession.makeRedirectUri({path: "redirect"}) : 'com.ernox.login://callback' : AuthSession.makeRedirectUri({ preferLocalhost: true });
+        let redirectURI = 'com.cfu.cfuadminapplication://callback';
         //configuration
         const oktaConfig = {
             //ypur application id from okta

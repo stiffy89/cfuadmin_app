@@ -59,15 +59,11 @@ import { NavigationContainer, useNavigationContainerRef } from '@react-navigatio
 
 //theme
 import lightThemeColors from './assets/themes/light.json';
-import darkThemeColors from './assets/themes/dark.json';
 
 //contexts
 import { useAppContext } from './helper/AppContext';
 import { useSecurityContext } from './helper/SecurityContext';
 import { useDataContext } from './helper/DataContext';
-
-//theme context
-import { useThemeContext } from './assets/ThemeContext';
 
 //types
 import { RootStackParamList } from './types/AppTypes';
@@ -84,16 +80,6 @@ const customLightTheme = {
 	colors: {
 		...MD3LightTheme,
 		...lightThemeColors.colors,
-		darkText: "rgb(50, 50, 50)", //extending our theme with two extra colors for the text
-		lightText: "rgb(86, 87, 89)" //extending our theme with two extra colors for the text
-	}
-}
-
-const customDarkTheme = {
-	...MD3LightTheme,
-	colors: {
-		...MD3LightTheme,
-		...darkThemeColors.colors,
 		darkText: "rgb(50, 50, 50)", //extending our theme with two extra colors for the text
 		lightText: "rgb(86, 87, 89)" //extending our theme with two extra colors for the text
 	}
@@ -247,181 +233,56 @@ export default function MainApp() {
 			return;
 		}
 	}
-
-	//IMPORTANT, TEMPORARILY MOVED TO USERS SCREEN FOR TESTING
-/*	const onGetInitialLoad = async () => {
-
-		let user;
-		
-		try {
-			const userInfo = await dataHandlerModule.batchGet('Users','Z_ESS_MSS_SRV', 'Users');
-
-			if (userInfo.responseBody.error){
-				//TODO handle SAP error
-				console.log('SAP Error')
-				return;
-			}
-			else {
-				dataContext.setCurrentUser(userInfo.responseBody.d.results);
-				user = userInfo.responseBody.d.results[0]
-			}
-		}
-		catch (error){
-			//TODO handle error
-			console.log(error);
-			return;
-		}
-
-		let requests = [
-			dataHandlerModule.batchGet('MenuSet?$format=json', 'Z_MOB2_SRV', 'MenuSet', undefined, true),
-			dataHandlerModule.batchGet('EmployeeDetails', 'Z_ESS_MSS_SRV', 'EmployeeDetails'),
-			dataHandlerModule.batchGet('MembershipDetails', 'Z_VOL_MEMBER_SRV', 'MembershipDetails'),
-			dataHandlerModule.batchGet('VolunteerRoles', 'Z_VOL_MEMBER_SRV', 'VolunteerRoles'),
-			dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades'), 
-			dataHandlerModule.batchGet('AddressStates?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressStates'),
-			dataHandlerModule.batchGet('AddressRelationships?$skip=0&$top=20', 'Z_ESS_MSS_SRV', 'VH_AddressRelationships')
-		]
-
-		//add the extra calls for mymembers and training
-		if (user.TeamCoordinator){
-			requests = [...requests, 
-				dataHandlerModule.batchGet('Suburbs', 'Z_CFU_CONTACTS_SRV', 'Suburbs'), 
-				dataHandlerModule.batchGet('RootOrgUnits', 'Z_VOL_MANAGER_SRV', 'RootOrgUnits')
-			]
-		}
-		
-
-		const results = await Promise.allSettled(requests);
-		//if we have any fails - its a critical error
-		const passed = results.every(x => x.status == 'fulfilled');
-
-		if (!passed){
-			//TODO take them to a critical error page
-			setDialogMessage('Critical error occurred during the initial GET');
-			setShowDialog(true);
-			return;
-		}
-
-		//check to see if we have any read errors from server
-		const readErrors = results.filter(x => x.value.responseBody.error);
-		if (readErrors.length > 0){
-			//TODO handle read errors somewhere
-			setShowDialog(true);
-			setDialogMessage('Read error on initialisation');
-		}
-
-		for (const x of results) {
-			switch (x.value.entityName){
-				case 'MenuSet':
-					dataContext.setServices(x.value.responseBody.d.results);
-					break;
-
-				case 'Users':
-					dataContext.setCurrentUser(x.value.responseBody.d.results);
-					break;
-
-				case 'EmployeeDetails':
-					dataContext.setEmployeeDetails(x.value.responseBody.d.results);
-					break;
-
-				case 'MembershipDetails':
-					dataContext.setMembershipDetails(x.value.responseBody.d.results);
-					break;
-
-				case 'VolunteerRoles':
-					dataContext.setVolunteerRoles(x.value.responseBody.d.results);
-					break;
-
-				case 'VH_AddressStates':
-					dataContext.setAddressStates(x.value.responseBody.d.results);
-					break;
-
-				case 'VH_AddressRelationships':
-					dataContext.setAddressRelationships(x.value.responseBody.d.results);
-					break;
-
-				case 'Brigades':
-					dataContext.setBrigadeSummary(x.value.responseBody.d.results);
-					const zzplans = x.value.responseBody.d.results[0].Zzplans;
-					try {
-						const myUnitContacts = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'Suburbs');
-						dataContext.setMyUnitContacts(myUnitContacts.responseBody.d.results);
-					}
-					catch (error) {
-						console.log(error)
-					}
-					break;
-
-				case 'Suburbs':
-					dataContext.setCfuPhonebookSuburbs(x.value.responseBody.d.results);
-					break;
-
-				case 'RootOrgUnits':
-					dataContext.setRootOrgUnits(x.value.responseBody.d.results);
-					dataContext.setTrainingSelectedOrgUnit(x.value.responseBody.d.results[0]);
-
-					if (x.value.responseBody.d.results.length > 0){
-						const firstRootOrgUnit = x.value.responseBody.d.results[0];
-						const plans = firstRootOrgUnit.Plans;
-						try {
-							const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
-							const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
-							const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
-							
-							dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results);
-							dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
-							dataContext.setDrillDetails(drillDetails.responseBody.d.results)
-						}
-						catch (error) {
-							//TODO handle error
-							console.log(error)
-						}
-					}
-					break;
-			}
-		}
-					
-		screenFlowModule.onNavigateToScreen('HomeScreen');
-	}
-*/
+	
+	const cleanupRef = useRef<any | null>(null)
 
 	useEffect(() => {
+		const appAwakeLogic = async () => {
+			onAppInitLoad();
 
-		onAppInitLoad();
+			//TODO - remove this for production
+			if (authenticationMode == 'bypass') {
+				return;
+			}
 
+			const installationId = await AsyncStorage.getItem('installation_id');
 
-		if (authenticationMode == 'bypass') {
-			return;
+			if (!installationId){
+				return;
+			}
+
+			onAppWake();
+
+			//subscriber for when the app goes into background / active
+			const sub = AppState.addEventListener('change', async (nextAppState) => {
+
+				if (nextAppState == 'background') {
+					if (lastAppState.current == 'active') {
+						onAppSleep();
+					}
+				}
+				else if (nextAppState == 'active') {
+					if (!authModule.isAuthenticating && lastAppState.current == 'background') {
+						onAppWake();
+					}
+				}
+
+				lastAppState.current = nextAppState;
+			})
+
+			cleanupRef.current = () => sub.remove();
 		}
 
-		onAppWake();
-
-		//subscriber for when the app goes into background / active
-		const sub = AppState.addEventListener('change', async (nextAppState) => {
-
-			if (nextAppState == 'background') {
-				if (lastAppState.current == 'active') {
-					onAppSleep();
-				}
-			}
-			else if (nextAppState == 'active') {
-				if (!authModule.isAuthenticating && lastAppState.current == 'background') {
-					onAppWake();
-				}
-			}
-
-			lastAppState.current = nextAppState;
-		})
+		appAwakeLogic();
 
 		return () => {
-			sub.remove();
+			cleanupRef.current?.();
 		}
 	}, [])
 
-	const { isLightMode } = useThemeContext();
 	const { loaded, fonts } = useCustomFonts();
 
-	const appTheme = isLightMode ? customLightTheme : customDarkTheme;
+	const appTheme = customLightTheme;
 
 	if (!loaded) return null;
 
@@ -479,20 +340,26 @@ export default function MainApp() {
 					</Portal>
 					<NavigationContainer
 						ref={navigatorRef}
-						onReady={() => {
+						onReady={async () => {
 							//initialise the Screen flow module
-							screenFlowModule.onInitRootNavigator(navigatorRef)
+							screenFlowModule.onInitRootNavigator(navigatorRef);
+
+							//check to see if we have an installation id - if we don't - then take them to the set up page
+							const installationId = await AsyncStorage.getItem('installation_id');
+							if (!installationId){
+								onAppWake();
+							}
 						}}
 					>
-						<Stack.Navigator initialRouteName='Users' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+							<Stack.Screen name='SplashScreen' component={SplashScreen} />
+							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
 							<Stack.Screen name='FormService' component={FormServiceStack}/>
 							<Stack.Screen name="SkillsMaintenance" component={SkillsMaintenanceStack}/>
-							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='MainTabs' component={TabNavigator} />
-							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='MyDetailsScreen' component={MyDetails}/>
 							<Stack.Screen name='ContactDetailsScreen' component={ContactDetails}/>
 							<Stack.Screen name='EmergencyContactsScreen' component={EmergencyContacts} />

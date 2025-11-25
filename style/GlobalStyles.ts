@@ -46,6 +46,16 @@ const GlobalStyles = StyleSheet.create({
         position: 'relative',
         width: '100%'
     },
+    backgroundImage: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    backgroundOverlay : {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'black',
+        opacity: 0.6
+    },
     inputRoundedCorners: {
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,

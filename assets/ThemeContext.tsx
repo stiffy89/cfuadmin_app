@@ -4,8 +4,6 @@ import { useTheme } from 'react-native-paper';
 
 //set up our contexts for light / dark mode
 type ThemeContextType = {
-  isLightMode : boolean;
-  toggleLightMode: () => void;
   statusBarColor : string;
   setStatusBarColor : (color : string) => void;
   statusBarStyle : StatusBarStyle | null | undefined;
@@ -16,10 +14,6 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider : React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
-  //toggling between light and dark theme
-  const [isLightMode, setIsLightMode] = useState(true);
-  const toggleLightMode = () => setIsLightMode(!isLightMode);
-
   //setting the color for the status bar & the icons ontop of the app
   const theme = useTheme();
   const [statusBarColor, setStatusBarColor] = useState('#fff');
@@ -27,7 +21,7 @@ export const ThemeProvider : React.FC<{ children: React.ReactNode }> = ({ childr
 
 
   return (
-    <ThemeContext.Provider value={{ isLightMode, toggleLightMode, statusBarColor, setStatusBarColor, statusBarStyle, setStatusBarStyle}}>
+    <ThemeContext.Provider value={{statusBarColor, setStatusBarColor, statusBarStyle, setStatusBarStyle}}>
       {children}
     </ThemeContext.Provider>
   )
