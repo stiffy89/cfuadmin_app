@@ -13,19 +13,16 @@ import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import CustomIcon from "../../assets/CustomIcon";
 import { dataHandlerModule } from "../../helper/DataHandlerModule";
 
-const loadDrillRandomCards = async (categoryId:string) => {
-    const randomCards = await dataHandlerModule.getSkillsMaintenanceRandomCards(categoryId)
-
-    const responseText = randomCards.data;
-    const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];
-    const parts = responseText.split(boundary);
-    const jsonPart = parts.find((p: string | string[]) =>
-        p.includes("application/json")
-      );
-    const jsonBody = jsonPart.split("\r\n\r\n").pop();
-    const data = JSON.parse(jsonBody);
-    
-    return data.d.results;
+const loadDrillRandomCards = async (categoryId:string, setShowDialog: (vaL:boolean) => void) => {   
+    try{
+        const randomCards = await dataHandlerModule.batchGet(`GetRandomCards?CategoryId='${categoryId}'`, "Z_CFU_FLASHCARDS_SRV", "GetRandomCards")
+        const data = randomCards.responseBody.d.results;
+        
+        return data;
+    }catch (error) {
+        setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
+    }
 }
 
 type props = StackScreenProps<SkillsMaintenanceStackParamList, "DrillCardPage">;
@@ -66,7 +63,7 @@ const DrillCardsPage = ({ route, navigation }: props) => {
     const answerButtonText = category.AnswerButtonText || "Next Card";
 
     useEffect(() => {
-        loadDrillRandomCards(category.Id).then((res) => setCards(res))
+        loadDrillRandomCards(category.Id, setShowDialog).then((res) => setCards(res))
     }, []);
 
 

@@ -17,20 +17,26 @@ import { useAppContext } from '../../helper/AppContext';
 import Pdf from "react-native-pdf";
 import { Buffer } from "buffer";
 
-const loadResource = async (Path: string, FileType: string) => {
-  const response = await dataHandlerModule.getResource(Path, FileType)
+const loadResource = async (Path: string, FileType: string, setShowDialog: (val :boolean) => void) => {
+  try{
+    const response = await dataHandlerModule.getResource(Path, FileType)
 
-  return response.data;
+    return response.data;
+  }catch (error){
+    setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
+  }
 };
 
-const storeResource = async (contentString: string, filename:string, fileType: string) => {
+const storeResource = async (contentString: string, filename:string, fileType: string, setShowDialog: (val :boolean) => void) => {
   try {
     const src = new File(Paths.cache, filename);
     const bytes = fileType == "application/pdf" ? base64ToUint8Array(contentString) : new TextEncoder().encode(contentString)
     src.write(bytes)
     return src.uri
   } catch (error) {
-    console.error('Error saving file from Base64:', error);
+    setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
   }
 }
 
@@ -68,17 +74,17 @@ const ResourcePage = ({ route, navigation }: props) => {
         setHtmlContent(file.textSync())
       }
     }else {
-      loadResource(accessRid, fileType).then((res) => setResource(res));
+      loadResource(accessRid, fileType, setShowDialog).then((res) => setResource(res));
     }
   }, []);
 
   useEffect(() => {
     if(resource && fileType == "application/pdf"){
       const base64String = Buffer.from(resource as any, "binary").toString("base64");
-      storeResource(base64String, displayName, fileType)
+      storeResource(base64String, displayName, fileType, setShowDialog)
       setPdfSource(`data:application/pdf;base64,${base64String}`)
     }else if(resource && fileType == "text/html"){
-      storeResource(resource, displayName, fileType)
+      storeResource(resource, displayName, fileType, setShowDialog)
       setHtmlContent(resource)
     }
   }, [resource])

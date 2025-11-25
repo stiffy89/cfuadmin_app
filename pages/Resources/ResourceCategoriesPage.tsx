@@ -79,7 +79,7 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
             return (
               <Pressable
                 key={index}
-                style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, { flexGrow: 1, maxWidth:maxWidth, alignItems: "center", height: 120,  aspectRatio: 1, marginBottom: 50 }]}
+                style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, { flexGrow: 1, maxWidth:maxWidth, alignItems: "center", height: 120,  aspectRatio: 1 }]}
                 onPress={() => navigate(category)}
                 onLayout={(e) => {
                     if(index == 0){
@@ -87,15 +87,16 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
                     }
                 }}
               >
-                <View style={{borderRadius: 5, alignItems: "center", justifyContent: "center", backgroundColor: "#fff", height: "100%", width: "100%"}}>
-                  <CustomIcon style={{ width: "100%" }} size={48} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
+                <View style={{borderRadius: 5, alignItems: "center", justifyContent: "space-between", backgroundColor: "#fff", height: "100%", width: "100%", paddingVertical: 20}}>
+                  <CustomText
+                    variant="titleMedium"
+                    style={{ textAlign: "center", marginHorizontal: 20 }}
+                  >
+                    {category.ParentRid}
+                  </CustomText>
+                  <CustomIcon style={{ width: "100%" }} size={50} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
                 </View>
-                <CustomText
-                  variant="bodySmall"
-                  style={{ marginTop: 10, textAlign: "center" }}
-                >
-                  {category.ParentRid}
-                </CustomText>
+
               </Pressable>
             );
           })

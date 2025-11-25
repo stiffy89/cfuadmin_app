@@ -1,18 +1,15 @@
 import React, {useEffect, useState, useRef} from "react";
-import { View, Share } from "react-native";
+import { View, Share, Linking } from "react-native";
 import { useTheme, Button, IconButton} from "react-native-paper";
 import {WebView} from "react-native-webview"
+import { StackScreenProps } from "@react-navigation/stack";
+
+import { FormServiceStackParamList, FormsLauncherSet} from "../../types/AppTypes";
+import { useAppContext } from "../../helper/AppContext";
+import { screenFlowModule } from "../../helper/ScreenFlowModule";
+
 import CustomText from "../../assets/CustomText";
 import CustomIcon from "../../assets/CustomIcon"
-
-import * as Linking from 'expo-linking';
-
-import { StackScreenProps } from "@react-navigation/stack";
-import { FormServiceStackParamList, FormsLauncherSet} from "../../types/AppTypes";
-
-import { useAppContext } from "../../helper/AppContext";
-
-import { screenFlowModule } from "../../helper/ScreenFlowModule";
 
 type props = StackScreenProps<FormServiceStackParamList, "FormPage">;
 

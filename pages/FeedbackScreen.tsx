@@ -159,19 +159,24 @@ export const FeedbackScreen = () => {
             setShowDialog(false);
         }else{
             setTimeout(async () => {
-                await dataHandlerModule.postFeedbackSet(rating ? rating.ratingValue : "", comment).then((res)=>{
-                    setSubmitting(false)
-                    setShowBusyIndicator(false);
+                try{
+                    await dataHandlerModule.postFeedbackSet(rating ? rating.ratingValue : "", comment).then((res)=>{
+                        setSubmitting(false)
+                        setShowBusyIndicator(false);
+                        setShowDialog(false);
+                        if(res.status == 201){
+                            //we're good
+                            setSubmitted(true)
+                            fadeInConfirmation()
+                        }else {
+                            //we're not so good
+                            console.log("Something went wrong")
+                        }
+                    })
+                }catch (error) {
                     setShowDialog(false);
-                    if(res.status == 201){
-                        //we're good
-                        setSubmitted(true)
-                        fadeInConfirmation()
-                    }else {
-                        //we're not so good
-                        console.log("Something went wrong")
-                    }
-                })
+		            screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                }
             }, 1000)
         }
     }

@@ -13,19 +13,16 @@ import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { dataHandlerModule } from "../../helper/DataHandlerModule";
 
 
-const loadSkillsMaintenanceCategories = async () => {
-    const skillsMaitenanceCategories = await dataHandlerModule.getSkillsMaintenanceCategories()
+const loadSkillsMaintenanceCategories = async (setShowDialog: (vaL:boolean) => void) => {
+    try{
+        const skillsMaitenanceCategories = await dataHandlerModule.batchGet("Categories?$filter=ParentCategoryId%20eq%20%270000000000%27", "Z_CFU_FLASHCARDS_SRV", "Categories")
+        const data = skillsMaitenanceCategories.responseBody.d.results;
 
-    const responseText = skillsMaitenanceCategories.data;
-    const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];
-    const parts = responseText.split(boundary);
-    const jsonPart = parts.find((p: string | string[]) =>
-        p.includes("application/json")
-      );
-    const jsonBody = jsonPart.split("\r\n\r\n").pop();
-    const data = JSON.parse(jsonBody);
-    
-    return data.d.results;
+        return data;
+    }catch (error){
+        setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
+    }
 }
 
 type props = StackScreenProps<SkillsMaintenanceStackParamList, "SkillsMaintenancePage">;
@@ -39,7 +36,7 @@ const SkillsMaintenancePage = ({ route, navigation }: props) => {
     const params = route.params ?? {};
 
     useEffect(() => {
-        loadSkillsMaintenanceCategories().then((res) => {
+        loadSkillsMaintenanceCategories(setShowDialog).then((res) => {
             setCategories(res)
             
             setShowBusyIndicator(false);
