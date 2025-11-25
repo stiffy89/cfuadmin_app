@@ -49,6 +49,8 @@ import VolunteerNotes from './pages/VolunteerNotes';
 import PositionHistory from './pages/PositionHistory';
 import EquityDiversity from './pages/EquityDiversity';
 import ErrorPage from './pages/ErrorPage';
+import ExternalLoginPage from './pages/ExternalTesters/ExternalLoginPage';
+import ExternalHomePage from './pages/ExternalTesters/ExternalHomePage';
 
 //navigation modules
 import { createBottomTabNavigator, TransitionSpecs, SceneStyleInterpolators } from '@react-navigation/bottom-tabs';
@@ -514,6 +516,8 @@ export default function MainApp() {
 							<Stack.Screen name='PositionHistory' component={PositionHistory}/>
 							<Stack.Screen name='EquityDiversity' component={EquityDiversity}/>
 							<Stack.Screen name='ErrorPage' component={ErrorPage}/>
+							<Stack.Screen name='ExternalLoginPage' component={ExternalLoginPage}/>
+							<Stack.Screen name='ExternalHomePage' component={ExternalHomePage}/>
 						</Stack.Navigator>
 					</NavigationContainer>
 				</PaperProvider>

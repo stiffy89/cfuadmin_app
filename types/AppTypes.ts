@@ -253,6 +253,8 @@ export type RootStackParamList = {
     PositionHistory : PositionHistoryPageProp;
     EquityDiversity : undefined;
     ErrorPage : any;
+    ExternalLoginPage : undefined;
+    ExternalHomePage : undefined;
 }
 
 export type TabParamList = {

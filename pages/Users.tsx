@@ -242,6 +242,9 @@ const Users = () => {
 		screenFlowModule.onNavigateToScreen('HomeScreen');
 	}
 
+	let presses = 0;
+	let lastTimePressed : any = null;
+
 	return (
 		<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 			<Text style={{ marginBottom: 20 }}>Please select from the following users</Text>
@@ -401,9 +404,16 @@ const Users = () => {
 							if (oktaIDToken) {
 								dataHandlerModule.setAuthType('Bearer');
 								await AsyncStorage.removeItem('localAuthToken');
+								await AsyncStorage.removeItem('localRefreshToken');
+
 								const tokenResponse = await dataHandlerModule.getFRNSWInitialTokens(oktaIDToken);
+
 								const newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
-								AsyncStorage.setItem('localAuthToken', newAccessToken);
+								const newRefreshToken = tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+
+								await AsyncStorage.setItem('localAuthToken', newAccessToken);
+								await AsyncStorage.setItem('localRefreshToken', newRefreshToken);
+								
 								screenFlowModule.onNavigateToScreen('SplashScreen');
 								onGetInitialLoad();
 							}
@@ -419,6 +429,43 @@ const Users = () => {
 				}}
 			>
 				FRNSW Login
+			</Button>
+			<Button
+				style={{ marginBottom: 20 }}
+				mode='outlined'
+				onPress={async () => {
+					const refreshToken = await AsyncStorage.getItem('localRefreshToken');
+
+					if (refreshToken){
+						const refreshedAccessToken = await dataHandlerModule.getRefreshedAccessToken(refreshToken);
+						console.log(refreshedAccessToken);
+					}
+					else {
+						console.log('no refresh token saved')
+					}
+					
+				}}
+			>
+				FRNSW Refresh Token
+			</Button>
+			<Button
+				style={{ marginBottom: 20 }}
+				mode='outlined'
+				onPress={() => {
+					if (lastTimePressed && (Date.now() - lastTimePressed <= 2000)) {
+						presses += 1;
+					} else {
+						presses = 1;
+					}
+
+					lastTimePressed = Date.now();
+
+					if (presses == 10){
+						screenFlowModule.onNavigateToScreen('ExternalLoginPage');
+					} 
+				}}
+			>
+				External Login
 			</Button>
 		</View>
 	)

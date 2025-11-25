@@ -44,7 +44,8 @@ const MyDetailsEdit = (data: any) => {
             </CustomText>
             <TextInput
                 label="Preferred Name"
-                mode="flat"
+                mode="outlined"
+                activeOutlineColor={theme.colors.onSecondaryContainer}
                 value={preferredName}
                 onChangeText={(text) => {
                     setPreferredName(text);
@@ -451,15 +452,16 @@ const ContactDetailsEdit = (data: any) => {
     }
 
     return (
-        <View style={{ paddingHorizontal: 20, flex: 1 }}>
+        <ScrollView contentContainerStyle={{ flex: (key == "mailing_address") ? 0 : 1 }} style={{ paddingHorizontal: 20 }}>
             <CustomText style={{ marginBottom: 20 }} variant="titleLargeBold">
                 Contact Details Edit
             </CustomText>
             {key == "primarymobile" && (
-                <View>
+                <View style={{ flex: 1 }}>
                     <TextInput
                         label="Primary Mobile"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         value={contactDetails.primarymobile}
                         onChangeText={(text) => {
                             setContactDetails({
@@ -472,10 +474,11 @@ const ContactDetailsEdit = (data: any) => {
                 </View>
             )}
             {key == "home" && (
-                <View>
+                <View style={{ flex: 1 }}>
                     <TextInput
                         label="Home Phone"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         value={contactDetails.home}
                         onChangeText={(text) => {
                             setContactDetails({
@@ -488,10 +491,11 @@ const ContactDetailsEdit = (data: any) => {
                 </View>
             )}
             {key == "work" && (
-                <View>
+                <View style={{ flex: 1 }}>
                     <TextInput
                         label="Work Phone"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         value={contactDetails.work}
                         onChangeText={(text) => {
                             setContactDetails({
@@ -504,10 +508,11 @@ const ContactDetailsEdit = (data: any) => {
                 </View>
             )}
             {key == "email" && (
-                <View>
+                <View style={{ flex: 1 }}>
                     <TextInput
                         label="Email"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         value={contactDetails.email}
                         onChangeText={(text) => {
                             setContactDetails({
@@ -520,7 +525,7 @@ const ContactDetailsEdit = (data: any) => {
                 </View>
             )}
             {key == "mailing_address" && (
-                <ScrollView>
+                <View style={{ marginBottom: 150 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                         <CustomText variant="titleSmallBold">
                             Mailing Address
@@ -538,7 +543,8 @@ const ContactDetailsEdit = (data: any) => {
                     </View>
                     <TextInput
                         label="Care of"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         style={{ marginBottom: 20 }}
                         value={contactDetails.mail_careof}
                         onChangeText={(text) => {
@@ -550,7 +556,8 @@ const ContactDetailsEdit = (data: any) => {
                     />
                     <TextInput
                         label="Street *"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         style={{ marginBottom: 20 }}
                         value={contactDetails.mail_street}
                         onChangeText={(text) => {
@@ -562,7 +569,8 @@ const ContactDetailsEdit = (data: any) => {
                     />
                     <TextInput
                         label="Suburb *"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         style={{ marginBottom: 20 }}
                         value={contactDetails.mail_suburb}
                         onChangeText={(text) => {
@@ -572,57 +580,57 @@ const ContactDetailsEdit = (data: any) => {
                             });
                         }}
                     />
-                    <Menu
-                        style={{ width: "70%" }}
-                        visible={showDropDown}
-                        onDismiss={() => setShowDropDown(!showDropDown)}
-                        anchor={
-                            <TextInput
-                                label="State *"
-                                mode="flat"
-                                style={{ marginBottom: 20 }}
-                                value={contactDetails.mail_state}
-                                editable={false}
-                                right={
-                                    <TextInput.Icon
-                                        icon={() => {
-                                            if (showDropDown) {
-                                                return <LucideIcons.ChevronUp />;
-                                            } else {
-                                                return <LucideIcons.ChevronDown />;
-                                            }
-                                        }}
-                                        onPress={() => {
-                                            setShowDropDown(!showDropDown);
-                                        }}
-                                    />
-                                }
-                            />
+                    <View>
+                        <TextInput
+                            style={{ ...GlobalStyles.disabledTextInput }}
+                            mode='outlined'
+                            value={contactDetails.mail_state}
+                            editable={false}
+                            label="State *"
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                    onPress={() => {
+                                        setShowDropDown(!showDropDown);
+                                    }}
+                                />
+                            }
+                        />
+                        {(showDropDown) &&
+                            <ScrollView style={{ height: 300, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 55, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
+                                <List.Section>
+                                    {helperDataContext.addressStates.map((x, i) => {
+                                        return (
+                                            <React.Fragment key={'Fragment_' + i}>
+                                                <List.Item
+                                                    key={i}
+                                                    title={`${x.Bland}`}
+                                                    style={{
+                                                        backgroundColor: (x.Bland === contactDetails.mail_state) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                    }}
+                                                    onPress={() => {
+                                                        setContactDetails({
+                                                            ...contactDetails,
+                                                            mail_state: x.Bland,
+                                                        });
+                                                        setShowDropDown(!showDropDown);
+                                                    }}
+                                                />
+                                                <Divider key={'divider' + i} />
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </List.Section>
+                            </ScrollView>
                         }
-                        anchorPosition="top"
-                    >
-                        {helperDataContext.addressStates.map((state, index) => {
-                            return (
-                                <View key={"container_" + index}>
-                                    <Menu.Item
-                                        title={state.Bland}
-                                        key={"item_" + index}
-                                        onPress={() => {
-                                            setContactDetails({
-                                                ...contactDetails,
-                                                mail_state: state.Bland,
-                                            });
-                                            setShowDropDown(!showDropDown);
-                                        }}
-                                    />
-                                    <Divider key={"div_" + index} />
-                                </View>
-                            );
-                        })}
-                    </Menu>
+                    </View>
                     <TextInput
+                        style={{ marginTop: 20 }}
                         label="Postcode *"
-                        mode="flat"
+                        mode="outlined"
+                        activeOutlineColor={theme.colors.onSecondaryContainer}
                         value={contactDetails.mail_postcode}
                         onChangeText={(text) => {
                             setContactDetails({
@@ -631,9 +639,8 @@ const ContactDetailsEdit = (data: any) => {
                             });
                         }}
                     />
-                </ScrollView>
+                </View>
             )}
-            <View style={{ flex: 1 }}></View>
             <Button
                 style={{
                     backgroundColor: theme.colors.primary,
@@ -654,7 +661,7 @@ const ContactDetailsEdit = (data: any) => {
             >
                 Save
             </Button>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -825,7 +832,8 @@ const EmergencyContactsEdit = (data: any) => {
             >
                 <TextInput
                     label="Name *"
-                    mode="flat"
+                    mode="outlined"
+                    activeOutlineColor={theme.colors.onSecondaryContainer}
                     style={{ marginBottom: 20 }}
                     value={emergencyContact.Coname}
                     onChangeText={(text) => {
@@ -835,58 +843,57 @@ const EmergencyContactsEdit = (data: any) => {
                         });
                     }}
                 />
-                <Menu
-                    style={{ width: "70%" }}
-                    visible={showRelatDropDown}
-                    onDismiss={() => setShowRelatDropDown(!showRelatDropDown)}
-                    anchor={
-                        <TextInput
-                            label="Relationship *"
-                            mode="flat"
-                            style={{ marginBottom: 20 }}
-                            value={emergencyContact.ZzindrlAtext}
-                            editable={false}
-                            right={
-                                <TextInput.Icon
-                                    icon={() => {
-                                        if (showRelatDropDown) {
-                                            return <LucideIcons.ChevronUp />;
-                                        } else {
-                                            return <LucideIcons.ChevronDown />;
-                                        }
-                                    }}
-                                    onPress={() => {
-                                        setShowRelatDropDown(!showRelatDropDown);
-                                    }}
-                                />
-                            }
-                        />
+                <View>
+                    <TextInput
+                        style={{ ...GlobalStyles.disabledTextInput, marginBottom: 20 }}
+                        mode='outlined'
+                        value={emergencyContact.ZzindrlAtext}
+                        editable={false}
+                        label="Relationship *"
+                        right={
+                            <TextInput.Icon
+                                icon={() => {
+                                    return <LucideIcons.ChevronDown />
+                                }}
+                                onPress={() => {
+                                    setShowRelatDropDown(!showRelatDropDown);
+                                }}
+                            />
+                        }
+                    />
+                    {(showRelatDropDown) &&
+                        <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 55, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
+                            <List.Section>
+                                {helperDataContext.addressRelationships.map((x, i) => {
+                                    return (
+                                        <React.Fragment key={'Fragment_' + i}>
+                                            <List.Item
+                                                key={i}
+                                                title={`${x.Atext}`}
+                                                style={{
+                                                    backgroundColor: (x.Atext === emergencyContact.ZzindrlAtext) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                }}
+                                                onPress={() => {
+                                                    setEmergencyContact({
+                                                        ...emergencyContact,
+                                                        ZzindrlAtext: x.Atext,
+                                                        Zzindrl: x.Zzindrl,
+                                                    });
+                                                    setShowRelatDropDown(!showRelatDropDown);
+                                                }}
+                                            />
+                                            <Divider key={'divider' + i} />
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </List.Section>
+                        </ScrollView>
                     }
-                    anchorPosition="top"
-                >
-                    {helperDataContext.addressRelationships.map((relationship, index) => {
-                        return (
-                            <View key={"container_" + index}>
-                                <Menu.Item
-                                    title={relationship.Atext}
-                                    key={"item_" + index}
-                                    onPress={() => {
-                                        setEmergencyContact({
-                                            ...emergencyContact,
-                                            ZzindrlAtext: relationship.Atext,
-                                            Zzindrl: relationship.Zzindrl,
-                                        });
-                                        setShowRelatDropDown(!showRelatDropDown);
-                                    }}
-                                />
-                                <Divider key={"div_" + index} />
-                            </View>
-                        );
-                    })}
-                </Menu>
+                </View>
                 <TextInput
                     label="Mobile *"
-                    mode="flat"
+                    mode="outlined"
+                    activeOutlineColor={theme.colors.onSecondaryContainer}
                     style={{ marginBottom: 20 }}
                     value={emergencyContact.Telnr}
                     onChangeText={(text) => {
@@ -898,7 +905,8 @@ const EmergencyContactsEdit = (data: any) => {
                 />
                 <TextInput
                     label="Street"
-                    mode="flat"
+                    mode="outlined"
+                    activeOutlineColor={theme.colors.onSecondaryContainer}
                     style={{ marginBottom: 20 }}
                     value={emergencyContact.Street}
                     onChangeText={(text) => {
@@ -910,7 +918,8 @@ const EmergencyContactsEdit = (data: any) => {
                 />
                 <TextInput
                     label="Suburb"
-                    mode="flat"
+                    mode="outlined"
+                    activeOutlineColor={theme.colors.onSecondaryContainer}
                     style={{ marginBottom: 20 }}
                     value={emergencyContact.City}
                     onChangeText={(text) => {
@@ -920,57 +929,56 @@ const EmergencyContactsEdit = (data: any) => {
                         });
                     }}
                 />
-                <Menu
-                    style={{ width: "70%" }}
-                    visible={showStateDropDown}
-                    onDismiss={() => setShowStateDropDown(!showStateDropDown)}
-                    anchor={
-                        <TextInput
-                            label="State"
-                            mode="flat"
-                            style={{ marginBottom: 20 }}
-                            value={emergencyContact.Statekey}
-                            editable={false}
-                            right={
-                                <TextInput.Icon
-                                    icon={() => {
-                                        if (showStateDropDown) {
-                                            return <LucideIcons.ChevronUp />;
-                                        } else {
-                                            return <LucideIcons.ChevronDown />;
-                                        }
-                                    }}
-                                    onPress={() => {
-                                        setShowStateDropDown(!showStateDropDown);
-                                    }}
-                                />
-                            }
-                        />
+                <View>
+                    <TextInput
+                        style={{ ...GlobalStyles.disabledTextInput, marginBottom: 20 }}
+                        mode='outlined'
+                        value={emergencyContact.Statekey}
+                        editable={false}
+                        label="State *"
+                        right={
+                            <TextInput.Icon
+                                icon={() => {
+                                    return <LucideIcons.ChevronDown />
+                                }}
+                                onPress={() => {
+                                    setShowStateDropDown(!showStateDropDown);
+                                }}
+                            />
+                        }
+                    />
+                    {(showStateDropDown) &&
+                        <ScrollView style={{ height: 150, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 55, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
+                            <List.Section>
+                                {helperDataContext.addressStates.map((x, i) => {
+                                    return (
+                                        <React.Fragment key={'Fragment_' + i}>
+                                            <List.Item
+                                                key={i}
+                                                title={`${x.Bland}`}
+                                                style={{
+                                                    backgroundColor: (x.Bland === emergencyContact.Statekey) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                }}
+                                                onPress={() => {
+                                                    setEmergencyContact({
+                                                        ...emergencyContact,
+                                                        Statekey: x.Bland,
+                                                    });
+                                                    setShowStateDropDown(!showStateDropDown);
+                                                }}
+                                            />
+                                            <Divider key={'divider' + i} />
+                                        </React.Fragment>
+                                    )
+                                })}
+                            </List.Section>
+                        </ScrollView>
                     }
-                    anchorPosition="top"
-                >
-                    {helperDataContext.addressStates.map((state, index) => {
-                        return (
-                            <View key={"container_" + index}>
-                                <Menu.Item
-                                    title={state.Bland}
-                                    key={"item_" + index}
-                                    onPress={() => {
-                                        setEmergencyContact({
-                                            ...emergencyContact,
-                                            Statekey: state.Bland,
-                                        });
-                                        setShowStateDropDown(!showStateDropDown);
-                                    }}
-                                />
-                                <Divider key={"div_" + index} />
-                            </View>
-                        );
-                    })}
-                </Menu>
+                </View>
                 <TextInput
                     label="Postcode"
-                    mode="flat"
+                    mode="outlined"
+                    activeOutlineColor={theme.colors.onSecondaryContainer}
                     style={{ marginBottom: 20 }}
                     value={emergencyContact.Zipcode}
                     onChangeText={(text) => {
@@ -1354,7 +1362,7 @@ const VolunteerEdit = (data: any) => {
                                                 ...membershipData,
                                                 Zzmemty: x.Mtype,
                                                 ZzmemtyDesc: x.Stext
-                                            }); 
+                                            });
 
                                             setShowMembershipType(!showMembershipType);
                                         }}
@@ -1406,7 +1414,7 @@ const VolunteerEdit = (data: any) => {
                                                 ...membershipData,
                                                 Zzstatu: x.Statu,
                                                 ZzstatuDesc: x.Stext
-                                            }); 
+                                            });
 
                                             setShowMembershipStatus(!showMembershipStatus);
                                         }}
@@ -1469,8 +1477,8 @@ const VolunteerEdit = (data: any) => {
             </View>
             <TextInput
                 style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                editable={true}
-                mode='flat'
+                mode='outlined'
+                activeOutlineColor={theme.colors.onSecondaryContainer}
                 underlineColor='transparent'
                 label='Occupation'
                 value={membershipData.Zzoccupation}
@@ -1499,25 +1507,25 @@ const VolunteerEdit = (data: any) => {
                     let bPassed = true;
 
                     //check to make sure all the values are filled in
-                    if (!membershipData.Zzmemty){
+                    if (!membershipData.Zzmemty) {
                         setHasMemberTypeError(true);
                         setErrorMemberTypeMsg('Please select a member type');
                         bPassed = false;
                     }
 
-                    if (!membershipData.Zzstatu){
+                    if (!membershipData.Zzstatu) {
                         setHasMemberStatusError(true);
                         setErrorMemberStatusMsg('Please select a member status');
                         bPassed = false;
                     }
 
-                    if (!membershipData.Zzvstat){
+                    if (!membershipData.Zzvstat) {
                         setHasVolStatusError(true);
                         setErrorVolStatusMsg('Please select a volunteer status');
                         bPassed = false;
                     }
 
-                    if (!bPassed){
+                    if (!bPassed) {
                         return;
                     }
 
@@ -1550,7 +1558,7 @@ const VolunteerEdit = (data: any) => {
                     catch (error) {
                         appContext.setShowDialog(false);
                         screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                    } 
+                    }
                 }}
             >
                 Save
@@ -1559,7 +1567,7 @@ const VolunteerEdit = (data: any) => {
     );
 }
 
-const EquityDiversity = (data : any) => {
+const EquityDiversity = (data: any) => {
     const theme = useTheme();
     const appContext = useAppContext();
     const dataContext = useDataContext();
@@ -1647,7 +1655,7 @@ const EquityDiversity = (data : any) => {
                     }
                 />
                 {(showNESL) &&
-                    <ScrollView style={{height: 550, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <ScrollView style={{ height: 550, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
                         <List.Section>
                             {helperDataContext.equityNESLValues.map((x, i) => {
                                 return (
@@ -1662,7 +1670,7 @@ const EquityDiversity = (data : any) => {
                                                 setSelectedNESL(x);
                                                 setEquityData({
                                                     ...equityData,
-                                                    Mslng : x.Edseq
+                                                    Mslng: x.Edseq
                                                 });
 
                                                 setShowNESL(!showNESL);
@@ -1711,8 +1719,8 @@ const EquityDiversity = (data : any) => {
 
                                             setEquityData({
                                                 ...equityData,
-                                                Gesch : x.DomvalueL
-                                            }); 
+                                                Gesch: x.DomvalueL
+                                            });
 
                                             setShowGender(!showGender);
                                         }}
@@ -1758,8 +1766,8 @@ const EquityDiversity = (data : any) => {
                                             setSelectedAboriginal(x);
                                             setEquityData({
                                                 ...equityData,
-                                                Permi : x.Edseq
-                                            }); 
+                                                Permi: x.Edseq
+                                            });
 
                                             setShowAboriginal(!showAboriginal);
                                         }}
@@ -1773,7 +1781,7 @@ const EquityDiversity = (data : any) => {
             </View>
             <View>
                 <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput}}
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
                     mode='flat'
                     value={selectedRacial.Eddes}
                     editable={false}
@@ -1805,7 +1813,7 @@ const EquityDiversity = (data : any) => {
                                             setSelectedRacial(x);
                                             setEquityData({
                                                 ...equityData,
-                                                Movec : x.Edseq
+                                                Movec: x.Edseq
                                             });
 
                                             setShowRacial(!showRacial);
@@ -1853,7 +1861,7 @@ const EquityDiversity = (data : any) => {
 
                                             setEquityData({
                                                 ...equityData,
-                                                Fslng : x.Edseq
+                                                Fslng: x.Edseq
                                             });
 
                                             setShowFirstLanguage(!showFirstLanguage);
@@ -1900,7 +1908,7 @@ const EquityDiversity = (data : any) => {
                                             setSelectedDisability(x);
                                             setEquityData({
                                                 ...equityData,
-                                                Disap : x.Edseq
+                                                Disap: x.Edseq
                                             });
 
                                             setShowDisability(!showDisability);
@@ -1943,7 +1951,7 @@ const EquityDiversity = (data : any) => {
 
                         if (!response.responseBody) {
                             try {
-                                if (dataContext.currentProfile == 'MyMembers'){
+                                if (dataContext.currentProfile == 'MyMembers') {
                                     const updatedData = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${equityData.Pernr}%27%20and%20Zzplans%20eq%20%27${dataContext.myMembersMembershipDetails[0].Zzplans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails')
                                     dataContext.setMyMemberEmployeeDetails(updatedData.responseBody.d.results);
                                 }
@@ -1951,7 +1959,7 @@ const EquityDiversity = (data : any) => {
                                     const updatedData = await dataHandlerModule.batchGet(`EmployeeDetails`, 'Z_ESS_MSS_SRV', 'EmployeeDetails')
                                     dataContext.setEmployeeDetails(updatedData.responseBody.d.results);
                                 }
-                                
+
                                 appContext.setShowDialog(false);
                                 screenFlowModule.onGoBack();
                             }
@@ -1964,7 +1972,7 @@ const EquityDiversity = (data : any) => {
                     catch (error) {
                         appContext.setShowDialog(false);
                         screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                    } 
+                    }
                 }}
             >
                 Save
@@ -2020,7 +2028,7 @@ const EditScreen = ({ route, navigation }: props) => {
             break;
 
         case "EquityDiversity":
-            SelectedEditScreen = <EquityDiversity data={EditPayload.editData}/>
+            SelectedEditScreen = <EquityDiversity data={EditPayload.editData} />
             break;
     }
 

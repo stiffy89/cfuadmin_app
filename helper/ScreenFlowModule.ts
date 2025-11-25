@@ -356,6 +356,18 @@ export class ScreenFlowModule {
                         data
                     )
                     break;
+
+                case 'ExternalLoginPage':
+                    this.navigator?.navigate(
+                        'ExternalLoginPage'
+                    )
+                    break;
+
+                case 'ExternalHomePage':
+                    this.navigator?.navigate(
+                        'ExternalHomePage'
+                    )
+                    break;
             }
         }
     }

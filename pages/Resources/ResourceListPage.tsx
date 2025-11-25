@@ -93,7 +93,7 @@ const ResourceListPage = ({ route, navigation }: props) => {
     <View style={{ flex: 1, backgroundColor: "#fff", }}>
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
         <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
-        <CustomText style={{marginLeft: 20, marginRight: 80}} numberOfLines={1} ellipsizeMode="tail" variant='titleLargeBold'>{params.ParentRid}</CustomText>
+        <CustomText style={{marginLeft: 20, marginRight: 80}} numberOfLines={2} ellipsizeMode="tail" variant='titleLargeBold'>{params.ParentRid}</CustomText>
       </View>
       <ScrollView
         style={{ paddingBottom: 40, backgroundColor: theme.colors.background }}
@@ -104,7 +104,7 @@ const ResourceListPage = ({ route, navigation }: props) => {
               return (
                 <React.Fragment key={`folder_${i}`}>
                   <Divider />
-                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexDirection: "row", gap: 15, justifyContent: "space-between", alignItems:"center", marginHorizontal: 20, paddingVertical: 10}]} onPress={() => navigateToFolder(folder)}>
+                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexDirection: "row", gap: 15, alignItems:"center", marginHorizontal: 25, paddingVertical: 15}]} onPress={() => navigateToFolder(folder)}>
                     <View
                         style={{
                           padding: 5,
@@ -127,8 +127,8 @@ const ResourceListPage = ({ route, navigation }: props) => {
               return (
                 <React.Fragment key={`file_${i}`}>
                   <Divider />
-                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexDirection: "row", gap: 15, justifyContent: "space-between", alignItems:"center", marginHorizontal: 25, paddingVertical: 10, height: 65}]} onPress={() => navigateToFile(file)}>
-                    <CustomText style={{flex: 1, flexWrap: "wrap"}}variant='bodyLarge'>{file.DisplayName}</CustomText>
+                  <Pressable style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexDirection: "row", gap: 15, alignItems:"center", marginHorizontal: 25, paddingVertical: 15}]} onPress={() => navigateToFile(file)}>
+                    <CustomText style={{flexWrap: 'wrap', width: '80%'}} variant='bodyLarge'>{file.DisplayName}</CustomText>
                     <CustomText style={{flexWrap: "wrap"}}variant='bodySmall'>{file.SizeText}</CustomText>
                   </Pressable>
                   <Divider />
