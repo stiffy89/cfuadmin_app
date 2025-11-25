@@ -18,10 +18,15 @@ import Pdf from "react-native-pdf";
 import { Buffer } from "buffer";
 import CustomIcon from "../../assets/CustomIcon";
 
-const loadInstructions = async (Path: string, FileType: string) => {
-  const response = await dataHandlerModule.getResource(Path, FileType)
+const loadInstructions = async (Path: string, FileType: string, setShowDialog: (val :boolean) => void) => {
+    try{
+        const response = await dataHandlerModule.getResource(Path, FileType)
 
-  return response.data;
+        return response.data;
+    }catch (error) {
+        setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
+    }
 };
 
 const base64ToUint8Array = (base64: string) => {
@@ -34,7 +39,7 @@ const base64ToUint8Array = (base64: string) => {
         return bytes;
     };
 
-const storeInstructions = async (contentString: string, filename:string) => {
+const storeInstructions = async (contentString: string, filename:string, setShowDialog: (val :boolean) => void) => {
   try {
     //console.log('Paths cache', Paths.cache)
     const src = new File(Paths.cache, filename);
@@ -42,7 +47,8 @@ const storeInstructions = async (contentString: string, filename:string) => {
     src.write(bytes)
     return src.uri 
   } catch (error) {
-    console.error('Error saving file from Base64:', error);
+    setShowDialog(false);
+	screenFlowModule.onNavigateToScreen('ErrorPage', error);
   }
 }
 
@@ -69,7 +75,7 @@ const DrillInstructionsPage = ({ route, navigation }: props) => {
             setLocalFilePath(file.uri)
             setPdfSource(file.uri)
         }else {
-            loadInstructions(filePath, fileType).then((res) => setInstructions(res));
+            loadInstructions(filePath, fileType, setShowDialog).then((res) => setInstructions(res));
         }
     }, []);
 
@@ -77,7 +83,7 @@ const DrillInstructionsPage = ({ route, navigation }: props) => {
         if(instructions){
             const base64String = Buffer.from(instructions as any, "binary").toString("base64");
             setPdfSource(`data:application/pdf;base64,${base64String}`)
-            storeInstructions(base64String, displayName).then(res => setLocalFilePath(res))
+            storeInstructions(base64String, displayName, setShowDialog).then(res => setLocalFilePath(res))
         }
     }, [instructions])
 

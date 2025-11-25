@@ -6,16 +6,24 @@ import CustomText from '../assets/CustomText';
 import CustomIcon from "../assets/CustomIcon"
 import { useDataContext } from '../helper/DataContext';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
+import { screenFlowModule } from '../helper/ScreenFlowModule';
+import { useAppContext } from '../helper/AppContext';
 
-const loadPhoto = async (pernr: string) => {
-    const photo = await dataHandlerModule.getIdCardPhoto(pernr)
+const loadPhoto = async (pernr: string, setShowDialog: (val :boolean) => void) => {
+	try{
+		const photo = await dataHandlerModule.getIdCardPhoto(pernr)
 
-	return photo
+		return photo
+	}catch(error){
+		setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
+	}
 }
 
 const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: boolean) => void}) => {
 	const user = useDataContext().currentUser[0];
 	const membership = useDataContext().membershipDetails[0];
+	const {setShowDialog} = useAppContext();
 	const [photoType, setPhotoType] = useState("")
 	const [photo, setPhoto] = useState("")
 
@@ -86,9 +94,11 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
 
 	useEffect(() => {
 		if(user){
-			loadPhoto(user.Pernr).then(res => {
-				setPhotoType(res.headers['content-type'])
-				setPhoto(res.request._response)
+			loadPhoto(user.Pernr, setShowDialog).then(res => {
+				if(res){
+					setPhotoType(res.headers['content-type'])
+					setPhoto(res.request._response)
+				}
 			})
 		}
 	}, [user])

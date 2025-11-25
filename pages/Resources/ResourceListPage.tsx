@@ -12,34 +12,28 @@ import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
 
 
-const loadResourceFolderList = async (Path: string) => {
-    const resourceList = await dataHandlerModule.getResourceFolderList(Path)
-
-    const responseText = resourceList.data;
-    const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];
-    const parts = responseText.split(boundary);
-    const jsonPart = parts.find((p: string | string[]) =>
-        p.includes("application/json")
-      );
-    const jsonBody = jsonPart.split("\r\n\r\n").pop();
-    const data = JSON.parse(jsonBody);
+const loadResourceFolderList = async (Path: string, setShowDialog: (val :boolean) => void) => {
+  try {
+    const resourceList = await dataHandlerModule.batchGet(`Folders?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${encodeURIComponent(Path)}%27`, "Z_CFU_DOCUMENTS_SRV", "Folders")
+    const data = resourceList.responseBody.d.results;
     
-    return data.d.results;
+    return data;
+  }catch (error){
+    setShowDialog(false);
+    screenFlowModule.onNavigateToScreen('ErrorPage', error);
+  }
 };
 
-const loadResourceList = async (Path: string) => {
-    const resourceList = await dataHandlerModule.getResourceList(Path)
-
-    const responseText = resourceList.data;
-    const boundary = responseText.match(/^--[A-Za-z0-9]+/)[0];
-    const parts = responseText.split(boundary);
-    const jsonPart = parts.find((p: string | string[]) =>
-        p.includes("application/json")
-      );
-    const jsonBody = jsonPart.split("\r\n\r\n").pop();
-    const data = JSON.parse(jsonBody);
+const loadResourceList = async (Path: string, setShowDialog: (val :boolean) => void) => {
+  try{
+    const resourceList =  await dataHandlerModule.batchGet(`Files?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${encodeURIComponent(Path)}%27%20and%20Desktop%20eq%20false`, "Z_CFU_DOCUMENTS_SRV", "Files")
+    const data = resourceList.responseBody.d.results;
     
-    return data.d.results;
+    return data;
+  }catch (error){
+    setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
+  } 
 };
 
 type props = StackScreenProps<ResourceStackParamList, "ResourceListPage">;
@@ -54,7 +48,7 @@ const ResourceListPage = ({ route, navigation }: props) => {
   const params = route.params ?? {};
 
   useEffect(() => {
-    Promise.all([loadResourceFolderList(params.Path), loadResourceList(params.Path)]).then((values) => {
+    Promise.all([loadResourceFolderList(params.Path, setShowDialog), loadResourceList(params.Path, setShowDialog)]).then((values) => {
       const folders = values[0]
       const files = values[1]
 

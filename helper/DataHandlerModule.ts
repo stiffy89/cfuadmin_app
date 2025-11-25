@@ -691,76 +691,6 @@ class DataHandlerModule {
         }
     }
 
-    async getResourceFolderList(path: string): Promise<AxiosResponse> {
-        try {
-            const pathURI = encodeURIComponent(path);
-            const odataServiceUrl = "/Z_CFU_DOCUMENTS_SRV/$batch";
-
-            const id = Crypto.randomUUID()
-            const batchBoundary = `batch_${id}`;
-
-            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Folders?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${pathURI}%27 HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-
-            const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
-
-            const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `${this.authType} ${token}`
-
-            const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
-                headers: {
-                    Authorization: authString,
-                    "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
-                    Accept: "multipart/mixed",
-                    "Accept-Encoding": "gzip, deflate, br, zstd",
-                },
-            })
-
-            if (!response) {
-                throw new Error('cannot get entity, no response')
-            }
-
-
-            return response;
-        } catch (error) {
-            throw error
-        }
-    }
-
-    async getResourceList(path: string): Promise<AxiosResponse> {
-        try {
-            const pathURI = encodeURIComponent(path);
-            const odataServiceUrl = "/Z_CFU_DOCUMENTS_SRV/$batch";
-
-            const id = Crypto.randomUUID()
-            const batchBoundary = `batch_${id}`;
-
-            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Files?$skip=0&$top=100&$filter=ParentRid%20eq%20%27${pathURI}%27%20and%20Desktop%20eq%20false HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-
-            const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
-
-            const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `${this.authType} ${token}`
-
-            const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
-                headers: {
-                    Authorization: authString,
-                    "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
-                    Accept: "multipart/mixed",
-                    "Accept-Encoding": "gzip, deflate, br, zstd",
-                },
-            })
-
-            if (!response) {
-                throw new Error('cannot get entity, no response')
-            }
-
-
-            return response;
-        } catch (error) {
-            throw error
-        }
-    }
-
     async getResource(path: string, fileType: string): Promise<AxiosResponse> {
         try {
             const encodedPathURI = encodeURIComponent(path);
@@ -768,7 +698,6 @@ class DataHandlerModule {
 
             const filters = `Url='${encodedPathURI}',FileType='${encodedFileType}'`;
             const odataServiceUrl = `/Z_CFU_DOCUMENTS_SRV/FileExports(${filters})/$value`;
-            console.log(odataServiceUrl);
             const token = await AsyncStorage.getItem('localAuthToken');
             const authString = `${this.authType} ${token}`
 
@@ -817,73 +746,6 @@ class DataHandlerModule {
         }
     }
 
-    async getSkillsMaintenanceCategories(): Promise<AxiosResponse> {
-        try {
-            const odataServiceUrl = "/Z_CFU_FLASHCARDS_SRV/$batch";
-
-            const id = Crypto.randomUUID()
-            const batchBoundary = `batch_${id}`;
-
-            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET Categories?$filter=ParentCategoryId%20eq%20%270000000000%27 HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-
-            const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
-
-            const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `${this.authType} ${token}`
-
-            const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
-                headers: {
-                    Authorization: authString,
-                    "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
-                    Accept: "multipart/mixed",
-                    "Accept-Encoding": "gzip, deflate, br, zstd",
-                },
-            })
-
-            if (!response) {
-                throw new Error('cannot get entity, no response')
-            }
-
-
-            return response;
-        } catch (error) {
-            throw error
-        }
-    }
-
-    async getSkillsMaintenanceRandomCards(categoryId: string): Promise<AxiosResponse> {
-        try {
-            const odataServiceUrl = "/Z_CFU_FLASHCARDS_SRV/$batch";
-
-            const id = Crypto.randomUUID()
-            const batchBoundary = `batch_${id}`;
-
-            const batchReq1 = `Content-Type: application/http\nContent-Transfer-Encoding: binary\n\nGET GetRandomCards?CategoryId='${categoryId}' HTTP/1.1\nsap-cancel-on-close: true\nsap-contextid-accept: header\nAccept: application/json\nAccept-Language: en-AU\nDataServiceVersion: 2.0\nMaxDataServiceVersion: 2.0\n\n`;
-
-            const batchBody = `--${batchBoundary}\n${batchReq1}\n\n--${batchBoundary}--`;
-
-            const token = await AsyncStorage.getItem('localAuthToken');
-            const authString = `${this.authType} ${token}`
-
-            const response = await this.axiosInstance?.post(odataServiceUrl, batchBody, {
-                headers: {
-                    Authorization: authString,
-                    "Content-Type": `multipart/mixed;boundary=${batchBoundary}`,
-                    Accept: "multipart/mixed",
-                    "Accept-Encoding": "gzip, deflate, br, zstd",
-                },
-            })
-
-            if (!response) {
-                throw new Error('cannot get entity, no response')
-            }
-
-            return response;
-        } catch (error) {
-            throw error
-        }
-    }
-
     async postFeedbackSet(rating: string, comment: string): Promise<AxiosResponse> {
         try {
             const odataServiceUrl = `/Z_MOB2_SRV/FeedbackSet`;
@@ -900,7 +762,7 @@ class DataHandlerModule {
 
             const response = await this.axiosInstance?.post(odataServiceUrl, postBody, {
                 headers: {
-                    "x-csrf-token": this.csrfToken,
+                    "x-csrf-token": await AsyncStorage.getItem('csrf-token'),
                     "Content-Type": "application/json"
                 },
             })

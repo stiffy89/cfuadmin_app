@@ -1,25 +1,26 @@
 import React, {useEffect, useState} from "react";
-import { View} from "react-native";
+import { View, Linking} from "react-native";
 import { useTheme, Button, IconButton} from "react-native-paper";
 import {WebView} from "react-native-webview"
 import * as LucideIcons from "lucide-react-native";
-import CustomText from "../../assets/CustomText";
-
-
-import * as Linking from 'expo-linking';
-
 import {StackScreenProps } from "@react-navigation/stack";
+
 import { FormServiceStackParamList, FormsLauncherSet} from "../../types/AppTypes";
-
 import { useAppContext } from "../../helper/AppContext";
-
 import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { dataHandlerModule } from "../../helper/DataHandlerModule";
 
-const loadFormsLauncherSet = async(formLaunchId:string) => {
-    const formInfo = await dataHandlerModule.getFormsLauncherSet(formLaunchId)
+import CustomText from "../../assets/CustomText";
 
-    return formInfo.data.d;
+const loadFormsLauncherSet = async(formLaunchId:string, setShowDialog: (val :boolean) => void) => {
+    try{
+        const formInfo = await dataHandlerModule.getFormsLauncherSet(formLaunchId)
+
+        return formInfo.data.d;
+    }catch (error){
+        setShowDialog(false);
+		screenFlowModule.onNavigateToScreen('ErrorPage', error);
+    }
 }
 
 type props = StackScreenProps<FormServiceStackParamList, "FormServicePage">;
@@ -33,19 +34,9 @@ const FormServicePage = ({ route, navigation }: props) => {
     const params = route.params ?? {};
     const formLaunchId = params.formLaunchId
 
-    // const imgHeight = 500
-    // const formServiceData = {
-    //     formServiceId: "form-service",
-    //     title: "Form Service",
-    //     formUrl: "https://google.com",
-    //     htmlContent: `<img src="https://picsum.photos/700/${imgHeight}" alt="Sample Image" style="display:block;width:100%;height:${imgHeight}px;object-fit:cover;margin:20px 0;border-radius:8px;"/><h2 style="color:#2c3e50;font-size:60px;font-weight:bold;margin-bottom:8px;">Introduction</h2><p style="font-size:42px;line-height:1.6;color:#333333;">TinyMCE is a powerful WYSIWYG editor that allows users to write and format text directly in the browser. It outputs clean and customizable HTML content that can be stored or rendered anywhere on the web.</p><h2 style="color:#2c3e50;font-size:60px;font-weight:bold;margin-top:20px;margin-bottom:8px;">Features</h2><p style="font-size:42px;line-height:1.6;color:#333333;">Some of the key features include inline formatting, media embedding, image uploads, and extensive plugin support. The editor is also fully customizable and integrates easily with modern frameworks like React or Angular.</p><h2 style="color:#2c3e50;font-size:60px;font-weight:bold;margin-top:20px;margin-bottom:8px;">Customization</h2><p style="font-size:42px;line-height:1.6;color:#333333;">Developers can tailor TinyMCE to fit specific use cases by adding custom plugins, configuring toolbars, and defining their own styles or formats to control the editing experience.</p><h2 style="color:#2c3e50;font-size:60px;font-weight:bold;margin-top:20px;margin-bottom:8px;">Integration</h2><p style="font-size:42px;line-height:1.6;color:#333333;">TinyMCE integrates seamlessly with frameworks such as React, Angular, and Vue, as well as with CMS platforms like WordPress and Drupal, making it versatile and easy to adopt.</p><h2 style="color:#2c3e50;font-size:60px;font-weight:bold;margin-top:20px;margin-bottom:8px;">Accessibility</h2><p style="font-size:42px;line-height:1.6;color:#333333;">The editor supports accessibility standards out of the box, ensuring that content creation remains inclusive and usable for all users, including those relying on assistive technologies.</p><h2 style="color:#2c3e50;font-size:60px;font-weight:bold;margin-top:20px;margin-bottom:8px;">Conclusion</h2><p style="font-size:42px;line-height:1.6;color:#333333;">TinyMCE continues to be one of the most trusted and flexible text editors available, empowering users and developers alike to create rich, structured web content with ease.</p>`.toString(),
-    //     ctaButtonLabel: "Call To Action",
-    //     launchMode: "in-app"        
-    // }
-
 
     useEffect(() => {
-        loadFormsLauncherSet(formLaunchId).then((res) => {
+        loadFormsLauncherSet(formLaunchId, setShowDialog).then((res) => {
             setFormsLauncherSet(res)
         })
     }, []);
