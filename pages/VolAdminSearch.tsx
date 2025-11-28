@@ -12,7 +12,6 @@ import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { House } from 'lucide-react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/AppTypes';
-import { parse } from 'react-native-svg';
 
 type props = StackScreenProps<RootStackParamList, 'VolAdminSearch'>;
 

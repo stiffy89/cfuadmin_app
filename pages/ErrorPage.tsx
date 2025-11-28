@@ -5,6 +5,7 @@ import CustomText from '../assets/CustomText';
 import { RootStackParamList } from '../types/AppTypes';
 import { StackScreenProps } from '@react-navigation/stack';
 import { screenFlowModule } from '../helper/ScreenFlowModule';
+import { authModule } from '../helper/AuthModule';
 import { TriangleAlert, CloudAlert, ChevronLeft, Phone, Mail} from 'lucide-react-native';
 import GlobalStyles from '../style/GlobalStyles';
 
@@ -83,6 +84,11 @@ const ErrorPage = ({route} : props ) => {
                             <Button 
                                 mode='contained-tonal'
                                 onPress={() => {
+                                    if (sapErrorMessage.includes('(splash screen timed out)')){
+                                        authModule.onLogOut();
+                                        return;
+                                    }
+
                                     screenFlowModule.onGoBack();
                                 }}
                             >

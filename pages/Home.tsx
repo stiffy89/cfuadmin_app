@@ -28,11 +28,14 @@ import allServicesIcon from "../assets/menuicons/menu-all-services.png"
 import headerBg from "../assets/images/header-bg-transparent.png"
 
 import { dataHandlerModule } from '../helper/DataHandlerModule';
-
+import { OktaLoginResult } from '../types/AppTypes';
 
 const NameBanner = () => {
     const theme = useTheme();
     const user = useDataContext().currentUser[0];
+
+
+    const appContext = useAppContext();
 
     return (
         <View style={{height: "12%"}}>
@@ -54,8 +57,7 @@ const NameBanner = () => {
                     <IconButton icon={() => <LucideIcons.LogOut color={theme.colors.background} size={30}/>} size={30} 
                         style={{backgroundColor: "rgba(188, 21, 0, 0.5)"}}
                         onPress={async () => {
-                            await AsyncStorage.removeItem('localAuthToken');
-                            screenFlowModule.onNavigateToScreen('Users');
+                            authModule.onLogOut();
                         }} />
                 </View>
             </ImageBackground>
@@ -213,8 +215,6 @@ const ContactUs = () => {
 
 const HomePage = () => {
     const theme = useTheme();
-    const { setShowBusyIndicator, setDialogMessage, setShowDialog } = useAppContext();
-    const {setAuthType} = useSecurityContext();
 
     return (
         <ScrollView contentContainerStyle={{paddingBottom: "12%", backgroundColor: theme.colors.background}}>

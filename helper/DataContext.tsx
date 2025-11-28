@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { DataContextType, VolAdminSearchFilter, ServiceData, UserData } from '../types/AppTypes';
+import { DataContextType, VolAdminSearchFilter} from '../types/AppTypes';
 
 // create the context
 const DataContext = createContext<DataContextType | undefined>(undefined);

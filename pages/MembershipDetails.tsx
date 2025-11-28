@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useTheme, IconButton, TextInput, List } from 'react-native-paper';
-import {Pencil, ChevronLeft, ChevronRight} from 'lucide-react-native';
+import { Pencil, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
 import CustomText from '../assets/CustomText';
 import GlobalStyles from '../style/GlobalStyles';
@@ -24,7 +24,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
 
     let membershipInfo;
 
-    if (dataContext.currentProfile == 'MyMembers'){
+    if (dataContext.currentProfile == 'MyMembers') {
         membershipInfo = dataContext.myMembersMembershipDetails[0];
     } else {
         membershipInfo = dataContext.membershipDetails[0];
@@ -33,7 +33,10 @@ const MembershipDetails = ({ route, navigation }: props) => {
     const [membershipDetails, setMembershipDetails] = useState(membershipInfo)
 
     useEffect(() => {
-        setMembershipDetails(dataContext.myMembersMembershipDetails[0])
+        //we only want this to update IF we are going in from my members and not from profile
+        if (dataContext.currentProfile == 'MyMembers') {
+            setMembershipDetails(dataContext.myMembersMembershipDetails[0])
+        }
     }, [dataContext.myMembersMembershipDetails])
 
     const EditData = (data: any) => {
@@ -51,16 +54,19 @@ const MembershipDetails = ({ route, navigation }: props) => {
                     <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>Membership Details</CustomText>
                 </View>
                 <View style={{ paddingHorizontal: 20 }}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <CustomText variant='bodyLargeBold'>Volunteer Data</CustomText>
-                        <Pencil 
-                            style={{marginRight: 10}}
-                            color={theme.colors.primary} 
-                            size={20}
-                            onPress={() => EditData(membershipDetails)}
-                        />
+                        
+                        {(dataContext.currentUser[0].TeamCoordinator || dataContext.currentUser[0].VolAdmin) && //only voladm and team coordinators get editing access to membership data
+                            <Pencil
+                                style={{ marginRight: 10 }}
+                                color={theme.colors.primary}
+                                size={20}
+                                onPress={() => EditData(membershipDetails)}
+                            />
+                        }
                     </View>
-                    
+
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={membershipDetails.Otext} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Location' value={membershipDetails.Stext} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Start Date' value={genericFormatter.formatFromEdmDate(membershipDetails.StartDate)} />
@@ -72,16 +78,16 @@ const MembershipDetails = ({ route, navigation }: props) => {
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Occupation' value={membershipDetails.Zzoccupation} />
                     <CustomText style={{ marginVertical: 20 }} variant='bodyLargeBold'>Uniform Issued</CustomText>
                     <List.Section style={{ backgroundColor: '#f9f9f9ff', ...GlobalStyles.globalBorderRadius }}>
-                        <List.Subheader style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, backgroundColor: theme.colors.surfaceDisabled}}><CustomText variant='bodyMediumBold'>Uniform Details</CustomText></List.Subheader>
+                        <List.Subheader style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, backgroundColor: theme.colors.surfaceDisabled }}><CustomText variant='bodyMediumBold'>Uniform Details</CustomText></List.Subheader>
                         {
-                            objectsOnLoan.map((item : any, i : number) => {
+                            objectsOnLoan.map((item: any, i: number) => {
                                 return (
-                                    <List.Item 
+                                    <List.Item
                                         key={i}
-                                        style={{ height: 80, justifyContent: 'center' }} 
-                                        onPress={() => {screenFlowModule.onNavigateToScreen('UniformDetailsScreen', item)}} 
-                                        title={`${item.ObjectTypesStext} - ${item.Anzkl} ${item.UnitsEtext}` } 
-                                        right={() => <ChevronRight color={theme.colors.primary}/>} 
+                                        style={{ height: 80, justifyContent: 'center' }}
+                                        onPress={() => { screenFlowModule.onNavigateToScreen('UniformDetailsScreen', item) }}
+                                        title={`${item.ObjectTypesStext} - ${item.Anzkl} ${item.UnitsEtext}`}
+                                        right={() => <ChevronRight color={theme.colors.primary} />}
                                     />
                                 )
                             })
@@ -89,17 +95,17 @@ const MembershipDetails = ({ route, navigation }: props) => {
                     </List.Section>
                     <CustomText style={{ marginVertical: 20 }} variant='bodyLargeBold'>Medals and Awards</CustomText>
                     <List.Section style={{ backgroundColor: '#f9f9f9ff', ...GlobalStyles.globalBorderRadius }}>
-                        <List.Subheader style={{borderTopLeftRadius: 10, borderTopRightRadius: 10, backgroundColor: theme.colors.surfaceDisabled}}><CustomText variant='bodyMediumBold'>Medals and Awards Details</CustomText></List.Subheader>
+                        <List.Subheader style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10, backgroundColor: theme.colors.surfaceDisabled }}><CustomText variant='bodyMediumBold'>Medals and Awards Details</CustomText></List.Subheader>
                         {
-                            medalsAndAwards.map((item : any, i : number) => {
+                            medalsAndAwards.map((item: any, i: number) => {
                                 return (
-                                    <List.Item 
+                                    <List.Item
                                         key={i}
-                                        style={{ height: 80, justifyContent: 'center' }} 
-                                        onPress={() => {screenFlowModule.onNavigateToScreen('MedalsAndAwardsScreen', item)}} 
+                                        style={{ height: 80, justifyContent: 'center' }}
+                                        onPress={() => { screenFlowModule.onNavigateToScreen('MedalsAndAwardsScreen', item) }}
                                         titleNumberOfLines={2}
-                                        title={item.Awdtx} 
-                                        right={() => <ChevronRight color={theme.colors.primary}/>} 
+                                        title={item.Awdtx}
+                                        right={() => <ChevronRight color={theme.colors.primary} />}
                                     />
                                 )
                             })
