@@ -1,11 +1,10 @@
 //local authentication screen - this will be for pin, biometrics verification
 import { Button, Surface, Text, useTheme, HelperText } from 'react-native-paper';
 import CustomText from '../assets/CustomText';
-import { View, Animated, Easing, TextInput } from 'react-native';
+import { View, Animated, Easing, TextInput, ImageBackground } from 'react-native';
 import GlobalStyles from '../style/GlobalStyles';
 import Grid from '../helper/GridLayout';
 import { useState, useRef, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { hasHardwareAsync, isEnrolledAsync, getEnrolledLevelAsync } from 'expo-local-authentication';
 import { authModule } from '../helper/AuthModule';
 
@@ -16,6 +15,7 @@ import { useDataContext } from '../helper/DataContext';
 import { useHelperValuesDataContext } from '../helper/HelperValuesDataContext';
 import { isAxiosError } from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import BackgroundImage from '../assets/images/Default-667h.png';
 
 const LocalAuth = () => {
 
@@ -25,6 +25,7 @@ const LocalAuth = () => {
     const [errorText, setErrorText] = useState('');
     const [hasPin, setHasPin] = useState(false);
     const [pinTitle, setPinTitle] = useState('Set New Pin');
+    const theme = useTheme();
 
     useEffect(() => {
         async function onMount() {
@@ -41,7 +42,7 @@ const LocalAuth = () => {
             }
 
             //checking to see if user has biometrics available and active on their device. If not, default to the pin
-            if ((hasPin) && (await hasHardwareAsync() && await isEnrolledAsync())) {
+            if ((pin) && (await hasHardwareAsync() && await isEnrolledAsync())) {
                 const securityLevel = await getEnrolledLevelAsync();
                 if (securityLevel > 0) {
                     const localAuthResult = await authModule.onLocalAuthLogin();
@@ -406,105 +407,132 @@ const LocalAuth = () => {
         )
     ]
 
-    const PinBody = <View style={{ marginTop: 30 }}>
-        <View style={{ width: '100%', alignItems: 'center' }}>
-            <CustomText variant="headlineMediumBold">
-                {pinTitle}
-            </CustomText>
-        </View>
-        <Animated.View style={shakeStyle}>
-            {
-                Grid(PinBoxes, 4, 350)
-            }
-        </Animated.View>
-        <TextInput
-            style={{ opacity: 0, height: 1, width: 1, position: 'absolute', left: -9999 }}
-            value={pin}
-            keyboardType='numeric'
-            onChangeText={async (text) => {
-                setPin(text);
-                if (text.length == 4) {
-                    //check to see if pin has been set
-                    //if we have, we validate, otherwise, we're just setting up the pin
-                    if (hasPin) {
-                        const pinSuccess = await authModule.onPinLogin(text);
-                        if (pinSuccess) {
-                            screenFlowModule.onNavigateToScreen('SplashScreen');
-
-                            //refresh the tokens first and then get all data
-                            onRefreshAllTokens()
-                                .then(async (tokenResponse) => {
-                                    const newAccessToken = tokenResponse!.data.TOKEN_RESPONSE.ACCESS_TOKEN;
-                                    const newRefreshToken = tokenResponse!.data.TOKEN_RESPONSE.REFRESH_TOKEN;
-                                    await SecureStore.setItemAsync('access-token', newAccessToken);
-                                    await SecureStore.setItemAsync('refresh-token', newRefreshToken);
-
-                                    onGetInitialLoad();
-                                })
-                                .catch((error) => {
-                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                                })
-                        } else {
-                            if (attempts > 1) {
-                                const attemptsRemaining = attempts - 1;
-                                setAttempts(attemptsRemaining);
-                                triggerShake();
-                                setPin('');
-                                setErrorText('You have ' + attemptsRemaining + ' attempts left');
-                            }
-                            else {
-                                authModule.onLogOut();
-                            }
-                        }
+    
+    const PinBody = <View style={{ marginTop: 20 }}>
+                <View style={{ width: '100%', alignItems: 'center' }}>
+                    <CustomText variant="headlineMediumBold">
+                        {pinTitle}
+                    </CustomText>
+                </View>
+                <Animated.View style={shakeStyle}>
+                    {
+                        Grid(PinBoxes, 4, 350)
                     }
-                    else {
-                        //we're setting up the pin
-                        //copy is empty, save the current pin to copy and wipe the pin clean to start again
-                        if (pinCopy.current === '') {
-                            setPinTitle('Confirm Set Pin');
-                            pinCopy.current = text;
-                            setPin('');
-                        }
-                        else {
-                            //check to see if the pin match
-                            if (pinCopy.current === text) {
-                                //save pin
-                                authModule.onSetLocalPin(text).then(() => {
-                                    //navigate to home
-                                    //no need to get tokens because we just logged in with okta
+                </Animated.View>
+                <TextInput
+                    style={{ opacity: 0, height: 1, width: 1, position: 'absolute', left: -9999 }}
+                    value={pin}
+                    keyboardType='numeric'
+                    onChangeText={async (text) => {
+                        setPin(text);
+                        if (text.length == 4) {
+                            //check to see if pin has been set
+                            //if we have, we validate, otherwise, we're just setting up the pin
+                            if (hasPin) {
+                                const pinSuccess = await authModule.onPinLogin(text);
+                                if (pinSuccess) {
                                     screenFlowModule.onNavigateToScreen('SplashScreen');
-                                    onGetInitialLoad();
-                                }).catch(() => {
-                                    const error = {
-                                        isAxiosError: false,
-                                        message: 'There was an error in setting up the local PIN. Please try again, otherwise contact your IT administrator for further assistance.'
-                                    }
 
-                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                                })
+                                    //refresh the tokens first and then get all data
+                                    onRefreshAllTokens()
+                                        .then(async (tokenResponse) => {
+                                            const newAccessToken = tokenResponse!.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                                            const newRefreshToken = tokenResponse!.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+                                            await SecureStore.setItemAsync('access-token', newAccessToken);
+                                            await SecureStore.setItemAsync('refresh-token', newRefreshToken);
+
+                                            onGetInitialLoad();
+                                        })
+                                        .catch((error) => {
+                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                                        })
+                                } else {
+                                    if (attempts > 1) {
+                                        const attemptsRemaining = attempts - 1;
+                                        setAttempts(attemptsRemaining);
+                                        triggerShake();
+                                        setPin('');
+                                        setErrorText('You have ' + attemptsRemaining + ' attempts left');
+                                    }
+                                    else {
+                                        authModule.onLogOut();
+                                    }
+                                }
                             }
                             else {
-                                //pin doesnt match, ask them to try again
-                                triggerShake();
-                                pinCopy.current = '';
-                                setPin('');
-                                setPinTitle('Set New PIN');
+                                //we're setting up the pin
+                                //copy is empty, save the current pin to copy and wipe the pin clean to start again
+                                if (pinCopy.current === '') {
+                                    setPinTitle('Confirm Set Pin');
+                                    pinCopy.current = text;
+                                    setPin('');
+                                }
+                                else {
+                                    //check to see if the pin match
+                                    if (pinCopy.current === text) {
+                                        //save pin
+                                        authModule.onSetLocalPin(text).then(() => {
+                                            //navigate to home
+                                            //no need to get tokens because we just logged in with okta
+                                            screenFlowModule.onNavigateToScreen('SplashScreen');
+                                            onGetInitialLoad();
+                                        }).catch(() => {
+                                            const error = {
+                                                isAxiosError: false,
+                                                message: 'There was an error in setting up the local PIN. Please try again, otherwise contact your IT administrator for further assistance.'
+                                            }
+
+                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                                        })
+                                    }
+                                    else {
+                                        //pin doesnt match, ask them to try again
+                                        triggerShake();
+                                        pinCopy.current = '';
+                                        setPin('');
+                                        setPinTitle('Set New PIN');
+                                    }
+                                }
                             }
                         }
-                    }
+                    }}
+                    autoFocus
+                />
+                {
+                    (errorText !== '') &&
+                    <HelperText style={{ paddingHorizontal: 46, fontSize: 16 }} type='error'>
+                        {errorText}
+                    </HelperText>
                 }
-            }}
-            autoFocus
-        />
-        {
-            (errorText !== '') &&
-            <HelperText style={{ paddingHorizontal: 46, fontSize: 16 }} type='error'>
-                {errorText}
-            </HelperText>
-        }
-    </View>
+                {
+                    (hasPin) &&
+                    <View style={{alignItems: 'flex-start', marginLeft: 20}}>
+                        <CustomText variant='bodyLarge' style={{marginLeft: 12, marginBottom: 5}}>Forgotten PIN?</CustomText>
+                        <Button 
+                            labelStyle={{fontSize: 16}}
+                            onPress={()=>{
+                                authModule.onLogOut();
+                            }}
+                        >
+                            Reset your PIN
+                        </Button>
+                    </View>
+                }
+            </View>
 
     return PinBody;
+    
+
+/*    return (
+        <ImageBackground source={BackgroundImage} style={GlobalStyles.backgroundImagePin}>
+            <View style={GlobalStyles.backgroundOverlay} />
+            <View style={{ height: 310, width: '100%', backgroundColor: theme.colors.background, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
+                <PinBody />
+            </View>
+        </ImageBackground>
+    ) */
+
+
 }
 
 export default LocalAuth;   

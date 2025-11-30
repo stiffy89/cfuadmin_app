@@ -32,9 +32,9 @@ const SplashScreen = () => {
     );  
 
     return (
-        <ImageBackground source={BackgroundImage} style={GlobalStyles.backgroundImage}>
+        <ImageBackground source={BackgroundImage} style={GlobalStyles.splashBackgroundImage}>
             <View style={GlobalStyles.backgroundOverlay} />
-            <CustomText variant='titleLargeBold' style={{ zIndex: 10, color: theme.colors.background, marginBottom: 40 }}>Loading your App</CustomText>
+            <CustomText variant='titleLargeItalic' style={{ zIndex: 10, color: theme.colors.background, marginBottom: 40 }}>Preparing your App</CustomText>
             <ActivityIndicator animating={true} color={theme.colors.background} size='large' />
         </ImageBackground>
     )

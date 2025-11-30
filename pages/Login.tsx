@@ -1,10 +1,7 @@
-import { Button, Surface, Text, useTheme, HelperText } from 'react-native-paper';
+import { Button, useTheme } from 'react-native-paper';
 import CustomText from '../assets/CustomText';
-import { View, Animated, Easing, TextInput } from 'react-native';
-import GlobalStyles from '../style/GlobalStyles';
-import Grid from '../helper/GridLayout';
-import { useState, useRef, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, ImageBackground, Pressable } from 'react-native';
+import { useRef } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { useSecurityContext } from '../helper/SecurityContext';
 import { authModule } from '../helper/AuthModule';
@@ -15,45 +12,28 @@ import { useAppContext } from '../helper/AppContext';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { useHelperValuesDataContext } from '../helper/HelperValuesDataContext';
 import { useDataContext } from '../helper/DataContext';
+import GlobalStyles from '../style/GlobalStyles';
 import Svg, { Path, Image, ClipPath, Defs, Rect } from 'react-native-svg';
-import { StyleSheet } from 'react-native';
 import BackgroundImage from '../assets/images/Default-667h.png';
 
 
 const LoginPage = () => {
-    const { authMethod, setAuthMethod, isAuthenticating } = useSecurityContext();
-    const hasSetPin = useRef(false);
+    const theme = useTheme();
     const appContext = useAppContext();
-    const helperDataContext = useHelperValuesDataContext();
-    const dataContext = useDataContext();
     let presses = 0;
-	let lastTimePressed : any = null;
+    let lastTimePressed: any = null;
 
     const OktaLogin = () => {
         return (
-            <View>
+            <View style={{paddingTop: 30, flex: 1}}>
+                <View style={{marginBottom: 20, alignItems: 'center'}}>
+                    <CustomText variant='titleMediumBold'>Lets get started</CustomText>
+                </View>
                 <Button
-                    style={{ marginBottom: 20 }}
-                    mode='outlined'
+                    buttonColor={theme.colors.primary}
+                    textColor={theme.colors.background}
+                    mode='elevated'
                     onPress={() => {
-                        if (lastTimePressed && (Date.now() - lastTimePressed <= 2000)) {
-                            presses += 1;
-                        } else {
-                            presses = 1;
-                        }
-
-                        lastTimePressed = Date.now();
-
-                        if (presses == 10) {
-                            screenFlowModule.onNavigateToScreen('ExternalLoginPage');
-                        }
-                    }}
-                >
-                    External Login
-                </Button>
-                <Button
-                    onPress={() => {
-
                         authModule.onFRNSWLogin()
                             .then(async (result: OktaLoginResult) => {
 
@@ -101,9 +81,28 @@ const LoginPage = () => {
     }
 
     return (
-        <View>
-            <OktaLogin />
-        </View>
+        <ImageBackground source={BackgroundImage} style={GlobalStyles.backgroundImage}>
+            <Pressable
+                style={GlobalStyles.backgroundOverlay}
+                onPress={() => {
+                    console.log('pressed')
+                    if (lastTimePressed && (Date.now() - lastTimePressed <= 2000)) {
+                        presses += 1;
+                    } else {
+                        presses = 1;
+                    }
+
+                    lastTimePressed = Date.now();
+
+                    if (presses == 10) {
+                        screenFlowModule.onNavigateToScreen('ExternalLoginPage');
+                    }
+                }}
+            />
+            <View style={{height: 200, width: '100%', paddingHorizontal: 50, backgroundColor: theme.colors.background, borderTopLeftRadius: 50, borderTopRightRadius: 50 }}>
+                <OktaLogin />
+            </View>
+        </ImageBackground>
     )
 }
 

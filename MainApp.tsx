@@ -200,7 +200,7 @@ export default function MainApp() {
 					console.log('minutes passed : ', minutesElapsed);
 					
 					//1 or under, let them through
-					if (minutesElapsed <= 1){
+					if (minutesElapsed <= 10){
 						return;
 					}
 				}
@@ -354,7 +354,7 @@ export default function MainApp() {
 							}
 						}}
 					>
-						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='LocalAuthScreen' component={LocalAuth}/>

@@ -762,47 +762,41 @@ const EmergencyContactsEdit = (data: any) => {
         });
     }
 
-    function deleteContact() {
+    async function deleteContact() {
         //show dialog
-        appContext.setDialogMessage('Are you sure you want to delete this contact?');
+        //TODO
+    //    appContext.setDialogMessage('Are you sure you want to delete this contact?');
+    //    appContext.setShowDialog(true);
+    //    appContext.setShowDialogCancelButton(true);
+    //    appContext.setDialogActionButtonText('Delete');
+        appContext.setShowBusyIndicator(true);
         appContext.setShowDialog(true);
-        appContext.setShowDialogCancelButton(true);
-        appContext.setDialogActionButtonText('Delete');
-        appContext.setDialogActionFunction(async () => {
-            //change the dialog
-            appContext.setShowBusyIndicator(true);
-            appContext.setShowDialogCancelButton(false);
-            appContext.setDialogActionButtonText('OK');
 
-            const uriParts = emergencyContact.__metadata.uri.split("Z_ESS_MSS_SRV");
-            const urlPath = uriParts[1].substring(1);
-            try {
-                const response = await dataHandlerModule.batchSingleDelete(
-                    urlPath,
-                    "Z_ESS_MSS_SRV"
-                );
+        const uriParts = emergencyContact.__metadata.uri.split("Z_ESS_MSS_SRV");
+        const urlPath = uriParts[1].substring(1);
+        try {
+            await dataHandlerModule.batchSingleDelete(
+                urlPath,
+                "Z_ESS_MSS_SRV"
+            );
 
-                if (!response.responseBody) {
-                    const employeeDetails = await dataHandlerModule.batchGet(
-                        "EmployeeAddresses",
-                        "Z_ESS_MSS_SRV",
-                        "EmployeeAddresses"
-                    );
-                    dataContext.setEmployeeAddresses(employeeDetails.responseBody.d.results);
-                    screenFlowModule.onGoBack();
-                    appContext.setShowBusyIndicator(false);
-                    appContext.setShowDialog(false);
-                    appContext.setDialogActionFunction(undefined);
-                } else if (response.responseBody.error) {
-                    appContext.setShowBusyIndicator(false);
-                    appContext.setDialogMessage(
-                        response.responseBody.error.message.value
-                    );
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        })
+            const pernr = emergencyContact.Pernr;
+
+            const employeeDetails = await dataHandlerModule.batchGet(
+                `EmployeeAddresses?$filter=Pernr%20eq%20%27${pernr}%27%20and%20Subty%20eq%20%274%27`,
+                "Z_ESS_MSS_SRV",
+                "EmployeeAddresses"
+            );
+
+            dataContext.setEmployeeAddresses(employeeDetails.responseBody.d.results);
+
+            screenFlowModule.onGoBack();
+            appContext.setShowBusyIndicator(false);
+            appContext.setShowDialog(false);
+        } catch (error) {
+            appContext.setShowDialog(false);
+            screenFlowModule.onNavigateToScreen('ErrorPage', error);
+        }
     }
 
 
@@ -936,7 +930,7 @@ const EmergencyContactsEdit = (data: any) => {
                         mode='outlined'
                         value={emergencyContact.Statekey}
                         editable={false}
-                        label="State *"
+                        label="State"
                         right={
                             <TextInput.Icon
                                 icon={() => {
@@ -1346,7 +1340,7 @@ const VolunteerEdit = (data: any) => {
                 />
                 {hasMemberTypeError && <HelperText type="error">{errorMemberTypeMsg}</HelperText>}
                 {(showMembershipType) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.membershipTypes.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
@@ -1399,7 +1393,7 @@ const VolunteerEdit = (data: any) => {
                 />
                 {hasMemberStatusError && <HelperText type="error">{errorMemberStatusMsg}</HelperText>}
                 {(showMembershipStatus) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.membershipStatuses.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
@@ -1448,7 +1442,7 @@ const VolunteerEdit = (data: any) => {
                 />
                 {hasVolStatusError && <HelperText type="error">{errorVolStatusMsg}</HelperText>}
                 {(showVolunteerStatus) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -450, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -450, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.volunteerStatuses.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
@@ -1656,7 +1650,7 @@ const EquityDiversity = (data: any) => {
                     }
                 />
                 {(showNESL) &&
-                    <ScrollView style={{ height: 550, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <ScrollView style={{ height: 550, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         <List.Section>
                             {helperDataContext.equityNESLValues.map((x, i) => {
                                 return (
@@ -1705,7 +1699,7 @@ const EquityDiversity = (data: any) => {
                     }
                 />
                 {(showGender) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityGenderValues.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
@@ -1753,7 +1747,7 @@ const EquityDiversity = (data: any) => {
                     }
                 />
                 {(showAboriginal) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityAboriginalValues.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
@@ -1800,7 +1794,7 @@ const EquityDiversity = (data: any) => {
                     }
                 />
                 {(showRacial) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityRacialEthnicReligiousValues.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
@@ -1847,7 +1841,7 @@ const EquityDiversity = (data: any) => {
                     }
                 />
                 {(showFirstLanguage) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityFirstLanguageValues.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
@@ -1895,7 +1889,7 @@ const EquityDiversity = (data: any) => {
                     }
                 />
                 {(showDisability) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -220, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -220, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityDisabilityValues.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
