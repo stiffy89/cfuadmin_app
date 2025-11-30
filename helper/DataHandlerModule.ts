@@ -277,7 +277,6 @@ class DataHandlerModule {
                             catch (error) {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
-                                console.log(error);
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
@@ -471,7 +470,6 @@ class DataHandlerModule {
                             catch (error) {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
-                                console.log(error);
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);

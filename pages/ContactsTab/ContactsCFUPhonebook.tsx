@@ -82,7 +82,7 @@ const ContactsCFUPhoneBook = () => {
             screenFlowModule.onNavigateToScreen('CfuPhonebookContactsList', suburbContactsObj);
         }
         catch (error) {
-            console.log(error);
+            screenFlowModule.onNavigateToScreen('ErrorPage', error);
         }
     }
 

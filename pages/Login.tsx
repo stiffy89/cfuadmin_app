@@ -34,11 +34,11 @@ const LoginPage = () => {
                     textColor={theme.colors.background}
                     mode='elevated'
                     onPress={() => {
+                        appContext.setShowBusyIndicator(true);
+                        appContext.setShowDialog(true);
+
                         authModule.onFRNSWLogin()
                             .then(async (result: OktaLoginResult) => {
-
-                                appContext.setShowBusyIndicator(true);
-                                appContext.setShowDialog(true);
 
                                 const oktaIDToken = result.response.idToken;
                                 if (oktaIDToken) {

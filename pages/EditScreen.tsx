@@ -198,7 +198,8 @@ const ContactDetailsEdit = (data: any) => {
                     );
                 }
             } catch (error) {
-                console.log(error);
+                appContext.setShowDialog(false);
+                screenFlowModule.onNavigateToScreen('ErrorPage', error);
             }
         }
 
@@ -446,7 +447,8 @@ const ContactDetailsEdit = (data: any) => {
                     );
                 }
             } catch (error) {
-                console.log(error);
+                appContext.setShowDialog(false);
+                screenFlowModule.onNavigateToScreen('ErrorPage', error);
             }
         })
     }
@@ -1080,7 +1082,8 @@ const UniformDetailsEdit = (data: any) => {
                 );
             }
         } catch (error) {
-            console.log(error);
+            appContext.setShowDialog(false);
+            screenFlowModule.onNavigateToScreen('ErrorPage', error);
         }
     }
 
