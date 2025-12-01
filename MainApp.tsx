@@ -164,13 +164,18 @@ const TabNavigator = () => {
 export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
-	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, cardModalVisible, setCardModalVisible } = useAppContext();
-	
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, cardModalVisible, setCardModalVisible, appLastActiveTimestamp, setAppLastActiveTimestamp } = useAppContext();
 	const dataContext = useDataContext();
+
+	const currentUser = useRef<any>([]);
 
 	const lastAppState = useRef<AppStateStatus | null>(null)
 
 	const onAppWake = async () => {
+
+		const asyncTimestamp = await AsyncStorage.getItem('last-active');
+
+		console.log('current user : ', currentUser);
 
 		//see if we have installation id saved
 		const installationId = await AsyncStorage.getItem('installation-id');
@@ -189,14 +194,14 @@ export default function MainApp() {
 				screenFlowModule.onNavigateToScreen('LoginScreen');
 			}
 			else {
-				//check to see if 15 minutes has passed, if it hasnt, then just let them back in. If 15 has passed, they must sign back in using local auth.
-				const lastActiveStr = await AsyncStorage.getItem('last-active');
 				
-				if (lastActiveStr) {
+				//check to see if x minutes has passed and there is a user profile already, if either is empty, then ask them to use local auth to get back in.
+				const lastActiveStr = await AsyncStorage.getItem('last-active');
+
+				if (lastActiveStr && (currentUser.current.length > 0)) {
 					const lastActiveNum = Number(lastActiveStr);
 					const now = Date.now();
 					const minutesElapsed = (now - lastActiveNum) / 1000 / 60;
-
 					console.log('minutes passed : ', minutesElapsed);
 					
 					//1 or under, let them through
@@ -204,7 +209,7 @@ export default function MainApp() {
 						return;
 					}
 				}
-
+				
 				screenFlowModule.onNavigateToScreen('LocalAuthScreen');
 			}
 		}
@@ -213,7 +218,8 @@ export default function MainApp() {
 	const onAppSleep = async () => {
 		//save the current time to last_active
 		const now = Date.now();
-		console.log(now);
+		console.log('app sleep time : ', now);
+		setAppLastActiveTimestamp(String(now));
 		await AsyncStorage.setItem('last-active', String(now));
 	}
 
@@ -261,6 +267,8 @@ export default function MainApp() {
 
 	useEffect(() => {
 
+		console.log('main app loaded');
+
 		//every time the app wakes from being backgrounded, we run this block
 		const appAwakeLogic = async () => {
 			onAppInitLoad();
@@ -277,6 +285,10 @@ export default function MainApp() {
 			cleanupRef.current?.();
 		}
 	}, [])
+
+	useEffect(() => {
+		currentUser.current = dataContext.currentUser;
+	}, [dataContext.currentUser])
 
 	const { loaded, fonts } = useCustomFonts();
 
@@ -354,7 +366,7 @@ export default function MainApp() {
 							}
 						}}
 					>
-						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='SplashScreen' component={SplashScreen} />
 							<Stack.Screen name='LocalAuthScreen' component={LocalAuth}/>

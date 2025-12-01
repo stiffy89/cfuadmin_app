@@ -7,7 +7,8 @@ import {
     TextInput,
     Button,
     HelperText,
-    Menu,
+    Dialog,
+    Portal,
     Divider,
     List
 } from "react-native-paper";
@@ -141,6 +142,7 @@ const ContactDetailsEdit = (data: any) => {
     const appContext = useAppContext();
     const dataContext = useDataContext();
     const helperDataContext = useHelperValuesDataContext();
+    const [showDialog, setShowDialog] = useState(false);
 
     const key = Object.keys(dataObj)[0];
     let originalData = dataObj[key];
@@ -408,6 +410,7 @@ const ContactDetailsEdit = (data: any) => {
 
             const uriParts = originalData.__metadata.uri.split("Z_ESS_MSS_SRV");
             const urlPath = uriParts[1].substring(1);
+
             try {
                 const response = await dataHandlerModule.batchSingleDelete(
                     urlPath,
@@ -455,6 +458,30 @@ const ContactDetailsEdit = (data: any) => {
 
     return (
         <ScrollView contentContainerStyle={{ flex: (key == "mailing_address") ? 0 : 1 }} style={{ paddingHorizontal: 20 }}>
+            <Portal>
+                <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>
+                    <Dialog.Content>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <LucideIcons.CircleAlert size={30} color={theme.colors.primary}/>
+                            <CustomText style={{marginLeft: 20}} variant='bodyLarge'>
+                                Are you sure you want to delete this address?
+                            </CustomText>
+                        </View>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
+                        <Button 
+                            onPress={() => {
+                                setShowDialog(false);
+                                deleteMailingAddress();
+                            }} 
+                            textColor={theme.colors.secondary} 
+                        >
+                            Delete
+                        </Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
             <CustomText style={{ marginBottom: 20 }} variant="titleLargeBold">
                 Contact Details Edit
             </CustomText>
@@ -538,7 +565,7 @@ const ContactDetailsEdit = (data: any) => {
                                 icon={() => <LucideIcons.Trash2 />}
                                 mode='contained-tonal'
                                 onPress={() => {
-                                    deleteMailingAddress();
+                                    setShowDialog(true);
                                 }}
                             />
                         }
@@ -676,6 +703,7 @@ const EmergencyContactsEdit = (data: any) => {
     const [emergencyContact, setEmergencyContact] = useState(dataObj);
     const [showRelatDropDown, setShowRelatDropDown] = useState(false);
     const [showStateDropDown, setShowStateDropDown] = useState(false);
+    const [showDialog, setShowDialog] = useState(false);
 
     function saveData() {
         async function updateData(
@@ -765,12 +793,7 @@ const EmergencyContactsEdit = (data: any) => {
     }
 
     async function deleteContact() {
-        //show dialog
-        //TODO
-    //    appContext.setDialogMessage('Are you sure you want to delete this contact?');
-    //    appContext.setShowDialog(true);
-    //    appContext.setShowDialogCancelButton(true);
-    //    appContext.setDialogActionButtonText('Delete');
+        
         appContext.setShowBusyIndicator(true);
         appContext.setShowDialog(true);
 
@@ -803,8 +826,31 @@ const EmergencyContactsEdit = (data: any) => {
 
 
     return (
-
         <View style={{ paddingHorizontal: 20, flex: 1 }}>
+            <Portal>
+                <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>
+                    <Dialog.Content>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <LucideIcons.CircleAlert size={30} color={theme.colors.primary}/>
+                            <CustomText style={{marginLeft: 20}} variant='bodyLarge'>
+                                Are you sure you want to delete this contact?
+                            </CustomText>
+                        </View>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
+                        <Button 
+                            onPress={() => {
+                                setShowDialog(false);
+                                deleteContact();
+                            }} 
+                            textColor={theme.colors.secondary} 
+                        >
+                            Delete
+                        </Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
             <View
                 style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}
             >
@@ -817,7 +863,7 @@ const EmergencyContactsEdit = (data: any) => {
                         icon={() => <LucideIcons.Trash2 />}
                         mode='contained-tonal'
                         onPress={() => {
-                            deleteContact();
+                            setShowDialog(true);
                         }}
                     />
                 }

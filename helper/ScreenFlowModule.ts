@@ -1,10 +1,6 @@
-import { NavType, RootStackScreenKeys, RootStackParamList } from '../types/AppTypes';
+import { RootStackParamList } from '../types/AppTypes';
 import {NavigationContainerRefWithCurrent} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Crypto from 'expo-crypto';
-import { useSecurityContext } from './SecurityContext';
 
-import { useAppContext } from './AppContext';
 
 export class ScreenFlowModule {
     
@@ -370,55 +366,6 @@ export class ScreenFlowModule {
 
     getScreenState () {
         return this.navigator?.getCurrentRoute();
-    }
-
-    //on app wake
-    async onAppWake() {
-        const {authMethod, setAuthMethod} = useSecurityContext();
-
-        //just for debugging purposes
-        const {setLastAppState} = useAppContext();
-        setLastAppState('active');
-
-        //check to see if we have installation id
-        const installationId = await AsyncStorage.getItem('installation-id');
-
-        if (!installationId){
-
-            //create an installation id and save it to the device
-            const newInstallationID = Crypto.randomUUID(); //create a new ID
-            await AsyncStorage.setItem('installation-id', newInstallationID)
-
-            if (authMethod !== 'okta'){
-                setAuthMethod('okta')
-            }
-
-            if (this.navigator?.isReady()){
-                if (this.navigator?.getCurrentRoute()?.name !== 'LoginScreen'){
-                    this.navigator?.navigate('LoginScreen');
-                }
-            }
-        }
-        else {
-            //local auth
-            if (authMethod !== 'local'){
-                setAuthMethod('local')
-            }
-
-            if (this.navigator?.isReady()){
-                if (this.navigator?.getCurrentRoute()?.name !== 'LoginScreen'){
-                    this.navigator?.navigate('LoginScreen');
-                }
-            }
-        }
-    }
-
-    onNavigateToHome() {
-        if (this.navigator?.isReady()){
-            if (this.navigator?.getCurrentRoute()?.name !== 'HomeScreen'){
-                this.navigator?.navigate('MainTabs', {screen: 'HomeScreen'});
-            }
-        }
     }
 }
 

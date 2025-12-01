@@ -14,7 +14,6 @@ const SplashScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            console.log('splash mounted');
     
             const timeout = setTimeout(() => {
                 const error = {
@@ -25,7 +24,6 @@ const SplashScreen = () => {
             }, 120000); //120000 -> 2 minutes
 
             return () => {
-                console.log('splash dismount')
                 clearTimeout(timeout);
             };
         }, [])

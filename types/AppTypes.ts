@@ -18,8 +18,8 @@ export type AppContextType = {
     setShowBusyIndicator: (val: boolean) => void;
     dialogMessage: string;
     setDialogMessage: (val: string) => void;
-    lastAppState: string;
-    setLastAppState: (val: string) => void;
+    appLastActiveTimestamp: string;
+    setAppLastActiveTimestamp: (val: string) => void;
     cardModalVisible: boolean,
     setCardModalVisible: (val: boolean) => void,
 };

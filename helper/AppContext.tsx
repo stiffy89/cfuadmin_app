@@ -15,7 +15,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [dialogActionButtonText, setDialogActionButtonText] = useState('OK');
   const [dialogActionFunction, setDialogActionFunction] = useState<(() => void) | undefined>(undefined);
   
-  const [lastAppState, setLastAppState] = useState<string>('none');
+  const [appLastActiveTimestamp, setAppLastActiveTimestamp] = useState<string>('');
 
   const [cardModalVisible, setCardModalVisible] = useState(false)
 
@@ -32,8 +32,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setShowBusyIndicator,
     dialogMessage,
     setDialogMessage,
-    lastAppState,
-    setLastAppState,
+    appLastActiveTimestamp,
+    setAppLastActiveTimestamp,
     cardModalVisible,
     setCardModalVisible,
   };
