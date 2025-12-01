@@ -560,7 +560,8 @@ const TrainingMain = ({ route }: props) => {
                     top: 50,
                     left: 20,
                     zIndex: 100,
-                    boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                    borderColor: 'rgba(99, 99, 99, 1)', 
+                    borderWidth: 1
                   }}
                 >
                   {orgUnitList.map((x, i) => {

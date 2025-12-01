@@ -71,8 +71,12 @@ const PDFDisplayPage = ({ route }: props) => {
         if (cache) {
             const fileName = params!.fileName;
             if (!fileName){
-                //TODO handle error here - we need to pass a file name for cache
-                console.log('Error - no filename provided');
+                const error = {
+                    isAxiosError : false,
+                    message : 'No PDF filename provided'
+                }
+
+                screenFlowModule.onNavigateToScreen('ErrorPage', error);
                 return;
             }
 
@@ -87,9 +91,14 @@ const PDFDisplayPage = ({ route }: props) => {
                     setPdfSource(`data:application/pdf;base64,${pdfString}`)
                     storePDF(pdfString, fileName).then(res => setLocalFilePath(res))
                 })
-                .catch((error) => {
-                    //TODO handle error
-                    console.log(error);
+                .catch(() => {
+                    
+                    const error = {
+                        isAxiosError : false,
+                        message : 'PDF cannot be loaded'
+                    }
+
+                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
                 })
             }
         }
@@ -98,9 +107,12 @@ const PDFDisplayPage = ({ route }: props) => {
             .then((pdfString) => {
                 setPdfSource(`data:application/pdf;base64,${pdfString}`)
             })
-            .catch((error) => {
-                //TODO handle error
-                console.log(error);
+            .catch(() => {
+                const error = {
+                    isAxiosError : false,
+                    message : 'PDF cannot be loaded'
+                }
+                screenFlowModule.onNavigateToScreen('ErrorPage', error);
             })
         }
 

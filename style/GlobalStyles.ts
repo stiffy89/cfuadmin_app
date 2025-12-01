@@ -46,9 +46,19 @@ const GlobalStyles = StyleSheet.create({
         position: 'relative',
         width: '100%'
     },
-    backgroundImage: {
+    splashBackgroundImage: {
         flex: 1,
         justifyContent: 'center',
+        alignItems: 'center'
+    },
+    backgroundImage: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    backgroundImagePin: {
+        flex: 1,
+        justifyContent: 'flex-start',
         alignItems: 'center'
     },
     backgroundOverlay : {

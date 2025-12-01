@@ -115,7 +115,6 @@ const MyMembersProfile = ({ route }: props) => {
             callback(responseData.responseBody.d.results);
         }
         catch (error) {
-            console.log(error);
             throw error;
         }
     }
@@ -291,7 +290,6 @@ const MyMembersProfile = ({ route }: props) => {
                                         } catch (error) {
                                             appContext.setShowBusyIndicator(false);
                                             appContext.setShowDialog(false);
-                                            console.log(error);
                                             throw error;
                                         }
                                     }}

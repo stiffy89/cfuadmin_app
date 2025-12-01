@@ -13,7 +13,7 @@ export const SecurityProvider = ({ children }: { children: ReactNode }) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false); //<-- is the user currently authenticated?
   const [isAuthenticating, setIsAuthenticating] = useState(false); //<-- are we in the process of some type of authentication? Important for app state
-  const [authType, setAuthType] = useState<AuthType>('okta'); //<-- authentication type
+  const [authMethod, setAuthMethod] = useState<AuthType>('okta'); //<-- authentication type
   const [authErrorMessage, setAuthErrorMessage] = useState(''); //<-- if there is an error message, most for pin related stuff
   
   const value: SecurityContextType = {
@@ -21,8 +21,8 @@ export const SecurityProvider = ({ children }: { children: ReactNode }) => {
     setIsLoggedIn,
     isAuthenticating,
     setIsAuthenticating,
-    authType,
-    setAuthType,
+    authMethod,
+    setAuthMethod,
     authErrorMessage,
     setAuthErrorMessage
   };

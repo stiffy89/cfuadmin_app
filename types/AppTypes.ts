@@ -5,8 +5,6 @@ import type { NavigationProp, NavigationContainerRefWithCurrent, NavigatorScreen
 
 export type AuthType = 'okta' | 'local' | 'pin';
 
-export type AuthenticationMode = 'authenticate' | 'bypass';
-
 export type AppContextType = {
     showDialogCancelButton: boolean;
     setShowDialogCancelButton: (val: boolean) => void;
@@ -22,8 +20,6 @@ export type AppContextType = {
     setDialogMessage: (val: string) => void;
     lastAppState: string;
     setLastAppState: (val: string) => void;
-    authenticationMode: AuthenticationMode;
-    setAuthenticationMode: (val: AuthenticationMode) => void;
     cardModalVisible: boolean,
     setCardModalVisible: (val: boolean) => void,
 };
@@ -39,19 +35,11 @@ export type SecurityContextType = {
     setIsLoggedIn: (val: boolean) => void;
     isAuthenticating: boolean; // if we are currently authenticating, we will stop the background / active app logic flow
     setIsAuthenticating: (val: boolean) => void;
-    authType: AuthType; // type of auth method - to render what will be displayed on the login page okta, local auth, pin
-    setAuthType: (val: AuthType) => void;
+    authMethod: AuthType; // type of auth method - to render what will be displayed on the login page okta, local auth, pin
+    setAuthMethod: (val: AuthType) => void;
     authErrorMessage: string;
     setAuthErrorMessage: (val: string) => void;
 };
-
-export type UserData = {
-    firstname: string;
-    lastname: string;
-    pernr: string;
-    position: string;
-    unitid: string;
-}
 
 //services grid row type
 export type GridLayoutRow = {
@@ -222,6 +210,7 @@ type PositionHistoryPageProp = {
 }
 
 export type RootStackParamList = {
+    LocalAuthScreen: undefined;
     SplashScreen: undefined;
     MainTabs: NavigatorScreenParams<TabParamList>;
     LoginScreen: undefined;
@@ -243,7 +232,6 @@ export type RootStackParamList = {
     TrainingMain: Record<string, string> | undefined;
     TrainingCompletionByDrill: DrillData | undefined;
     TrainingCompletionByUser: MemberData | undefined;
-    Users: undefined;
     FeedbackScreen: Record<string, string> | undefined;
     PDFDisplayPage: PDFDisplayPageProp | undefined;
     VolAdminSearch: Record<string, string> | undefined;

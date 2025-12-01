@@ -98,7 +98,6 @@ const ProfilePage = () => {
             callback(responseData.responseBody.d.results);
         }
         catch (error) {
-            console.log(error);
             throw error;
         }
     }
@@ -239,7 +238,6 @@ const ProfilePage = () => {
                                 } catch (error) {
                                     appContext.setShowBusyIndicator(false);
                                     appContext.setShowDialog(false);
-                                    console.log(error);
                                     throw error;
                                 }
                             }}

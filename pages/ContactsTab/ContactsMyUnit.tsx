@@ -82,7 +82,7 @@ const ContactsMyUnit = () => {
                                 }
                             />
                             {(showDropDown) &&
-                                <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, boxShadow: 'rgba(99, 99, 99, 0.2) 0px 2px 8px 0px' }}>
+                                <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                                     {dataContext.rootOrgUnits.map((x, i) => {
                                         return (
                                             <React.Fragment key={'Fragment_' + i}>

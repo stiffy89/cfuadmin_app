@@ -12,7 +12,6 @@ import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { House } from 'lucide-react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/AppTypes';
-import { parse } from 'react-native-svg';
 
 type props = StackScreenProps<RootStackParamList, 'VolAdminSearch'>;
 
@@ -54,18 +53,23 @@ const VolAdminSearch = ({ route }: props) => {
             style={{ flex: 1 }}
         >
             <View style={GlobalStyles.page}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-                    <IconButton icon={() => <ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => {
-                        screenFlowModule.onGoBack()
-                    }} />
-                    <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>Search Unit / Member</CustomText>
+                <View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+                        <IconButton icon={() => <ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => {
+                            screenFlowModule.onGoBack()
+                        }} />
+                        <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>Search Unit / Member</CustomText>
+                    </View>
+                    <View style={{marginHorizontal: 20, marginVertical: 10, backgroundColor: theme.colors.background, ...GlobalStyles.allRoundedCorners}}>
+                        <CustomText style={{padding: 20}}>Using any search field will clear the others. You can only search by Unit/Station, Personnel ID, or Name individually. For Name searches, fill in First and Last Name, then tap Search.</CustomText>
+                    </View>
                 </View>
                 <ScrollView style={{ paddingHorizontal: 20 }}>
                     <CustomText variant='bodyMediumBold' style={{ marginVertical: 10 }}>Unit / Station</CustomText>
                     {(stationSearchResults.length == 0) &&
                         <Searchbar
                             style={{
-                                backgroundColor: theme.colors.surfaceVariant,
+                                backgroundColor: theme.colors.background,
                                 ...GlobalStyles.inputRoundedCorners,
                                 marginBottom: 20
                             }}
@@ -113,7 +117,7 @@ const VolAdminSearch = ({ route }: props) => {
                     {(unitSearchResults.length == 0) &&
                         <Searchbar
                             style={{
-                                backgroundColor: theme.colors.surfaceVariant,
+                                backgroundColor: theme.colors.background,
                                 ...GlobalStyles.inputRoundedCorners
                             }}
                             placeholder='Search Station'
@@ -161,7 +165,7 @@ const VolAdminSearch = ({ route }: props) => {
                             <CustomText variant='bodyMediumBold' style={{ marginTop: 30, marginBottom: 10 }}>Member Service ID</CustomText>
                             <Searchbar
                                 style={{
-                                    backgroundColor: theme.colors.surfaceVariant,
+                                    backgroundColor: theme.colors.background,
                                     ...GlobalStyles.inputRoundedCorners
                                 }}
                                 placeholder='Search Personnel No'
@@ -226,10 +230,11 @@ const VolAdminSearch = ({ route }: props) => {
                             <CustomText variant='bodyMediumBold' style={{ marginTop: 30, marginBottom: 10 }}>Member Name</CustomText>
                             <TextInput
                                 style={{
-                                    backgroundColor: theme.colors.surfaceVariant,
                                     marginBottom: 10
                                 }}
-                                placeholder='First Name'
+                                label="First Name"
+                                mode="outlined"
+                                activeOutlineColor={theme.colors.onSecondaryContainer}
                                 value={searchFilter.firstName}
                                 onChangeText={(text) => {
                                     setSearchFilter({
@@ -240,10 +245,11 @@ const VolAdminSearch = ({ route }: props) => {
                             />
                             <TextInput
                                 style={{
-                                    backgroundColor: theme.colors.surfaceVariant,
                                     marginBottom: 20
                                 }}
-                                placeholder='Last Name'
+                                label="Last Name"
+                                mode="outlined"
+                                activeOutlineColor={theme.colors.onSecondaryContainer}
                                 value={searchFilter.lastName}
                                 onChangeText={(text) => {
                                     setSearchFilter({
@@ -325,7 +331,7 @@ const VolAdminSearch = ({ route }: props) => {
                                     }
                                 }}
                             >
-                                Search Member Name
+                                Search
                             </Button>
                         </View>
                     }

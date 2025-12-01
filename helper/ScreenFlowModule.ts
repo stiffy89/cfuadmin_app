@@ -24,20 +24,16 @@ export class ScreenFlowModule {
        
         if (this.navigator?.isReady()){
             switch (screen) {
-                case 'Users':
-                    const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking').default; 
-                    RCTNetworking.clearCookies((result : any) => {
-                        console.log('cookies cleared');
-                        this.navigator?.navigate('Users');
-                    });
-                    break;
-
                 case 'AllServicesListScreen' :
                     this.navigator?.navigate('AllServicesListScreen', data);
                     break;
 
                 case 'FeedbackScreen' :
                     this.navigator?.navigate('FeedbackScreen');
+                    break;
+
+                case 'LocalAuthScreen':
+                    this.navigator?.navigate('LocalAuthScreen');
                     break;
                     
                 case 'SplashScreen':
@@ -378,23 +374,23 @@ export class ScreenFlowModule {
 
     //on app wake
     async onAppWake() {
-        const {authType, setAuthType} = useSecurityContext();
+        const {authMethod, setAuthMethod} = useSecurityContext();
 
         //just for debugging purposes
         const {setLastAppState} = useAppContext();
         setLastAppState('active');
 
         //check to see if we have installation id
-        const installationId = await AsyncStorage.getItem('installation_id');
+        const installationId = await AsyncStorage.getItem('installation-id');
 
         if (!installationId){
 
             //create an installation id and save it to the device
             const newInstallationID = Crypto.randomUUID(); //create a new ID
-            await AsyncStorage.setItem('installation_id', newInstallationID)
+            await AsyncStorage.setItem('installation-id', newInstallationID)
 
-            if (authType !== 'okta'){
-                setAuthType('okta')
+            if (authMethod !== 'okta'){
+                setAuthMethod('okta')
             }
 
             if (this.navigator?.isReady()){
@@ -405,8 +401,8 @@ export class ScreenFlowModule {
         }
         else {
             //local auth
-            if (authType !== 'local'){
-                setAuthType('local')
+            if (authMethod !== 'local'){
+                setAuthMethod('local')
             }
 
             if (this.navigator?.isReady()){
@@ -424,34 +420,6 @@ export class ScreenFlowModule {
             }
         }
     }
-
-    //on app sleep
-    onAppSleep() {
-         //just for debugging purposes
-        const {setLastAppState} = useAppContext();
-        setLastAppState('background');
-
-        const currentTime = (new Date()).toISOString();
-        AsyncStorage.setItem('last_active', currentTime);
-    }
-
-    //clear the stored timestamp of the last time it was logged in
-    async onLogout () : Promise<boolean>{
-        try {
-            await AsyncStorage.removeItem('last_active');
-            return true;
-        } 
-        catch (error) {
-            this.onHandleError(error);
-            return false;
-        }
-    }
-
-    //handle error
-    onHandleError (error : any) {
-        console.log('Screen flow module error : ', error);
-    }
-
 }
 
 export const screenFlowModule = new ScreenFlowModule();

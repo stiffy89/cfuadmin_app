@@ -1,6 +1,6 @@
 //generic context that will wrap the whole app
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AppContextType, AuthenticationMode } from '../types/AppTypes';
+import { AppContextType } from '../types/AppTypes';
 
 
 // create the context
@@ -16,7 +16,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [dialogActionFunction, setDialogActionFunction] = useState<(() => void) | undefined>(undefined);
   
   const [lastAppState, setLastAppState] = useState<string>('none');
-  const [authenticationMode, setAuthenticationMode] = useState<AuthenticationMode>('authenticate');
 
   const [cardModalVisible, setCardModalVisible] = useState(false)
 
@@ -35,8 +34,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setDialogMessage,
     lastAppState,
     setLastAppState,
-    authenticationMode,
-    setAuthenticationMode,
     cardModalVisible,
     setCardModalVisible,
   };

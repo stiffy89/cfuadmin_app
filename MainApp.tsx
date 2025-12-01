@@ -3,7 +3,6 @@ import { AppState, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
-import * as LocalAuthentication from 'expo-local-authentication';
 import * as LucideIcons from 'lucide-react-native';
 import { PlatformPressable } from '@react-navigation/elements';
 
@@ -13,9 +12,11 @@ import { useCustomFonts } from './helper/useCustomFonts';
 import { AppStateStatus } from 'react-native';
 import CustomText from './assets/CustomText';
 import GlobalStyles from './style/GlobalStyles';
+import  * as SecureStore from 'expo-secure-store';
 
 //screens
 import LoginPage from './pages/Login';
+import LocalAuth from './pages/LocalAuth';
 import HomePage from './pages/Home';
 import ContactsPage from './pages/Contacts';
 import ProfilePage from './pages/Profile';
@@ -39,7 +40,6 @@ import CardModal from './assets/CardModal';
 import TrainingMain from './pages/Training/TrainingMain';
 import TrainingCompletionByDrill from './pages/Training/TrainingCompletionByDrill';
 import TrainingCompletionByUser from './pages/Training/TrainingCompletionByUser';
-import Users from './pages/Users';
 import FeedbackScreen from './pages/FeedbackScreen';
 import PDFDisplayPage from './pages/PDFDisplayPage';
 import VolAdminSearch from './pages/VolAdminSearch';
@@ -72,6 +72,7 @@ import { RootStackParamList } from './types/AppTypes';
 import { authModule } from './helper/AuthModule';
 import { screenFlowModule } from './helper/ScreenFlowModule';
 import { dataHandlerModule } from './helper/DataHandlerModule';
+import { isAxiosError } from 'axios';
 
 
 //set up custom themes
@@ -163,8 +164,7 @@ const TabNavigator = () => {
 export default function MainApp() {
 
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
-	const { authType, setAuthType, isAuthenticating } = useSecurityContext();
-	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, authenticationMode, cardModalVisible, setCardModalVisible } = useAppContext();
+	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, cardModalVisible, setCardModalVisible } = useAppContext();
 	
 	const dataContext = useDataContext();
 
@@ -173,53 +173,48 @@ export default function MainApp() {
 	const onAppWake = async () => {
 
 		//see if we have installation id saved
-		const installationId = await AsyncStorage.getItem('installation_id');
+		const installationId = await AsyncStorage.getItem('installation-id');
 
 		//no id, fresh install, create id and then log them with okta
 		if (!installationId) {
 			//create an installation id and save it to the device
 			const newInstallationID = Crypto.randomUUID(); //create a new ID
-			await AsyncStorage.setItem('installation_id', newInstallationID)
-
-			if (authType !== 'okta') {
-				setAuthType('okta')
-			}
-
-			if (screenFlowModule.getScreenState()?.name !== 'LoginScreen') {
-				screenFlowModule.onNavigateToScreen('LoginScreen');
-			}
+			await AsyncStorage.setItem('installation-id', newInstallationID)
+			screenFlowModule.onNavigateToScreen('LoginScreen');
 		}
 		else {
-			//installation id present, need to move into local auth
-			//check to see if the local hardware and biometrics is set up and enabled.
-			if (await LocalAuthentication.hasHardwareAsync() && await LocalAuthentication.isEnrolledAsync()) {
+			//if they have an installation id - check to see if they have pin stored (they couldve checked out mid way through the first login process)
+			const pin = await SecureStore.getItemAsync('pin');
+			if (!pin) {
+				screenFlowModule.onNavigateToScreen('LoginScreen');
+			}
+			else {
+				//check to see if 15 minutes has passed, if it hasnt, then just let them back in. If 15 has passed, they must sign back in using local auth.
+				const lastActiveStr = await AsyncStorage.getItem('last-active');
+				
+				if (lastActiveStr) {
+					const lastActiveNum = Number(lastActiveStr);
+					const now = Date.now();
+					const minutesElapsed = (now - lastActiveNum) / 1000 / 60;
 
-				const securityLevel = await LocalAuthentication.getEnrolledLevelAsync();
-				//no biometrics or security set on phone - redirect to our pin
-				if (securityLevel > 0) {
-					const localAuthResult = await authModule.onLocalAuthLogin();
-
-					if (localAuthResult) {
-						//navigate to the home
-						screenFlowModule.onNavigateToScreen('HomeScreen');
+					console.log('minutes passed : ', minutesElapsed);
+					
+					//1 or under, let them through
+					if (minutesElapsed <= 1){
 						return;
 					}
 				}
-			}
 
-			//if anything else, just give them the pin
-			if (screenFlowModule.getScreenState()?.name !== 'LoginScreen') {
-				screenFlowModule.onNavigateToScreen('LoginScreen');
+				screenFlowModule.onNavigateToScreen('LocalAuthScreen');
 			}
-
-			setAuthType('pin');
 		}
 	}
 
-	const onAppSleep = () => {
+	const onAppSleep = async () => {
 		//save the current time to last_active
-		const currentTimeStamp = new Date().toISOString();
-		AsyncStorage.setItem('last_active', currentTimeStamp);
+		const now = Date.now();
+		console.log(now);
+		await AsyncStorage.setItem('last-active', String(now));
 	}
 
 	const onAppInitLoad = async () => {
@@ -227,50 +222,53 @@ export default function MainApp() {
 		try {
 			await dataHandlerModule.init();
 		}
-		catch (error) {
-			setDialogMessage('An error occurred during data handler initialisation');
-			setShowDialog(true);
-			return;
+		catch {
+
+			const error = {
+				isAxiosError : false,
+				message : 'An error occurred during data handler initialisation'
+			}
+
+			screenFlowModule.onNavigateToScreen('ErrorPage', error);
 		}
 	}
 	
+	//this initializes the app wake and app sleep states
 	const cleanupRef = useRef<any | null>(null)
+	const onInitialiseAppState = () => {
+		//subscriber for when the app goes into background / active
+		const sub = AppState.addEventListener('change', async (nextAppState) => {
+		//	console.log('current app state : ', nextAppState);
+		//	console.log('auth module state : ', authModule.isAuthenticating);
+
+			if (nextAppState == 'background') {
+				if ((lastAppState.current == 'active') || (lastAppState.current == null)) {
+					onAppSleep();
+				}
+				lastAppState.current = nextAppState;
+			}
+			else if (nextAppState == 'active') {
+				if (!authModule.isAuthenticating && lastAppState.current == 'background') {
+					onAppWake();
+				}
+				lastAppState.current = nextAppState;
+			}
+			
+		})
+
+		cleanupRef.current = () => sub.remove();
+	}
 
 	useEffect(() => {
+
+		//every time the app wakes from being backgrounded, we run this block
 		const appAwakeLogic = async () => {
 			onAppInitLoad();
-
-			//TODO - remove this for production
-			if (authenticationMode == 'bypass') {
-				return;
-			}
-
-			const installationId = await AsyncStorage.getItem('installation_id');
-
+			const installationId = await AsyncStorage.getItem('installation-id');
 			if (!installationId){
 				return;
 			}
-
 			onAppWake();
-
-			//subscriber for when the app goes into background / active
-			const sub = AppState.addEventListener('change', async (nextAppState) => {
-
-				if (nextAppState == 'background') {
-					if (lastAppState.current == 'active') {
-						onAppSleep();
-					}
-				}
-				else if (nextAppState == 'active') {
-					if (!authModule.isAuthenticating && lastAppState.current == 'background') {
-						onAppWake();
-					}
-				}
-
-				lastAppState.current = nextAppState;
-			})
-
-			cleanupRef.current = () => sub.remove();
 		}
 
 		appAwakeLogic();
@@ -343,17 +341,23 @@ export default function MainApp() {
 						onReady={async () => {
 							//initialise the Screen flow module
 							screenFlowModule.onInitRootNavigator(navigatorRef);
-
+		
 							//check to see if we have an installation id - if we don't - then take them to the set up page
-							const installationId = await AsyncStorage.getItem('installation_id');
+							const installationId = await AsyncStorage.getItem('installation-id');
 							if (!installationId){
+								onInitialiseAppState();
+								onAppWake();
+							}
+							else if (cleanupRef.current == null){
+								onInitialiseAppState();
 								onAppWake();
 							}
 						}}
 					>
-						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
-							<Stack.Screen name='SplashScreen' component={SplashScreen} />
+						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
+							<Stack.Screen name='SplashScreen' component={SplashScreen} />
+							<Stack.Screen name='LocalAuthScreen' component={LocalAuth}/>
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
@@ -373,7 +377,6 @@ export default function MainApp() {
 							<Stack.Screen name='TrainingMain' component={TrainingMain}/>
 							<Stack.Screen name='TrainingCompletionByDrill' component={TrainingCompletionByDrill}/>
 							<Stack.Screen name='TrainingCompletionByUser' component={TrainingCompletionByUser}/>
-							<Stack.Screen name='Users' component={Users}/>
 							<Stack.Screen name='PDFDisplayPage' component={PDFDisplayPage}/>
 							<Stack.Screen name='VolAdminSearch' component={VolAdminSearch}/>
 							<Stack.Screen name='VolAdminCeaseMember' component={VolAdminCeaseMember}/>
