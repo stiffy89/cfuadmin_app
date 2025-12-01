@@ -200,7 +200,7 @@ export default function MainApp() {
 					console.log('minutes passed : ', minutesElapsed);
 					
 					//1 or under, let them through
-					if (minutesElapsed <= 10){
+					if (minutesElapsed <= 1){
 						return;
 					}
 				}
