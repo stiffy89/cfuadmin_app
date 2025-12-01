@@ -743,15 +743,18 @@ class DataHandlerModule {
     }
 
     async getResource(path: string, fileType: string): Promise<AxiosResponse> {
+        if (this.authRefreshPromise){
+            await this.authRefreshPromise;
+        }
+
+        const encodedPathURI = encodeURIComponent(path);
+        const encodedFileType = encodeURIComponent(fileType);
+
+        const filters = `Url='${encodedPathURI}',FileType='${encodedFileType}'`;
+        const odataServiceUrl = `/Z_CFU_DOCUMENTS_SRV/FileExports(${filters})/$value`;
+        const token = await SecureStore.getItemAsync('access_token');
+        const authString = `${this.authType} ${token}`
         try {
-            const encodedPathURI = encodeURIComponent(path);
-            const encodedFileType = encodeURIComponent(fileType);
-
-            const filters = `Url='${encodedPathURI}',FileType='${encodedFileType}'`;
-            const odataServiceUrl = `/Z_CFU_DOCUMENTS_SRV/FileExports(${filters})/$value`;
-            const token = await SecureStore.getItemAsync('access-token');
-            const authString = `${this.authType} ${token}`
-
             const response = await this.axiosInstance?.get(odataServiceUrl, {
                 headers: {
                     Authorization: authString,
@@ -766,20 +769,75 @@ class DataHandlerModule {
 
             return response;
         } catch (error) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                if (status === 401) {
+                    if (!this.authRefreshPromise) {
+                        this.authRefreshPromise = (async () => {
+                            console.log('Refreshing access token...');
+                            let currentRefreshToken = await SecureStore.getItemAsync('refresh-token');
+
+                            try {
+                                const newAccessTokenResponse = await this.getRefreshedAccessToken(currentRefreshToken!);
+                                await SecureStore.setItemAsync('access-token', newAccessTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+                                await SecureStore.setItemAsync('refresh-token', newAccessTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN);
+                            }
+                            catch (error) {
+                                //if refresh token is busted, get new refresh token
+                                //check what the error looks like
+                                const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                const oktaIDToken = oktaLoginResponse.response.idToken;
+                                const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
+                                const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                                const newRefreshToken = initialTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+                                await SecureStore.setItemAsync('access-token', newAccessToken);
+                                await SecureStore.setItemAsync('refresh-token', newRefreshToken);
+                            }
+
+                            this.authRefreshPromise = null;
+                        })().catch(error => {
+                            this.authRefreshPromise = null;
+                            throw error;
+                        });
+                    }
+
+                    // Wait for the auth refresh to complete (even if another request started it)
+                    await this.authRefreshPromise;
+
+                    const newAccessToken = await SecureStore.getItemAsync('access-token');
+                    const newAuthString = `${this.authType} ${newAccessToken}`
+
+                    const retryAuthResponse = await this.axiosInstance?.get(odataServiceUrl, {
+                        headers: {
+                            Authorization: newAuthString,
+                        },
+                        responseType: fileType == "application/pdf" ? "arraybuffer" : "json",
+                    })
+
+                    if (!retryAuthResponse) {
+                        throw new Error('no response from update');
+                    }
+
+                    return retryAuthResponse
+                }
+            }
             throw error
         }
     }
 
     async getFormsLauncherSet(formLaunchId: string): Promise<AxiosResponse> {
+        if (this.authRefreshPromise){
+            await this.authRefreshPromise;
+        }
+
+        const encodedFormLaunchId = encodeURIComponent(formLaunchId);
+
+        const filters = `FormLaunchId='${encodedFormLaunchId}'`;
+        const odataServiceUrl = `/Z_MOB2_SRV/FormsLauncherSet(${filters})`;
+
+        const token = await SecureStore.getItemAsync('access_token');
+        const authString = `${this.authType} ${token}`
         try {
-            const encodedFormLaunchId = encodeURIComponent(formLaunchId);
-
-            const filters = `FormLaunchId='${encodedFormLaunchId}'`;
-            const odataServiceUrl = `/Z_MOB2_SRV/FormsLauncherSet(${filters})`;
-
-            const token = await SecureStore.getItemAsync('access-token');
-            const authString = `${this.authType} ${token}`
-
             const response = await this.axiosInstance?.get(odataServiceUrl, {
                 headers: {
                     Authorization: authString,
@@ -793,27 +851,93 @@ class DataHandlerModule {
 
             return response;
         } catch (error) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                if (status === 401) {
+                    if (!this.authRefreshPromise) {
+                        this.authRefreshPromise = (async () => {
+                            console.log('Refreshing access token...');
+                            let currentRefreshToken = await SecureStore.getItemAsync('refresh-token');
+
+                            try {
+                                const newAccessTokenResponse = await this.getRefreshedAccessToken(currentRefreshToken!);
+                                await SecureStore.setItemAsync('access-token', newAccessTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+                                await SecureStore.setItemAsync('refresh-token', newAccessTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN);
+                            }
+                            catch (error) {
+                                //if refresh token is busted, get new refresh token
+                                //check what the error looks like
+                                const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                const oktaIDToken = oktaLoginResponse.response.idToken;
+                                const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
+                                const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                                const newRefreshToken = initialTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+                                await SecureStore.setItemAsync('access-token', newAccessToken);
+                                await SecureStore.setItemAsync('refresh-token', newRefreshToken);
+                            }
+
+                            this.authRefreshPromise = null;
+                        })().catch(error => {
+                            this.authRefreshPromise = null;
+                            throw error;
+                        });
+                    }
+
+                    // Wait for the auth refresh to complete (even if another request started it)
+                    await this.authRefreshPromise;
+
+                    const newAccessToken = await SecureStore.getItemAsync('access-token');
+                    const newAuthString = `${this.authType} ${newAccessToken}`
+
+                    const retryAuthResponse = await this.axiosInstance?.get(odataServiceUrl, {
+                        headers: {
+                            Authorization: newAuthString,
+                        },
+                    })
+
+                    if (!retryAuthResponse) {
+                        throw new Error('no response from update');
+                    }
+
+                    return retryAuthResponse
+                }
+            }
             throw error
         }
     }
 
     async postFeedbackSet(rating: string, comment: string): Promise<AxiosResponse> {
-        try {
-            const odataServiceUrl = `/Z_MOB2_SRV/FeedbackSet`;
+        if (this.authRefreshPromise){
+            await this.authRefreshPromise;
+        }
 
-            const postBody = {
-                "FeedbackId": "",
-                "FeedbackDate": "",
-                "FeedbackTime": "",
-                "FeedbackBy": "",
-                "FeedbackText": comment,
-                "FeedbackRating": rating,
-                "FeedbackFullname": ""
-            }
+        if(this.csrfRefreshPromise){
+            await this.csrfRefreshPromise;
+        }
 
+        const odataServiceUrl = `/Z_MOB2_SRV/FeedbackSet`;
+
+        const postBody = {
+            "FeedbackText": comment,
+            "FeedbackRating": rating
+        }
+
+        let csrfToken = await AsyncStorage.getItem('csrf-token');
+        if (!csrfToken) {
+            const csrfResponse = await this.fetchCsrfToken();
+            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+            csrfToken = newCsrfToken;
+        }
+
+        const token = await SecureStore.getItemAsync('access_token');
+        const authString = `${this.authType} ${token}`
+
+        try {           
             const response = await this.axiosInstance?.post(odataServiceUrl, postBody, {
                 headers: {
-                    "x-csrf-token": await AsyncStorage.getItem('csrf-token'),
+                    "x-csrf-token": csrfToken,
+                    "Authorization": authString,
                     "Content-Type": "application/json"
                 },
             })
@@ -822,23 +946,113 @@ class DataHandlerModule {
                 throw new Error('cannot get entity, no response')
             }
 
-
             return response;
         } catch (error) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                if (status === 401) {
+                    if (!this.authRefreshPromise) {
+                        this.authRefreshPromise = (async () => {
+                            console.log('Refreshing access token...');
+                            let currentRefreshToken = await SecureStore.getItemAsync('refresh-token');
+
+                            try {
+                                const newAccessTokenResponse = await this.getRefreshedAccessToken(currentRefreshToken!);
+                                await SecureStore.setItemAsync('access-token', newAccessTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+                                await SecureStore.setItemAsync('refresh-token', newAccessTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN);
+                            }
+                            catch (error) {
+                                //if refresh token is busted, get new refresh token
+                                //check what the error looks like
+                                const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                const oktaIDToken = oktaLoginResponse.response.idToken;
+                                const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
+                                const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                                const newRefreshToken = initialTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+                                await SecureStore.setItemAsync('access-token', newAccessToken);
+                                await SecureStore.setItemAsync('refresh-token', newRefreshToken);
+                            }
+
+                            this.authRefreshPromise = null;
+                        })().catch(error => {
+                            this.authRefreshPromise = null;
+                            throw error;
+                        });
+                    }
+
+                    // Wait for the auth refresh to complete (even if another request started it)
+                    await this.authRefreshPromise;
+
+                    const newAccessToken = await SecureStore.getItemAsync('access-token');
+                    const newAuthString = `${this.authType} ${newAccessToken}`
+
+                    const retryAuthResponse = await this.axiosInstance?.post(odataServiceUrl, postBody, {
+                        headers: {
+                            "x-csrf-token": csrfToken,
+                            "Authorization": newAuthString,
+                            "Content-Type": "application/json"
+                        },
+                    })
+
+                    if (!retryAuthResponse) {
+                        throw new Error('no response from update');
+                    }
+
+                    return retryAuthResponse
+                }
+                else if (status == 403) {
+                    //try getting csrf token
+                    if (!this.csrfRefreshPromise) {
+                        this.csrfRefreshPromise = (async () => {
+                            console.log('Refreshing CSRF token...');
+                            const csrfResponse = await this.fetchCsrfToken();
+                            const newCsrfToken = csrfResponse?.headers['x-csrf-token'];
+                            if (!newCsrfToken) throw new Error('No CSRF token returned');
+
+                            await AsyncStorage.setItem('csrf-token', newCsrfToken);
+                            console.log('CSRF token refreshed.');
+                            this.csrfRefreshPromise = null;
+                        })().catch(err => {
+                            this.csrfRefreshPromise = null;
+                            throw err;
+                        });
+                    }
+
+                    // Wait for the CSRF refresh to complete (even if another request started it)
+                    await this.csrfRefreshPromise;
+
+                    const retryCSRFResponse = await this.axiosInstance?.post(odataServiceUrl, postBody, {
+                        headers: {
+                            "x-csrf-token": csrfToken,
+                            "Authorization": await AsyncStorage.getItem('csrf-token'),
+                            "Content-Type": "application/json"
+                        },
+                    })
+
+                    if (!retryCSRFResponse) {
+                        throw new Error('no response from update');
+                    }
+
+                    return retryCSRFResponse
+                }
+            }
             throw error
         }
     }
 
     async getIdCardPhoto(pernr: string): Promise<AxiosResponse> {
+        if (this.authRefreshPromise){
+            await this.authRefreshPromise;
+        }
+
+        const encodedPernr = encodeURIComponent(pernr);
+
+        const filters = `'${encodedPernr}'`;
+        const odataServiceUrl = `/Z_MOB2_SRV/IdCardPhotoSet(${filters})/$value`;
+
+        const token = await SecureStore.getItemAsync('access_token');
+        const authString = `${this.authType} ${token}`
         try {
-            const encodedPernr = encodeURIComponent(pernr);
-
-            const filters = `'${encodedPernr}'`;
-            const odataServiceUrl = `/Z_MOB2_SRV/IdCardPhotoSet(${filters})/$value`;
-
-            const token = await SecureStore.getItemAsync('access-token');
-            const authString = `${this.authType} ${token}`
-
             const response = await this.axiosInstance?.get(odataServiceUrl, {
                 headers: {
                     Authorization: authString,
@@ -852,6 +1066,58 @@ class DataHandlerModule {
 
             return response;
         } catch (error) {
+            if (isAxiosError(error)) {
+                const status = error.response?.status;
+                if (status === 401) {
+                    if (!this.authRefreshPromise) {
+                        this.authRefreshPromise = (async () => {
+                            console.log('Refreshing access token...');
+                            let currentRefreshToken = await SecureStore.getItemAsync('refresh-token');
+
+                            try {
+                                const newAccessTokenResponse = await this.getRefreshedAccessToken(currentRefreshToken!);
+                                await SecureStore.setItemAsync('access-token', newAccessTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN);
+                                await SecureStore.setItemAsync('refresh-token', newAccessTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN);
+                            }
+                            catch (error) {
+                                //if refresh token is busted, get new refresh token
+                                //check what the error looks like
+                                const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                const oktaIDToken = oktaLoginResponse.response.idToken;
+                                const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
+                                const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                                const newRefreshToken = initialTokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+                                await SecureStore.setItemAsync('access-token', newAccessToken);
+                                await SecureStore.setItemAsync('refresh-token', newRefreshToken);
+                            }
+
+                            this.authRefreshPromise = null;
+                        })().catch(error => {
+                            this.authRefreshPromise = null;
+                            throw error;
+                        });
+                    }
+
+                    // Wait for the auth refresh to complete (even if another request started it)
+                    await this.authRefreshPromise;
+
+                    const newAccessToken = await SecureStore.getItemAsync('access-token');
+                    const newAuthString = `${this.authType} ${newAccessToken}`
+
+                    const retryAuthResponse = await this.axiosInstance?.get(odataServiceUrl, {
+                        headers: {
+                            Authorization: newAuthString,
+                        },
+                        responseType: "arraybuffer"
+                    })
+
+                    if (!retryAuthResponse) {
+                        throw new Error('no response from update');
+                    }
+
+                    return retryAuthResponse
+                }
+            }
             throw error
         }
     }
