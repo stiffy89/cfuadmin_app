@@ -58,7 +58,8 @@ const LocalAuth = () => {
 
                                 onGetInitialLoad();
                             })
-                            .catch((error) => {
+                            .catch((error : any) => {
+                                error['fromAuth'] = true;
                                 screenFlowModule.onNavigateToScreen('ErrorPage', error);
                             })
                         return;
@@ -127,8 +128,10 @@ const LocalAuth = () => {
             dataContext.setCurrentUser(userInfo.data.d.results);
             user = userInfo.data.d.results[0]
         }
-        catch (error) {
+        catch (error : any) {
             appContext.setShowDialog(false);
+
+            error['fromAuth'] = true;
             screenFlowModule.onNavigateToScreen('ErrorPage', error);
             return;
         }
@@ -147,8 +150,9 @@ const LocalAuth = () => {
                 dataContext.setMyOrgUnitDetails(brigadesResult.responseBody.d.results);
                 zzplans = brigadesResult.responseBody.d.results[0].Zzplans;
             }
-            catch (error) {
+            catch (error : any) {
                 appContext.setShowDialog(false);
+                error['fromAuth'] = true;
                 screenFlowModule.onNavigateToScreen('ErrorPage', error);
                 return;
             }
@@ -163,8 +167,9 @@ const LocalAuth = () => {
                 dataContext.setBrigadeSummary(brigadeSummaryResult.responseBody.d.results);
                 dataContext.setVolAdminLastSelectedOrgUnit(brigadeSummaryResult.responseBody.d.results);
             }
-            catch (error) {
+            catch (error : any) {
                 appContext.setShowDialog(false);
+                error['fromAuth'] = true;
                 screenFlowModule.onNavigateToScreen('ErrorPage', error);
                 return;
             }
@@ -443,7 +448,8 @@ const LocalAuth = () => {
 
                                             onGetInitialLoad();
                                         })
-                                        .catch((error) => {
+                                        .catch((error : any) => {
+                                            error['fromAuth'] = true;
                                             screenFlowModule.onNavigateToScreen('ErrorPage', error);
                                         })
                                 } else {
@@ -479,6 +485,7 @@ const LocalAuth = () => {
                                         }).catch(() => {
                                             const error = {
                                                 isAxiosError: false,
+                                                fromAuth : true,
                                                 message: 'There was an error in setting up the local PIN. Please try again, otherwise contact your IT administrator for further assistance.'
                                             }
 

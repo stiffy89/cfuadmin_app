@@ -1,6 +1,6 @@
 //landing page for my members - single & multi units
 import React, { useState, useEffect } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import { List, Divider, TextInput, IconButton, Chip, Switch, useTheme } from "react-native-paper";
 import CustomText from "../assets/CustomText";
 import { useDataContext } from "../helper/DataContext";
@@ -282,21 +282,26 @@ const MyMembers = ({ route }: props) => {
                         <CustomText variant='bodyLargeBold'>{selectedOrgUnit.Stext}</CustomText>
                     </View>
                     <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-                        <TextInput
-                            mode='outlined'
-                            value={`${selectedOrgUnit.Short}`}
-                            editable={false}
-                            right={
-                                <TextInput.Icon
-                                    icon={() => {
-                                        return <LucideIcons.ChevronDown />
-                                    }}
-                                    onPress={() => {
-                                        setShowDropDown(!showDropDown);
-                                    }}
+                        <Pressable
+                            onPress={() => {
+                                setShowDropDown(!showDropDown);
+                            }}
+                        >
+                            <View pointerEvents="none">
+                                <TextInput
+                                    mode='outlined'
+                                    value={`${selectedOrgUnit.Short}`}
+                                    editable={false}
+                                    right={
+                                        <TextInput.Icon
+                                            icon={() => {
+                                                return <LucideIcons.ChevronDown />
+                                            }}
+                                        />
+                                    }
                                 />
-                            }
-                        />
+                            </View>
+                        </Pressable>
                         {(showDropDown) &&
                             <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                                 {orgUnitList.map((x, i) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
+import { View, ScrollView, KeyboardAvoidingView, Platform, Keyboard, Pressable } from "react-native";
 import * as LucideIcons from "lucide-react-native";
 import {
     useTheme,
@@ -461,21 +461,21 @@ const ContactDetailsEdit = (data: any) => {
             <Portal>
                 <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>
                     <Dialog.Content>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <LucideIcons.CircleAlert size={30} color={theme.colors.primary}/>
-                            <CustomText style={{marginLeft: 20}} variant='bodyLarge'>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <LucideIcons.CircleAlert size={30} color={theme.colors.primary} />
+                            <CustomText style={{ marginLeft: 20 }} variant='bodyLarge'>
                                 Are you sure you want to delete this address?
                             </CustomText>
                         </View>
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
-                        <Button 
+                        <Button
                             onPress={() => {
                                 setShowDialog(false);
                                 deleteMailingAddress();
-                            }} 
-                            textColor={theme.colors.secondary} 
+                            }}
+                            textColor={theme.colors.secondary}
                         >
                             Delete
                         </Button>
@@ -555,7 +555,7 @@ const ContactDetailsEdit = (data: any) => {
             )}
             {key == "mailing_address" && (
                 <View style={{ marginBottom: 150 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, alignItems: 'center' }}>
                         <CustomText variant="titleSmallBold">
                             Mailing Address
                         </CustomText>
@@ -610,23 +610,28 @@ const ContactDetailsEdit = (data: any) => {
                         }}
                     />
                     <View>
-                        <TextInput
-                            style={{ ...GlobalStyles.disabledTextInput }}
-                            mode='outlined'
-                            value={contactDetails.mail_state}
-                            editable={false}
-                            label="State *"
-                            right={
-                                <TextInput.Icon
-                                    icon={() => {
-                                        return <LucideIcons.ChevronDown />
-                                    }}
-                                    onPress={() => {
-                                        setShowDropDown(!showDropDown);
-                                    }}
+                        <Pressable
+                            onPress={() => {
+                                setShowDropDown(!showDropDown);
+                            }}
+                        >
+                            <View pointerEvents="none">
+                                <TextInput
+                                    style={{ ...GlobalStyles.disabledTextInput }}
+                                    mode='outlined'
+                                    value={contactDetails.mail_state}
+                                    editable={false}
+                                    label="State *"
+                                    right={
+                                        <TextInput.Icon
+                                            icon={() => {
+                                                return <LucideIcons.ChevronDown />
+                                            }}
+                                        />
+                                    }
                                 />
-                            }
-                        />
+                            </View>
+                        </Pressable>
                         {(showDropDown) &&
                             <ScrollView style={{ height: 300, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 55, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                                 <List.Section>
@@ -793,7 +798,7 @@ const EmergencyContactsEdit = (data: any) => {
     }
 
     async function deleteContact() {
-        
+
         appContext.setShowBusyIndicator(true);
         appContext.setShowDialog(true);
 
@@ -830,21 +835,21 @@ const EmergencyContactsEdit = (data: any) => {
             <Portal>
                 <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>
                     <Dialog.Content>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <LucideIcons.CircleAlert size={30} color={theme.colors.primary}/>
-                            <CustomText style={{marginLeft: 20}} variant='bodyLarge'>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <LucideIcons.CircleAlert size={30} color={theme.colors.primary} />
+                            <CustomText style={{ marginLeft: 20 }} variant='bodyLarge'>
                                 Are you sure you want to delete this contact?
                             </CustomText>
                         </View>
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
-                        <Button 
+                        <Button
                             onPress={() => {
                                 setShowDialog(false);
                                 deleteContact();
-                            }} 
-                            textColor={theme.colors.secondary} 
+                            }}
+                            textColor={theme.colors.secondary}
                         >
                             Delete
                         </Button>
@@ -887,23 +892,28 @@ const EmergencyContactsEdit = (data: any) => {
                     }}
                 />
                 <View>
-                    <TextInput
-                        style={{ ...GlobalStyles.disabledTextInput, marginBottom: 20 }}
-                        mode='outlined'
-                        value={emergencyContact.ZzindrlAtext}
-                        editable={false}
-                        label="Relationship *"
-                        right={
-                            <TextInput.Icon
-                                icon={() => {
-                                    return <LucideIcons.ChevronDown />
-                                }}
-                                onPress={() => {
-                                    setShowRelatDropDown(!showRelatDropDown);
-                                }}
+                    <Pressable
+                        onPress={() => {
+                            setShowRelatDropDown(!showRelatDropDown);
+                        }}
+                    >
+                        <View pointerEvents="none">
+                            <TextInput
+                                style={{ ...GlobalStyles.disabledTextInput, marginBottom: 20 }}
+                                mode='outlined'
+                                value={emergencyContact.ZzindrlAtext}
+                                editable={false}
+                                label="Relationship *"
+                                right={
+                                    <TextInput.Icon
+                                        icon={() => {
+                                            return <LucideIcons.ChevronDown />
+                                        }}
+                                    />
+                                }
                             />
-                        }
-                    />
+                        </View>
+                    </Pressable>
                     {(showRelatDropDown) &&
                         <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 55, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                             <List.Section>
@@ -973,23 +983,31 @@ const EmergencyContactsEdit = (data: any) => {
                     }}
                 />
                 <View>
-                    <TextInput
-                        style={{ ...GlobalStyles.disabledTextInput, marginBottom: 20 }}
-                        mode='outlined'
-                        value={emergencyContact.Statekey}
-                        editable={false}
-                        label="State"
-                        right={
-                            <TextInput.Icon
-                                icon={() => {
-                                    return <LucideIcons.ChevronDown />
-                                }}
-                                onPress={() => {
-                                    setShowStateDropDown(!showStateDropDown);
-                                }}
+                    <Pressable
+                        onPress={() => {
+                            setShowStateDropDown(!showStateDropDown);
+                        }}
+                    >
+                        <View pointerEvents="none">
+                            <TextInput
+                                style={{ ...GlobalStyles.disabledTextInput, marginBottom: 20 }}
+                                mode='outlined'
+                                value={emergencyContact.Statekey}
+                                editable={false}
+                                label="State"
+                                right={
+                                    <TextInput.Icon
+                                        icon={() => {
+                                            return <LucideIcons.ChevronDown />
+                                        }}
+                                        onPress={() => {
+                                            setShowStateDropDown(!showStateDropDown);
+                                        }}
+                                    />
+                                }
                             />
-                        }
-                    />
+                        </View>
+                    </Pressable>
                     {(showStateDropDown) &&
                         <ScrollView style={{ height: 150, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 55, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                             <List.Section>
@@ -1366,27 +1384,35 @@ const VolunteerEdit = (data: any) => {
             <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Start Date' value={genericFormatter.formatFromEdmDate(membershipData.StartDate)} />
             <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Member Since' value={genericFormatter.formatFromEdmDate(membershipData.FromDate)} />
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={membershipData.ZzmemtyDesc}
-                    editable={false}
-                    label='Member type'
-                    right={
+                <Pressable
+                    onPress={() => {
                         //this button is only accessible via vol admin
-                        (dataContext.currentUser[0].VolAdmin) && (
-                            <TextInput.Icon
-                                icon={() => {
-                                    return <LucideIcons.ChevronDown />
-                                }}
-                                onPress={() => {
-                                    CloseOpenedDropDown();
-                                    setShowMembershipType(!showMembershipType);
-                                }}
-                            />
-                        )
-                    }
-                />
+                        if (dataContext.currentUser[0].VolAdmin) {
+                            CloseOpenedDropDown();
+                            setShowMembershipType(!showMembershipType);
+                        }
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={membershipData.ZzmemtyDesc}
+                            editable={false}
+                            label='Member type'
+                            right={
+                                //this button is only accessible via vol admin
+                                (dataContext.currentUser[0].VolAdmin) && (
+                                    <TextInput.Icon
+                                        icon={() => {
+                                            return <LucideIcons.ChevronDown />
+                                        }}
+                                    />
+                                )
+                            }
+                        />
+                    </View>
+                </Pressable>
                 {hasMemberTypeError && <HelperText type="error">{errorMemberTypeMsg}</HelperText>}
                 {(showMembershipType) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
@@ -1419,27 +1445,34 @@ const VolunteerEdit = (data: any) => {
                 }
             </View>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={membershipData.ZzstatuDesc}
-                    editable={false}
-                    label='Status'
-                    right={
-                        //this button is only accessible via vol admin
-                        (dataContext.currentUser[0].VolAdmin) && (
-                            <TextInput.Icon
-                                icon={() => {
-                                    return <LucideIcons.ChevronDown />
-                                }}
-                                onPress={() => {
-                                    CloseOpenedDropDown();
-                                    setShowMembershipStatus(!showMembershipStatus);
-                                }}
-                            />
-                        )
-                    }
-                />
+                <Pressable
+                    onPress={() => {
+                        if (dataContext.currentUser[0].VolAdmin) {
+                            CloseOpenedDropDown();
+                            setShowMembershipStatus(!showMembershipStatus);
+                        }
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={membershipData.ZzstatuDesc}
+                            editable={false}
+                            label='Status'
+                            right={
+                                //this button is only accessible via vol admin
+                                (dataContext.currentUser[0].VolAdmin) && (
+                                    <TextInput.Icon
+                                        icon={() => {
+                                            return <LucideIcons.ChevronDown />
+                                        }}
+                                    />
+                                )
+                            }
+                        />
+                    </View>
+                </Pressable>
                 {hasMemberStatusError && <HelperText type="error">{errorMemberStatusMsg}</HelperText>}
                 {(showMembershipStatus) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
@@ -1471,24 +1504,34 @@ const VolunteerEdit = (data: any) => {
                 }
             </View>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={membershipData.ZzvstatDesc}
-                    editable={false}
-                    label='Volunteer Status'
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                CloseOpenedDropDown();
-                                setShowVolunteerStatus(!showVolunteerStatus);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        //only vol admin can press this
+                        if (dataContext.currentUser[0].VolAdmin){
+                            CloseOpenedDropDown();
+                            setShowVolunteerStatus(!showVolunteerStatus);
+                        }
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={membershipData.ZzvstatDesc}
+                            editable={false}
+                            label='Volunteer Status'
+                            right={
+                                (dataContext.currentUser[0].VolAdmin) && (
+                                    <TextInput.Icon
+                                        icon={() => {
+                                            return <LucideIcons.ChevronDown />
+                                        }}
+                                    />
+                                )
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {hasVolStatusError && <HelperText type="error">{errorVolStatusMsg}</HelperText>}
                 {(showVolunteerStatus) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -450, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
@@ -1680,24 +1723,29 @@ const EquityDiversity = (data: any) => {
                 Equity Diversity Edit
             </CustomText>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={selectedNESL.Eddes}
-                    editable={false}
-                    label='Main non-english language spoken'
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                CloseOpenedDropDown();
-                                setShowNESL(!showNESL);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        CloseOpenedDropDown();
+                        setShowNESL(!showNESL);
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={selectedNESL.Eddes}
+                            editable={false}
+                            label='Main non-english language spoken'
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                />
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {(showNESL) &&
                     <ScrollView style={{ height: 550, backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         <List.Section>
@@ -1729,24 +1777,29 @@ const EquityDiversity = (data: any) => {
                 }
             </View>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={selectedGender.Ddtext}
-                    editable={false}
-                    label='Gender for Equity and Diversity'
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                CloseOpenedDropDown();
-                                setShowGender(!showGender);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        CloseOpenedDropDown();
+                        setShowGender(!showGender);
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={selectedGender.Ddtext}
+                            editable={false}
+                            label='Gender for Equity and Diversity'
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                />
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {(showGender) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityGenderValues.map((x, i) => {
@@ -1777,24 +1830,29 @@ const EquityDiversity = (data: any) => {
                 }
             </View>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={selectedAboriginal.Eddes}
-                    editable={false}
-                    label='Aboriginal or Torres Strait Islander'
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                CloseOpenedDropDown();
-                                setShowAboriginal(!showAboriginal);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        CloseOpenedDropDown();
+                        setShowAboriginal(!showAboriginal);
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={selectedAboriginal.Eddes}
+                            editable={false}
+                            label='Aboriginal or Torres Strait Islander'
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                />
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {(showAboriginal) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityAboriginalValues.map((x, i) => {
@@ -1824,24 +1882,29 @@ const EquityDiversity = (data: any) => {
                 }
             </View>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={selectedRacial.Eddes}
-                    editable={false}
-                    label='Racial/Ethnic/Religious Minority'
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                CloseOpenedDropDown();
-                                setShowRacial(!showRacial);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        CloseOpenedDropDown();
+                        setShowRacial(!showRacial);
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={selectedRacial.Eddes}
+                            editable={false}
+                            label='Racial/Ethnic/Religious Minority'
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                />
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {(showRacial) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityRacialEthnicReligiousValues.map((x, i) => {
@@ -1871,24 +1934,29 @@ const EquityDiversity = (data: any) => {
                 }
             </View>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={selectedFirstLanguage.Eddes}
-                    editable={false}
-                    label='First Language'
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                CloseOpenedDropDown();
-                                setShowFirstLanguage(!showFirstLanguage);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        CloseOpenedDropDown();
+                        setShowFirstLanguage(!showFirstLanguage);
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={selectedFirstLanguage.Eddes}
+                            editable={false}
+                            label='First Language'
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                />
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {(showFirstLanguage) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 70, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityFirstLanguageValues.map((x, i) => {
@@ -1919,24 +1987,29 @@ const EquityDiversity = (data: any) => {
                 }
             </View>
             <View>
-                <TextInput
-                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
-                    mode='flat'
-                    value={selectedDisability.Eddes}
-                    editable={false}
-                    label='Disability'
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                CloseOpenedDropDown();
-                                setShowDisability(!showDisability);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        CloseOpenedDropDown();
+                        setShowDisability(!showDisability);
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            mode='flat'
+                            value={selectedDisability.Eddes}
+                            editable={false}
+                            label='Disability'
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                />
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {(showDisability) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: -220, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.equityDisabilityValues.map((x, i) => {

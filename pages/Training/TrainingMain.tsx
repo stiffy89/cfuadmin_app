@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Pressable } from "react-native";
 import CustomText from "../../assets/CustomText";
 import { useTheme, List, Divider, IconButton, TextInput, Badge, Chip } from "react-native-paper";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -536,21 +536,26 @@ const TrainingMain = ({ route }: props) => {
           )}
           {orgUnitList.length > 1 && (
             <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-              <TextInput
-                mode="outlined"
-                value={`${dataContext.trainingSelectedOrgUnit.Short}`}
-                editable={false}
-                right={
-                  <TextInput.Icon
-                    icon={() => {
-                      return <LucideIcons.ChevronDown />;
-                    }}
-                    onPress={() => {
-                      setShowDropDown(!showDropDown);
-                    }}
-                  />
-                }
-              />
+              <Pressable
+                  onPress={() => {
+                    setShowDropDown(!showDropDown);
+                  }}
+              >
+                  <View pointerEvents="none">
+                      <TextInput
+                        mode="outlined"
+                        value={`${dataContext.trainingSelectedOrgUnit.Short}`}
+                        editable={false}
+                        right={
+                          <TextInput.Icon
+                            icon={() => {
+                              return <LucideIcons.ChevronDown />;
+                            }}
+                          />
+                        }
+                      />
+                  </View>
+              </Pressable>
               {showDropDown && (
                 <List.Section
                   style={{

@@ -184,7 +184,15 @@ export default function MainApp() {
 		if (!installationId) {
 			//create an installation id and save it to the device
 			const newInstallationID = Crypto.randomUUID(); //create a new ID
-			await AsyncStorage.setItem('installation-id', newInstallationID)
+			await AsyncStorage.setItem('installation-id', newInstallationID);
+
+			//clear all existing tokens
+			await AsyncStorage.setItem('last-active', '');
+			await SecureStore.deleteItemAsync('pin');
+			await SecureStore.deleteItemAsync('access-token');
+			await SecureStore.deleteItemAsync('refresh-token');
+			
+			//navigate to login screen
 			screenFlowModule.onNavigateToScreen('LoginScreen');
 		}
 		else {

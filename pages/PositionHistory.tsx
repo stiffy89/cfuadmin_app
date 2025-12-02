@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Pressable } from 'react-native';
 import { useTheme, IconButton, Divider, TextInput, List } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule } from '../helper/ScreenFlowModule';
@@ -39,21 +39,26 @@ const PositionHistory = ({ route, navigation }: props) => {
                 <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>Position History</CustomText>
             </View>
             <View style={{ paddingHorizontal: 20}}>
-                <TextInput
-                    mode='outlined'
-                    value={`${selectedPositionFilter.OptionText}`}
-                    editable={false}
-                    right={
-                        <TextInput.Icon
-                            icon={() => {
-                                return <LucideIcons.ChevronDown />
-                            }}
-                            onPress={() => {
-                                setShowDropDown(!showDropDown);
-                            }}
+                <Pressable
+                    onPress={() => {
+                        setShowDropDown(!showDropDown);
+                    }}
+                >
+                    <View pointerEvents="none">
+                        <TextInput
+                            mode='outlined'
+                            value={`${selectedPositionFilter.OptionText}`}
+                            editable={false}
+                            right={
+                                <TextInput.Icon
+                                    icon={() => {
+                                        return <LucideIcons.ChevronDown />
+                                    }}
+                                />
+                            }
                         />
-                    }
-                />
+                    </View>
+                </Pressable>
                 {(showDropDown) &&
                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                         {helperDataContext.positionHistoryHelperValue.map((x, i) => {
@@ -99,7 +104,7 @@ const PositionHistory = ({ route, navigation }: props) => {
                 }
             </View>
             <View
-                style={{flex: 1, paddingBottom: 170}}
+                style={{flex: 1, paddingBottom: 50}}
             >
                 {
                     (positionHistory.length == 0) && (

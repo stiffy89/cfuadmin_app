@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import CustomText from "../../assets/CustomText";
 import { useTheme, IconButton, DataTable, TextInput, Button, List, Portal, Dialog } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
@@ -258,26 +258,27 @@ const TrainingCompletionByUser = ({ route }: props) => {
                 {
                     isEditing && (
                         <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-                            <TextInput
-                                label="Member Status"
-                                mode="outlined"
-                                value={trainingDetails.Stext}
-                                editable={false}
-                                right={
-                                    <TextInput.Icon
-                                        icon={() => {
-                                            if (showMemberStatusMenu) {
-                                                return <LucideIcons.ChevronUp />;
-                                            } else {
-                                                return <LucideIcons.ChevronDown />;
-                                            }
-                                        }}
-                                        onPress={() => {
-                                            setShowMemberStatusMenu(!showMemberStatusMenu);
-                                        }}
+                            <Pressable
+                                onPress={() => {
+                                    setShowMemberStatusMenu(!showMemberStatusMenu);
+                                }}
+                            >
+                                <View pointerEvents="none">
+                                    <TextInput
+                                        label="Member Status"
+                                        mode="outlined"
+                                        value={trainingDetails.Stext}
+                                        editable={false}
+                                        right={
+                                            <TextInput.Icon
+                                                icon={() => {
+                                                    return <LucideIcons.ChevronDown />;
+                                                }}
+                                            />
+                                        }
                                     />
-                                }
-                            />
+                                </View>
+                            </Pressable>
                             {showMemberStatusMenu && (
                                 <List.Section
                                     style={{

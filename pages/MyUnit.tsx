@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Pressable } from 'react-native';
 import { useTheme, IconButton, TextInput, List, Divider } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
@@ -45,21 +45,26 @@ const MyUnit = ({ route, navigation }: props) => {
                     (dataContext.rootOrgUnits.length > 1) && (
                         <>
                             <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-                                <TextInput
-                                    mode='outlined'
-                                    value={selectedOrgUnit ? selectedOrgUnit.Short : ''}
-                                    editable={false}
-                                    right={
-                                        <TextInput.Icon
-                                            icon={() => {
-                                                return <LucideIcons.ChevronDown />
-                                            }}
-                                            onPress={() => {
-                                                setShowDropDown(!showDropDown);
-                                            }}
+                                <Pressable
+                                    onPress={() => {
+                                        setShowDropDown(!showDropDown);
+                                    }}
+                                >
+                                    <View pointerEvents="none">
+                                        <TextInput
+                                            mode='outlined'
+                                            value={selectedOrgUnit ? selectedOrgUnit.Short : ''}
+                                            editable={false}
+                                            right={
+                                                <TextInput.Icon
+                                                    icon={() => {
+                                                        return <LucideIcons.ChevronDown />
+                                                    }}
+                                                />
+                                            }
                                         />
-                                    }
-                                />
+                                    </View>
+                                </Pressable>
                                 {(showDropDown) &&
                                     <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
                                         {dataContext.rootOrgUnits.map((x, i) => {

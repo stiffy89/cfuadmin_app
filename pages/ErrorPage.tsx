@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import { getItemAsync } from 'expo-secure-store';
 import {View, Pressable, Linking} from 'react-native';
 import {Button, IconButton, useTheme} from 'react-native-paper';
 import CustomText from '../assets/CustomText';
@@ -18,8 +19,28 @@ const ErrorPage = ({route} : props ) => {
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [sapErrorMessage, setSapErrorMessage] = useState('');
     const [errorCode, setErrorCode] = useState<number | undefined>(undefined);
+
+    //these two states are exclusively used for auth flow errors
+    const [fromAuth, setFromAuth] = useState(false);
+    const [hasPin, setHasPin] = useState(false);
     
     useEffect(() => {
+
+        //if this error is coming from auth, remove the 'go back' option because going back just results in the splash screen being displayed. 
+        // Give them either the option to go back to Local Auth or Login using pin
+
+        async function SetAuthFlowErrors () {
+            setFromAuth(true);
+            const pin = await getItemAsync('pin');
+            if (pin){
+                setHasPin(true);
+            }
+        }
+
+        if (error.fromAuth){
+            SetAuthFlowErrors();
+        }
+
         if (error.isAxiosError){
             if (error.response?.status == 401){
                 setErrorCode(error.response?.status);
@@ -41,11 +62,16 @@ const ErrorPage = ({route} : props ) => {
                 setErrorCode(601);
                 setErrorMessage("We have stumbled upon a critical error. You can go back and try again or if the problem persists, please contact your IT administrator for further assistance.")
             }
-        } else {
+        }
+        else {
             //SAP error
             setErrorCode(700);
             setSapErrorMessage(error.message);
             setErrorMessage('There appears to be an error from the SAP system. The error message is listed below. You can go back and try again or contact your IT administrator for further assistance.')
+        }
+
+        if (error.fromAuth){
+            setErrorMessage('We encountered an error during the authorisation process. Please go back and try again. If the problem persists, contact your IT administrator.')
         }
     }, [])
     
@@ -81,19 +107,40 @@ const ErrorPage = ({route} : props ) => {
                         </View>
                         <HelpStrip/>
                         <View style={{marginTop: 20}}>
-                            <Button 
-                                mode='contained-tonal'
-                                onPress={() => {
-                                    if (sapErrorMessage.includes('(splash screen timed out)')){
-                                        authModule.onLogOut();
-                                        return;
-                                    }
+                            {   
+                                (!fromAuth) &&
+                                    <Button 
+                                        mode='contained-tonal'
+                                        onPress={() => {
+                                            if (sapErrorMessage.includes('(splash screen timed out)')){
+                                                authModule.onLogOut();
+                                                return;
+                                            }
 
-                                    screenFlowModule.onGoBack();
-                                }}
-                            >
-                                    Go back
-                            </Button>
+                                            screenFlowModule.onGoBack();
+                                        }}
+                                    >
+                                            Go back
+                                    </Button>
+                            }
+                            {
+                                (fromAuth) &&
+                                    <Button 
+                                        mode='contained-tonal'
+                                        onPress={() => {
+                                            if (hasPin){
+                                                screenFlowModule.onNavigateToScreen('LocalAuthScreen');
+                                            }
+                                            else {
+                                                screenFlowModule.onNavigateToScreen('LoginScreen');
+                                            }
+                                        }}
+                                    >
+                                        {
+                                            (hasPin) ? 'Pin Page' : 'Login Page'
+                                        }
+                                    </Button>
+                            }
                         </View>
                     </View>
             }
@@ -109,14 +156,35 @@ const ErrorPage = ({route} : props ) => {
                         </View>
                         <HelpStrip/>
                         <View style={{marginTop: 20}}>
-                            <Button 
-                                mode='contained-tonal'
-                                onPress={() => {
-                                    screenFlowModule.onGoBack();
-                                }}
-                            >
-                                    Go back
-                            </Button>
+                            {
+                                (!fromAuth) &&
+                                    <Button 
+                                        mode='contained-tonal'
+                                        onPress={() => {
+                                            screenFlowModule.onGoBack();
+                                        }}
+                                    >
+                                            Go back
+                                    </Button>
+                            }
+                            {
+                                (fromAuth) &&
+                                    <Button 
+                                        mode='contained-tonal'
+                                        onPress={() => {
+                                            if (hasPin){
+                                                screenFlowModule.onNavigateToScreen('LocalAuthScreen');
+                                            }
+                                            else {
+                                                screenFlowModule.onNavigateToScreen('LoginScreen');
+                                            }
+                                        }}
+                                    >
+                                        {
+                                            (hasPin) ? 'Pin Page' : 'Login Page'
+                                        }
+                                    </Button>
+                            }
                         </View>
                     </View>
             }
@@ -135,14 +203,35 @@ const ErrorPage = ({route} : props ) => {
                         </View>
                         <HelpStrip/>
                         <View style={{marginTop: 20}}>
-                            <Button 
-                                mode='contained-tonal'
-                                onPress={() => {
-                                    screenFlowModule.onGoBack();
-                                }}
-                            >
-                                    Go back
-                            </Button>
+                            {
+                                (!fromAuth) &&
+                                    <Button 
+                                        mode='contained-tonal'
+                                        onPress={() => {
+                                            screenFlowModule.onGoBack();
+                                        }}
+                                    >
+                                            Go back
+                                    </Button>
+                            }
+                            {
+                                (fromAuth) &&
+                                    <Button 
+                                        mode='contained-tonal'
+                                        onPress={() => {
+                                            if (hasPin){
+                                                screenFlowModule.onNavigateToScreen('LocalAuthScreen');
+                                            }
+                                            else {
+                                                screenFlowModule.onNavigateToScreen('LoginScreen');
+                                            }
+                                        }}
+                                    >
+                                        {
+                                            (hasPin) ? 'Pin Page' : 'Login Page'
+                                        }
+                                    </Button>
+                            }
                         </View>
                     </View>
             }
