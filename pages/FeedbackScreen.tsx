@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState} from 'react';
 import { View, Animated, KeyboardAvoidingView, Keyboard, Pressable } from 'react-native';
 import { Modal, IconButton, useTheme, Button, TextInput } from 'react-native-paper';
+import Constants from "expo-constants"
 
 import * as LucideIcons from "lucide-react-native";
 
@@ -182,7 +183,7 @@ export const FeedbackScreen = () => {
     }
 
     return (
-        <Animated.View style={{ width: "100%", flex: 0.9, backgroundColor: "#fff", opacity: fadeAnim, transform: [{ translateY: modalPos}], borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+        <Animated.View style={{ width: "100%", flex: 0.9, backgroundColor: "#fff", opacity: fadeAnim, transform: [{ translateY: modalPos}], borderBottomLeftRadius: 20, borderBottomRightRadius: 20, paddingTop: Constants.statusBarHeight }}>
             <Pressable style={{flex: 1}} onPress={() => Keyboard.dismiss()}>
                 <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20}}>
                     <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={hideScreen} />

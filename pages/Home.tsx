@@ -3,6 +3,7 @@ import { Button, IconButton, Portal, Dialog } from 'react-native-paper';
 import { ScrollView, Image, Linking, ViewStyle, StyleProp, ImageBackground } from 'react-native';
 import CustomText from '../assets/CustomText';
 import { View, Pressable } from 'react-native';
+import Constants from 'expo-constants';
 import GlobalStyles from '../style/GlobalStyles';
 
 import { useSecurityContext } from '../helper/SecurityContext';
@@ -189,7 +190,7 @@ const HomePage = () => {
     const [showDialog, setShowDialog] = useState(false);
 
     return (
-        <ScrollView contentContainerStyle={{ paddingBottom: "12%", backgroundColor: theme.colors.background }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: "24%", backgroundColor: theme.colors.background }}>
             <Portal>
                 <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>
                     <Dialog.Content>
@@ -214,9 +215,9 @@ const HomePage = () => {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
-            <View style={{ height: "12%" }}>
+            <View style={{ height: "18%" }}>
                 <View style={{ flex: 1, backgroundColor: theme.colors.background, paddingBottom: 10 }}>
-                    <ImageBackground imageStyle={{ top: "-120%", }} source={headerBg}
+                    <ImageBackground imageStyle={{ top: "-20%" }} source={headerBg}
                         style={{
                             position: "relative",
                             flex: 1,
@@ -229,7 +230,7 @@ const HomePage = () => {
                             overflow: "hidden"
                         }}>
                         <CustomText variant='displaySmallBold' style={{ color: theme.colors.background, marginHorizontal: "auto" }}>Hi {user.Vorna}</CustomText>
-                        <View style={{ position: "absolute", right: 0, top: 0 }}>
+                        <View style={{ position: "absolute", right: 0, top: Constants.statusBarHeight }}>
                             <IconButton icon={() => <LucideIcons.LogOut color={theme.colors.background} size={30} />} size={30}
                                 style={{ backgroundColor: "rgba(188, 21, 0, 0.5)" }}
                                 onPress={async () => {

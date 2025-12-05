@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import * as LucideIcons from 'lucide-react-native';
 import { PlatformPressable } from '@react-navigation/elements';
+import Constants from 'expo-constants';
 
 import { Provider as PaperProvider, MD3LightTheme, Dialog, Portal, ActivityIndicator, Button, useTheme } from 'react-native-paper';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -143,7 +144,7 @@ const TabNavigator = () => {
 			})}
 		>
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
-			<Tab.Screen name="ContactsScreen" component={ContactsPage}/>
+			<Tab.Screen name="ContactsScreen" component={ContactsPage} options={{sceneStyle: {marginTop: Constants.statusBarHeight}}}/>
 			{
 				(!dataContext.currentUser[0].VolAdmin) && (
 					<Tab.Screen 
@@ -154,6 +155,7 @@ const TabNavigator = () => {
 								dataContext.setCurrentProfile('CurrentUser')
 							}
 						})}
+						options={{sceneStyle: {paddingTop: Constants.statusBarHeight, backgroundColor: theme.colors.background }}}
 					/>
 				)
 			}
@@ -286,7 +288,7 @@ export default function MainApp() {
 
 	return (
 		<SafeAreaProvider>
-			<SafeAreaView style={GlobalStyles.safeAreaView} edges={['top']}>
+			<SafeAreaView style={GlobalStyles.safeAreaView} edges={[]}>
 				<StatusBar hidden={false} />
 				<PaperProvider theme={{ ...appTheme, fonts }}>
 					<Portal>
@@ -354,16 +356,16 @@ export default function MainApp() {
 							}
 						}}
 					>
-						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
+						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: [GlobalStyles.AppBackground, {marginTop: Constants.statusBarHeight}]}}>
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
-							<Stack.Screen name='SplashScreen' component={SplashScreen} />
+							<Stack.Screen name='SplashScreen' component={SplashScreen} options={{cardStyle: {marginTop: 0}}}/>
 							<Stack.Screen name='LocalAuthScreen' component={LocalAuth}/>
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
 							<Stack.Screen name='FormService' component={FormServiceStack}/>
 							<Stack.Screen name="SkillsMaintenance" component={SkillsMaintenanceStack}/>
-							<Stack.Screen name='MainTabs' component={TabNavigator} />
+							<Stack.Screen name='MainTabs' component={TabNavigator} options={{cardStyle: {marginTop: 0, backgroundColor: "#fff"}}}/>
 							<Stack.Screen name='MyDetailsScreen' component={MyDetails}/>
 							<Stack.Screen name='ContactDetailsScreen' component={ContactDetails}/>
 							<Stack.Screen name='EmergencyContactsScreen' component={EmergencyContacts} />
@@ -381,7 +383,7 @@ export default function MainApp() {
 							<Stack.Screen name='VolAdminSearch' component={VolAdminSearch}/>
 							<Stack.Screen name='VolAdminCeaseMember' component={VolAdminCeaseMember}/>
 							<Stack.Screen name='FeedbackScreen' component={FeedbackScreen} options={{animation: "fade",presentation:"transparentModal", cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
-							<Stack.Screen name='AllServicesListScreen' component={AllServicesListScreen} options={{animation: "slide_from_bottom", gestureEnabled: false, cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
+							<Stack.Screen name='AllServicesListScreen' component={AllServicesListScreen} options={{animation: "slide_from_bottom", gestureEnabled: false, cardStyle: {backgroundColor: '#bdbdbdd0', marginTop: Constants.statusBarHeight}}}/>
 							<Stack.Screen name='VolunteerNotes' component={VolunteerNotes}/>
 							<Stack.Screen name='PositionHistory' component={PositionHistory}/>
 							<Stack.Screen name='EquityDiversity' component={EquityDiversity}/>
