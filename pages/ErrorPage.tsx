@@ -8,6 +8,7 @@ import { screenFlowModule } from '../helper/ScreenFlowModule';
 import { authModule } from '../helper/AuthModule';
 import { TriangleAlert, CloudAlert, ChevronLeft, Phone, Mail} from 'lucide-react-native';
 import GlobalStyles from '../style/GlobalStyles';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type props = StackScreenProps<RootStackParamList, "ErrorPage">;
 
@@ -68,7 +69,7 @@ const ErrorPage = ({route} : props ) => {
         <View style={{flex: 1}}>
             {
                 (errorCode && (errorCode >= 700) && sapErrorMessage) && 
-                    <View style={{flex: 1, alignItems: 'center'}}>
+                    <ScrollView style={{flex: 1}} contentContainerStyle={{alignItems: 'center', paddingBottom: 25}}>
                         <View style={{height: 150, marginTop: 50}}>
                             <TriangleAlert color='#ff9f40' size={120}/>
                         </View>
@@ -95,11 +96,11 @@ const ErrorPage = ({route} : props ) => {
                                     Go back
                             </Button>
                         </View>
-                    </View>
+                    </ScrollView>
             }
             {
                 (errorCode && (errorCode >= 400 && errorCode < 500)) && 
-                    <View style={{flex: 1, alignItems: 'center'}}>
+                    <ScrollView style={{flex: 1}} contentContainerStyle={{alignItems: 'center', paddingBottom: 50}}>
                         <View style={{height: 150, marginTop: 50}}>
                             <TriangleAlert color='#ff9f40' size={120}/>
                         </View>
@@ -118,11 +119,11 @@ const ErrorPage = ({route} : props ) => {
                                     Go back
                             </Button>
                         </View>
-                    </View>
+                    </ScrollView>
             }
             {
                 (errorCode && (errorCode >= 500 && errorCode < 602)) && 
-                    <View style={{flex: 1, alignItems: 'center'}}>
+                    <ScrollView style={{flex: 1}} contentContainerStyle={{alignItems: 'center', paddingBottom: 50}}>
                         <View style={{height: 150, marginTop: 50}}>
                             <CloudAlert color={theme.colors.primary} size={120}/>
                         </View>
@@ -144,7 +145,7 @@ const ErrorPage = ({route} : props ) => {
                                     Go back
                             </Button>
                         </View>
-                    </View>
+                    </ScrollView>
             }
         </View>
     )
