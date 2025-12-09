@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Linking, Pressable } from 'react-native';
 import { useTheme, IconButton, TextInput } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule } from '../../helper/ScreenFlowModule';
@@ -35,7 +35,34 @@ const CfuPhonebookContactDetail = ({ route }: props) => {
             </View>
             <ScrollView style={{ paddingHorizontal: 20, backgroundColor: theme.colors.surface}} contentContainerStyle={{ paddingBottom: 20 }}>
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Role' value={params.Role} />
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Primary Mobile' value={params.ContactNo} />
+                <View
+                    style={{marginTop: 20}}
+                >
+                    <TextInput 
+                        style={{...GlobalStyles.disabledTextInput }} 
+                        editable={false} 
+                        mode='flat' 
+                        underlineColor='transparent' 
+                        label='Primary Mobile' 
+                        value={params.ContactNo} 
+                        textColor={theme.colors.secondary}
+                    />
+                    <Pressable
+                        onPress={() => {
+                            let mobNumber = `tel:${params.ContactNo}}`;
+                            Linking.openURL(mobNumber);
+                        }}
+                        style={{
+                            position: "absolute",
+                            height: 50,
+                            left: 0,
+                            right: 0, // leave space for the icon so it remains clickable
+                            top: 0,
+                            bottom: 0,
+                        }}
+                    />
+                </View>
+                
                 <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Address' multiline value={genericFormatter.formatContactsAddress(params)} />
             </ScrollView>
         </View>

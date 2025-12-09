@@ -644,6 +644,7 @@ class DataHandlerModule {
             }
         }
         catch (error) {
+            console.log(error);
             if (isAxiosError(error)) {
                 const status = error.response?.status;
                 if (status === 401) {
@@ -696,7 +697,7 @@ class DataHandlerModule {
                         throw new Error('no response from update');
                     }
 
-                    const retryAuthJsonResponse = this.formatMERGEResponse(retryAuthResponse.data);
+                    const retryAuthJsonResponse = this.formatGETResponse(retryAuthResponse.data);
 
                     if (retryAuthJsonResponse.error) {
                         const newAuthError = {
@@ -752,7 +753,7 @@ class DataHandlerModule {
 
         const filters = `Url='${encodedPathURI}',FileType='${encodedFileType}'`;
         const odataServiceUrl = `/Z_CFU_DOCUMENTS_SRV/FileExports(${filters})/$value`;
-        const token = await SecureStore.getItemAsync('access_token');
+        const token = await SecureStore.getItemAsync('access-token');
         const authString = `${this.authType} ${token}`
         try {
             const response = await this.axiosInstance?.get(odataServiceUrl, {
@@ -835,7 +836,7 @@ class DataHandlerModule {
         const filters = `FormLaunchId='${encodedFormLaunchId}'`;
         const odataServiceUrl = `/Z_MOB2_SRV/FormsLauncherSet(${filters})`;
 
-        const token = await SecureStore.getItemAsync('access_token');
+        const token = await SecureStore.getItemAsync('access-token');
         const authString = `${this.authType} ${token}`
         try {
             const response = await this.axiosInstance?.get(odataServiceUrl, {
@@ -930,7 +931,7 @@ class DataHandlerModule {
             csrfToken = newCsrfToken;
         }
 
-        const token = await SecureStore.getItemAsync('access_token');
+        const token = await SecureStore.getItemAsync('access-token');
         const authString = `${this.authType} ${token}`
 
         try {           
@@ -1050,7 +1051,7 @@ class DataHandlerModule {
         const filters = `'${encodedPernr}'`;
         const odataServiceUrl = `/Z_MOB2_SRV/IdCardPhotoSet(${filters})/$value`;
 
-        const token = await SecureStore.getItemAsync('access_token');
+        const token = await SecureStore.getItemAsync('access-token');
         const authString = `${this.authType} ${token}`
         try {
             const response = await this.axiosInstance?.get(odataServiceUrl, {

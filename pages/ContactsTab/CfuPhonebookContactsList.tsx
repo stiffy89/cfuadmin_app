@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView} from 'react-native';
-import {Searchbar, List, Divider, IconButton, useTheme} from 'react-native-paper';
+import {Searchbar, List, Divider, IconButton, useTheme, Avatar} from 'react-native-paper';
 import CustomText from '../../assets/CustomText';
 import { useDataContext } from '../../helper/DataContext';
 import * as LucideIcons from 'lucide-react-native';
@@ -8,6 +8,7 @@ import { screenFlowModule } from '../../helper/ScreenFlowModule';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ContactsStackParamList } from '../../types/AppTypes';
 import GenericFormatter from '../../helper/GenericFormatters';
+import PaletteData from '../../assets/zsp_team_palette.json';
 
 type props = StackScreenProps<ContactsStackParamList, 'CfuPhonebookContactsList'>; 
 
@@ -74,6 +75,12 @@ const CfuPhonebookContactsList = ({route} : props) => {
                                         <List.Subheader key={'subheader_' + i}><CustomText variant='bodyLargeBold'>{letter}</CustomText></List.Subheader>
                                         {
                                             contactsList[letter].map((contact, ii) => {
+                                                const mod = Number(contact.EmployeeNo) % PaletteData.length;
+                                                   
+                                                const iconColor = PaletteData.filter((x) => {
+                                                    return ((x.PaletteId / mod) == 1)
+                                                })[0];
+
                                                 return (
                                                     <React.Fragment key={`contact_${letter}_${ii}`}>
                                                         <Divider/>
@@ -81,9 +88,15 @@ const CfuPhonebookContactsList = ({route} : props) => {
                                                             onPress={() => {
                                                                 screenFlowModule.onNavigateToScreen('CfuPhonebookContactDetail', contact)
                                                             }} 
-                                                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>} 
-                                                            left={() => <View style={{backgroundColor: theme.colors.surfaceDisabled, padding: 5, borderRadius: 50}}><LucideIcons.User color={theme.colors.outline}/></View>} style={{marginLeft: 20}} key={'item_' + ii} 
-                                                            title={`${contact.FirstName} ${contact.Surname}`}
+                                                            right={() => <LucideIcons.ChevronRight color={theme.colors.primary}/>}
+                                                            left={() => 
+                                                                <Avatar.Icon 
+                                                                    style={{backgroundColor: iconColor.HexCode, marginLeft: 10}}
+                                                                    size={40} 
+                                                                    icon={() => <LucideIcons.User color={theme.colors.background}/>}
+                                                                />
+                                                            }  
+                                                            title={<View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{contact.FirstName}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{contact.Surname}</CustomText></View>} 
                                                             description={genericFormatter.formatRole(contact.Role)}
                                                         />
                                                         <Divider/>

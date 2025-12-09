@@ -99,7 +99,7 @@ const LoginPage = () => {
                     }
                 }}
             />
-            <View style={{height: 200, width: '100%', paddingHorizontal: 50, backgroundColor: theme.colors.background, borderTopLeftRadius: 50, borderTopRightRadius: 50 }}>
+            <View style={{height: 200, width: '100%', paddingHorizontal: 50, backgroundColor: theme.colors.background, borderTopLeftRadius: 5, borderTopRightRadius: 5 }}>
                 <OktaLogin />
             </View>
         </ImageBackground>

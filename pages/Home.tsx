@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useCallback} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { Button, IconButton, Portal, Dialog } from 'react-native-paper';
 import { ScrollView, Image, Linking, ViewStyle, StyleProp, ImageBackground } from 'react-native';
 import CustomText from '../assets/CustomText';
@@ -187,6 +188,16 @@ const HomePage = () => {
     const theme = useTheme();
     const user = useDataContext().currentUser[0];
     const [showDialog, setShowDialog] = useState(false);
+    const appContext = useAppContext();
+
+/*    useFocusEffect(
+        useCallback(() => {
+            appContext.setShowTopEdge(false);
+            return () => {
+                //appContext.setShowTopEdge(true);
+            };
+        }, [])
+    ); */
 
     return (
         <ScrollView contentContainerStyle={{ paddingBottom: "12%", backgroundColor: theme.colors.background }}>
@@ -216,7 +227,7 @@ const HomePage = () => {
             </Portal>
             <View style={{ height: "12%" }}>
                 <View style={{ flex: 1, backgroundColor: theme.colors.background, paddingBottom: 10 }}>
-                    <ImageBackground imageStyle={{ top: "-120%", }} source={headerBg}
+                    <ImageBackground imageStyle={{ top: "0%", }} source={headerBg}
                         style={{
                             position: "relative",
                             flex: 1,
@@ -228,6 +239,7 @@ const HomePage = () => {
                             boxShadow: "0px 1px 5px rgba(0, 0, 0, 0.6)",
                             overflow: "hidden"
                         }}>
+                            
                         <CustomText variant='displaySmallBold' style={{ color: theme.colors.background, marginHorizontal: "auto" }}>Hi {user.Vorna}</CustomText>
                         <View style={{ position: "absolute", right: 0, top: 0 }}>
                             <IconButton icon={() => <LucideIcons.LogOut color={theme.colors.background} size={30} />} size={30}

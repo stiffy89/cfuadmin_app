@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { AppState, View } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar, StatusBarStyle } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import * as LucideIcons from 'lucide-react-native';
@@ -100,7 +100,6 @@ const TabNavigator = () => {
 				lazy: false,
 				sceneStyle: GlobalStyles.AppBackground,
 				headerShown: false,
-			//	animation: 'fade',
 				tabBarButton: (props) => (
 					<PlatformPressable
 						{...props}
@@ -166,16 +165,13 @@ export default function MainApp() {
 	const navigatorRef = useNavigationContainerRef<RootStackParamList>();
 	const { dialogActionFunction, dialogActionButtonText, showDialogCancelButton, showDialog, setShowDialog, showBusyIndicator, setShowBusyIndicator, dialogMessage, setDialogMessage, cardModalVisible, setCardModalVisible, appLastActiveTimestamp, setAppLastActiveTimestamp } = useAppContext();
 	const dataContext = useDataContext();
-
+	const appContext = useAppContext();
 	const currentUser = useRef<any>([]);
-
-	const lastAppState = useRef<AppStateStatus | null>(null)
+	const lastAppState = useRef<AppStateStatus | null>(null);
+	const [edges, setEdges] = useState<any>(['top']);
+	const [statusBarColor, setStatusBarColor] = useState<StatusBarStyle>('dark');
 
 	const onAppWake = async () => {
-
-		const asyncTimestamp = await AsyncStorage.getItem('last-active');
-
-		console.log('current user : ', currentUser);
 
 		//see if we have installation id saved
 		const installationId = await AsyncStorage.getItem('installation-id');
@@ -198,6 +194,7 @@ export default function MainApp() {
 		else {
 			//if they have an installation id - check to see if they have pin stored (they couldve checked out mid way through the first login process)
 			const pin = await SecureStore.getItemAsync('pin');
+
 			if (!pin) {
 				screenFlowModule.onNavigateToScreen('LoginScreen');
 			}
@@ -213,7 +210,7 @@ export default function MainApp() {
 					console.log('minutes passed : ', minutesElapsed);
 					
 					//1 or under, let them through
-					if (minutesElapsed <= 1){
+					if (minutesElapsed <= 10){
 						return;
 					}
 				}
@@ -275,8 +272,6 @@ export default function MainApp() {
 
 	useEffect(() => {
 
-		console.log('main app loaded');
-
 		//every time the app wakes from being backgrounded, we run this block
 		const appAwakeLogic = async () => {
 			onAppInitLoad();
@@ -298,6 +293,18 @@ export default function MainApp() {
 		currentUser.current = dataContext.currentUser;
 	}, [dataContext.currentUser])
 
+/*	useEffect(() => {
+		if (appContext.showTopEdge){
+			setEdges(['top']);
+			setStatusBarColor('dark');
+		}
+		else {
+			setEdges([]);
+			setStatusBarColor('light');
+		}
+	}, [appContext.showTopEdge]). */
+
+
 	const { loaded, fonts } = useCustomFonts();
 
 	const appTheme = customLightTheme;
@@ -306,8 +313,11 @@ export default function MainApp() {
 
 	return (
 		<SafeAreaProvider>
-			<SafeAreaView style={GlobalStyles.safeAreaView} edges={['top']}>
-				<StatusBar hidden={false} />
+			<SafeAreaView style={GlobalStyles.safeAreaView} edges={edges}>
+				<StatusBar 
+					hidden={false}
+					style={statusBarColor}
+				/>
 				<PaperProvider theme={{ ...appTheme, fonts }}>
 					<Portal>
 						<CardModal visible={cardModalVisible} setVisible={setCardModalVisible}/>
@@ -374,10 +384,16 @@ export default function MainApp() {
 							}
 						}}
 					>
-						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: GlobalStyles.AppBackground}}>
-							<Stack.Screen name='LoginScreen' component={LoginPage} />
-							<Stack.Screen name='SplashScreen' component={SplashScreen} />
-							<Stack.Screen name='LocalAuthScreen' component={LocalAuth}/>
+						<Stack.Navigator 
+							initialRouteName='SplashScreen'
+							screenOptions={{ 
+								headerShown: false , 
+								cardStyle: GlobalStyles.AppBackground
+							}}
+						>
+							<Stack.Screen name='LoginScreen' options={{gestureEnabled : false}} component={LoginPage} />
+							<Stack.Screen name='SplashScreen' options={{gestureEnabled : false}} component={SplashScreen} />
+							<Stack.Screen name='LocalAuthScreen' options={{gestureEnabled : false}} component={LocalAuth}/>
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
@@ -405,7 +421,7 @@ export default function MainApp() {
 							<Stack.Screen name='VolunteerNotes' component={VolunteerNotes}/>
 							<Stack.Screen name='PositionHistory' component={PositionHistory}/>
 							<Stack.Screen name='EquityDiversity' component={EquityDiversity}/>
-							<Stack.Screen name='ErrorPage' component={ErrorPage}/>
+							<Stack.Screen name='ErrorPage' options={{gestureEnabled : false}} component={ErrorPage}/>
 							<Stack.Screen name='ExternalLoginPage' component={ExternalLoginPage}/>
 							<Stack.Screen name='ExternalHomePage' component={ExternalHomePage}/>
 						</Stack.Navigator>

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ScrollView, View, Pressable } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import CustomText from "../../assets/CustomText";
-import { useTheme, List, Divider, IconButton, TextInput, Badge, Chip } from "react-native-paper";
+import { useTheme, List, Divider, IconButton, TextInput, Badge, Chip, Avatar } from "react-native-paper";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useDataContext } from "../../helper/DataContext";
 import { useAppContext } from "../../helper/AppContext";
@@ -25,6 +26,7 @@ const ByDrill = () => {
   useEffect(() => {
     setTrainingDrillList(dataContext.drillDetails);
   }, [dataContext.drillDetails]);
+
 
   return (
     <ScrollView
@@ -164,9 +166,11 @@ const ByTeamMember = () => {
       compareField = field;
     }
 
-    const sortedList = [...dataList].sort((a, b) =>
-      a[compareField].localeCompare(b[compareField])
-    );
+    const sortedList = [...dataList].sort((a, b) =>{
+      const aLastName = showTeamMemberSearch ? a[compareField].split(' ')[1] : a[compareField];
+      const bLastName = showTeamMemberSearch ? b[compareField].split(' ')[1] : b[compareField];
+      return aLastName.localeCompare(bLastName)
+    });
 
     const grouped = sortedList.reduce((accumulator, currentValue) => {
       const firstLetter = currentValue[compareField][0].toUpperCase();
@@ -209,6 +213,10 @@ const ByTeamMember = () => {
                     <CustomText variant="bodyLargeBold">{letter}</CustomText>
                   </List.Subheader>
                   {membersList[letter].map((member: any, ii: number) => {
+
+                    const memberFirstname = showTeamMemberSearch ? member.Ename.split(' ')[0] : member.FirstName;
+                    const memberLastName = showTeamMemberSearch ? member.Ename.split(' ')[1] : member.LastName;
+                    const memberName = <View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{memberFirstname}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{memberLastName}</CustomText></View>
 
                     return (
                       <React.Fragment key={`contact_${letter}_${ii}`}>
@@ -291,19 +299,16 @@ const ByTeamMember = () => {
                             />
                           )}
                           left={() => (
-                            <View
-                              style={{
-                                backgroundColor: theme.colors.surfaceDisabled,
-                                padding: 5,
-                                borderRadius: 50,
-                              }}
-                            >
-                              <LucideIcons.User color={theme.colors.outline} />
-                            </View>
+                              <Avatar.Icon 
+                                  style={{backgroundColor: theme.colors.surfaceDisabled}}
+                                  size={40} 
+                                  icon={() => <LucideIcons.User color={theme.colors.onSurface}/>}
+                              />
                           )}
                           style={{ marginLeft: 20 }}
                           key={"item_" + ii}
-                          title={(showTeamMemberSearch ? member.Ename : `${member.FirstName} ${member.LastName}`)}
+                          //title={(showTeamMemberSearch ? member.Ename : `${member.FirstName} ${member.LastName}`)}
+                          title={memberName}
                           description={(showTeamMemberSearch ? '' : `${member.Stext}`)}
                         />
                         <Divider />
@@ -439,6 +444,16 @@ const TrainingMain = ({ route }: props) => {
   const [showTeamMemberSearch, setShowTeamMemberSearch] = useState(false);
   const [showDropDown, setShowDropDown] = useState<boolean>(false);
   const title = route.params!.title;
+
+  useFocusEffect(
+      useCallback(() => {
+        console.log('training')
+          appContext.setShowTopEdge(true);
+          return () => {
+              //appContext.setShowTopEdge(true);
+          };
+      }, [])
+  );
 
   if (dataContext.currentUser[0].VolAdmin) {
     useEffect(() => {

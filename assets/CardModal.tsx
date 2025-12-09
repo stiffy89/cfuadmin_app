@@ -8,6 +8,7 @@ import { useDataContext } from '../helper/DataContext';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { screenFlowModule } from '../helper/ScreenFlowModule';
 import { useAppContext } from '../helper/AppContext';
+import FRNSWLogo from '../assets/images/FRNSWLogo.png';
 
 const loadPhoto = async (pernr: string, setShowDialog: (val :boolean) => void) => {
 	try{
@@ -137,9 +138,7 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
                     <View style={{backgroundColor: "#cdc6c0", flex: 2, flexDirection: "row", gap: 10, marginTop: 25, justifyContent: "center" }}>
                         <Image
                             style={{ width: 100, height: "100%", resizeMode: "contain" }}
-                            source={{
-								uri: 'https://www.fire.nsw.gov.au/images/content/FRNSW-logo.png',
-                            }}
+                            source={FRNSWLogo}
                         />
                         <View style={{marginTop: 25}}>
                             <CustomText style={{ color: "#a8211a"}} variant='displaySmallBold'>COMMUNITY</CustomText>

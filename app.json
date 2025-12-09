@@ -5,7 +5,7 @@
     "scheme": "com.cfu.cfuadminapplication",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/large_icon-1.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {

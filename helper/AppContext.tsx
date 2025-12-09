@@ -17,7 +17,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   
   const [appLastActiveTimestamp, setAppLastActiveTimestamp] = useState<string>('');
 
-  const [cardModalVisible, setCardModalVisible] = useState(false)
+  const [cardModalVisible, setCardModalVisible] = useState(false);
+  const [showTopEdge, setShowTopEdge] = useState(true);
 
   const value: AppContextType = {
     showDialogCancelButton,
@@ -36,6 +37,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setAppLastActiveTimestamp,
     cardModalVisible,
     setCardModalVisible,
+    showTopEdge,
+    setShowTopEdge
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

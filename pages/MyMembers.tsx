@@ -1,7 +1,7 @@
 //landing page for my members - single & multi units
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, Pressable } from "react-native";
-import { List, Divider, TextInput, IconButton, Chip, Switch, useTheme } from "react-native-paper";
+import { List, Divider, TextInput, IconButton, Chip, Switch, useTheme, Avatar } from "react-native-paper";
 import CustomText from "../assets/CustomText";
 import { useDataContext } from "../helper/DataContext";
 import { useAppContext } from "../helper/AppContext";
@@ -12,6 +12,7 @@ import { dataHandlerModule } from "../helper/DataHandlerModule";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/AppTypes";
 import GenericFormatter from "../helper/GenericFormatters";
+import PaletteData from '../assets/zsp_team_palette.json';
 
 type props = StackScreenProps<RootStackParamList, "MyMembers">;
 
@@ -227,12 +228,16 @@ const MyMembers = ({ route }: props) => {
         if (field){
             compareField = field;
         }
-        const sortedList = [...dataList].sort((a, b) =>
-            a[compareField].localeCompare(b[compareField])
-        );
+        const sortedList = [...dataList].sort((a, b) =>{
+            const aLastName = a[compareField].split(' ')[1];
+            const bLastName = b[compareField].split(' ')[1];
+
+            return aLastName.localeCompare(bLastName)
+        });
 
         const grouped = sortedList.reduce((accumulator, currentValue) => {
-            const firstLetter = currentValue[compareField][0].toUpperCase();
+            const lastName = currentValue[compareField].split(' ')[1];
+            const firstLetter = lastName[0].toUpperCase();
             if (!accumulator[firstLetter]) {
                 accumulator[firstLetter] = [];
             }
@@ -389,6 +394,19 @@ const MyMembers = ({ route }: props) => {
                                         <CustomText variant="bodyLargeBold">{letter}</CustomText>
                                     </List.Subheader>
                                     {membersList[letter].map((member, ii) => {
+
+                                        const mod = Number(member.Pernr) % PaletteData.length;
+
+                                        const iconColor = PaletteData.filter((x) => {
+                                            return ((x.PaletteId / mod) == 1)
+                                        })[0];
+
+                                        const memberNameStr = showTeamMemberSearch ? member.Ename : member.Stext;
+                                        const memberFirstname = memberNameStr.split(' ')[0];
+                                        const memberLastName = memberNameStr.split(' ')[1];
+
+                                        const memberName = <View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{memberFirstname}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{memberLastName}</CustomText></View>
+
                                         return (
                                             <React.Fragment key={`contact_${letter}_${ii}`}>
                                                 <List.Item
@@ -434,19 +452,16 @@ const MyMembers = ({ route }: props) => {
                                                         />
                                                     )}
                                                     left={() => (
-                                                        <View
-                                                            style={{
-                                                                backgroundColor: theme.colors.surfaceDisabled,
-                                                                padding: 5,
-                                                                borderRadius: 50,
-                                                            }}
-                                                        >
-                                                            <LucideIcons.User color={theme.colors.outline} />
-                                                        </View>
+                                                        <Avatar.Icon 
+                                                            style={{backgroundColor: iconColor.HexCode}}
+                                                            size={40} 
+                                                            icon={() => <LucideIcons.User color={theme.colors.background}/>}
+                                                        />
                                                     )}
                                                     style={{ marginLeft: 20 }}
                                                     key={"item_" + ii}
-                                                    title={(showTeamMemberSearch ? member.Ename : member.Stext)}
+                                                    //title={(showTeamMemberSearch ? member.Ename : member.Stext)}
+                                                    title={memberName}
                                                     description={genericFormatter.formatRole(member.MembershipType)}
                                                 />
                                                 <Divider />

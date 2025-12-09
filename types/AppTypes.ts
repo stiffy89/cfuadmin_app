@@ -20,8 +20,10 @@ export type AppContextType = {
     setDialogMessage: (val: string) => void;
     appLastActiveTimestamp: string;
     setAppLastActiveTimestamp: (val: string) => void;
-    cardModalVisible: boolean,
-    setCardModalVisible: (val: boolean) => void,
+    cardModalVisible: boolean;
+    setCardModalVisible: (val: boolean) => void;
+    showTopEdge: boolean;
+    setShowTopEdge: (val : boolean) => void;
 };
 
 export type batchGETResponse = {

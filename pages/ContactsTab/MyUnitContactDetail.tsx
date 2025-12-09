@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Pressable, Linking } from 'react-native';
 import { useTheme, IconButton, TextInput } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule } from '../../helper/ScreenFlowModule';
@@ -17,8 +17,8 @@ const MyUnitContactDetail = ({ route }: props) => {
     console.log(params)
 
     return (
-        <View style={{flex: 1}}>
-            <View style={{backgroundColor: theme.colors.background}}>
+        <View style={{ flex: 1 }}>
+            <View style={{ backgroundColor: theme.colors.background }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
                     <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 </View>
@@ -33,13 +33,130 @@ const MyUnitContactDetail = ({ route }: props) => {
                     <CustomText variant='titleSmall' style={{ textAlign: 'center', marginTop: 10 }}>{params.Short}</CustomText>
                 </View>
             </View>
-            <ScrollView style={{ paddingHorizontal: 20, backgroundColor: theme.colors.surface}} contentContainerStyle={{ paddingBottom: 20 }}>
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Member Number' value={params.PernrExt} />
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Primary Mobile' value={params.MobilePhone} />
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Email' value={params.Email} />
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Address' value={params.Stras} />
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Home Phone' value={params.HomePhone} />
-                <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Work Phone' value={params.WorkPhone} />
+            <ScrollView style={{ paddingHorizontal: 20, backgroundColor: theme.colors.surface }} contentContainerStyle={{ paddingBottom: 20 }}>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    editable={false}
+                    mode='flat'
+                    underlineColor='transparent'
+                    label='Member Number'
+                    value={params.PernrExt}
+                />
+                <View
+                    style={{ marginTop: 20 }}
+                >
+                    <TextInput
+                        style={{ ...GlobalStyles.disabledTextInput }}
+                        textColor={theme.colors.secondary}
+                        editable={false} mode='flat'
+                        underlineColor='transparent'
+                        label='Primary Mobile'
+                        value={params.MobilePhone}
+                    />
+                    <Pressable
+                        onPress={() => {
+                            let mobNumber = `tel:${params.MobilePhone}}`;
+                            Linking.openURL(mobNumber);
+                        }}
+                        style={{
+                            position: "absolute",
+                            height: 50,
+                            left: 0,
+                            right: 0, // leave space for the icon so it remains clickable
+                            top: 0,
+                            bottom: 0,
+                        }}
+                    />
+                </View>
+                <View
+                    style={{ marginTop: 20 }}
+                >
+                    <TextInput
+                        style={{ ...GlobalStyles.disabledTextInput }}
+                        editable={false}
+                        textColor={theme.colors.secondary}
+                        mode='flat'
+                        underlineColor='transparent'
+                        label='Email'
+                        value={params.Email}
+                    />
+                    <Pressable
+                        onPress={() => {
+                            let email = `mailTo:${params.Email}`;
+                            Linking.openURL(email);
+                        }}
+                        style={{
+                            position: "absolute",
+                            height: 50,
+                            left: 0,
+                            right: 0, // leave space for the icon so it remains clickable
+                            top: 0,
+                            bottom: 0,
+                        }}
+                    />
+                </View>
+                <TextInput
+                    style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                    editable={false}
+                    mode='flat'
+                    underlineColor='transparent'
+                    label='Address'
+                    value={params.Stras}
+                />
+                <View
+                    style={{ marginTop: 20 }}
+                >
+                    <TextInput
+                        style={{ ...GlobalStyles.disabledTextInput }}
+                        editable={false}
+                        textColor={theme.colors.secondary}
+                        mode='flat'
+                        underlineColor='transparent'
+                        label='Home Phone'
+                        value={params.HomePhone}
+                    />
+                    <Pressable
+                        onPress={() => {
+                            let HomePhone = `tel:${params.HomePhone}`;
+                            Linking.openURL(HomePhone);
+                        }}
+                        style={{
+                            position: "absolute",
+                            height: 50,
+                            left: 0,
+                            right: 0, // leave space for the icon so it remains clickable
+                            top: 0,
+                            bottom: 0,
+                        }}
+                    />
+                </View>
+                <View
+                    style={{marginTop: 20}}
+                >
+                    <TextInput
+                        style={{...GlobalStyles.disabledTextInput }}
+                        editable={false}
+                        textColor={theme.colors.secondary}
+                        mode='flat'
+                        underlineColor='transparent'
+                        label='Work Phone'
+                        value={params.WorkPhone}
+                    />
+                    <Pressable
+                        onPress={() => {
+                            let WorkPhone = `tel:${params.WorkPhone}`;
+                            Linking.openURL(WorkPhone);
+                        }}
+                        style={{
+                            position: "absolute",
+                            height: 50,
+                            left: 0,
+                            right: 0, // leave space for the icon so it remains clickable
+                            top: 0,
+                            bottom: 0,
+                        }}
+                    />
+                </View>
             </ScrollView>
         </View>
     )
