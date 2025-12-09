@@ -9,6 +9,7 @@ import { screenFlowModule } from '../helper/ScreenFlowModule';
 import { authModule } from '../helper/AuthModule';
 import { TriangleAlert, CloudAlert, ChevronLeft, Phone, Mail } from 'lucide-react-native';
 import GlobalStyles from '../style/GlobalStyles';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type props = StackScreenProps<RootStackParamList, "ErrorPage">;
 
@@ -82,84 +83,84 @@ const ErrorPage = ({ route }: props) => {
     return (
         <View style={{ flex: 1 }}>
             {
-                (errorCode && (errorCode >= 700) && sapErrorMessage) &&
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                    <View style={{ height: 150, marginTop: 50 }}>
-                        <TriangleAlert color='#ff9f40' size={120} />
-                    </View>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 50, marginBottom: 20 }}>
-                        <CustomText style={{ marginBottom: 20, color: theme.colors.onBackground }} variant='displayLargeBold'>{errorCode}</CustomText>
-                        <CustomText variant='bodyLarge'>{errorMessage}</CustomText>
-                    </View>
-                    <View style={{ marginBottom: 30, paddingHorizontal: 50 }}>
-                        <CustomText style={{ color: theme.colors.primary }} variant='bodyLargeBold'>{sapErrorMessage}</CustomText>
-                    </View>
-                    <HelpStrip />
-                    <View style={{ marginTop: 20 }}>
-                        <Button
-                            mode='contained-tonal'
-                            onPress={() => {
-                                if (sapErrorMessage.includes('(splash screen timed out)')) {
-                                    authModule.onLogOut();
-                                    return;
-                                }
+                (errorCode && (errorCode >= 700) && sapErrorMessage) && 
+                    <ScrollView style={{flex: 1}} contentContainerStyle={{alignItems: 'center', paddingBottom: 25}}>
+                        <View style={{height: 150, marginTop: 50}}>
+                            <TriangleAlert color='#ff9f40' size={120}/>
+                        </View>
+                        <View style={{alignItems: 'center', paddingHorizontal: 50, marginBottom: 20}}>
+                            <CustomText style={{marginBottom: 20, color: theme.colors.onBackground}} variant='displayLargeBold'>{errorCode}</CustomText>
+                            <CustomText variant='bodyLarge'>{errorMessage}</CustomText>
+                        </View>
+                        <View style={{marginBottom: 30, paddingHorizontal: 50}}>
+                            <CustomText style={{color: theme.colors.primary}} variant='bodyLargeBold'>{sapErrorMessage}</CustomText>
+                        </View>
+                        <HelpStrip/>
+                        <View style={{marginTop: 20}}>
+                            <Button 
+                                mode='contained-tonal'
+                                onPress={() => {
+                                    if (sapErrorMessage.includes('(splash screen timed out)')){
+                                        authModule.onLogOut();
+                                        return;
+                                    }
 
-                                screenFlowModule.onGoBack();
-                            }}
-                        >
-                            Go back
-                        </Button>
-                    </View>
-                </View>
+                                    screenFlowModule.onGoBack();
+                                }}
+                            >
+                                    Go back
+                            </Button>
+                        </View>
+                    </ScrollView>
             }
             {
-                (errorCode && (errorCode >= 400 && errorCode < 500)) &&
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                    <View style={{ height: 150, marginTop: 50 }}>
-                        <TriangleAlert color='#ff9f40' size={120} />
-                    </View>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 50, marginBottom: 20 }}>
-                        <CustomText style={{ marginBottom: 20, color: theme.colors.onBackground }} variant='displayLargeBold'>{errorCode}</CustomText>
-                        <CustomText variant='bodyLarge'>{errorMessage}</CustomText>
-                    </View>
-                    <HelpStrip />
-                    <View style={{ marginTop: 20 }}>
-                        <Button
-                            mode='contained-tonal'
-                            onPress={() => {
-                                screenFlowModule.onGoBack();
-                            }}
-                        >
-                            Go back
-                        </Button>
-                    </View>
-                </View>
+                (errorCode && (errorCode >= 400 && errorCode < 500)) && 
+                    <ScrollView style={{flex: 1}} contentContainerStyle={{alignItems: 'center', paddingBottom: 50}}>
+                        <View style={{height: 150, marginTop: 50}}>
+                            <TriangleAlert color='#ff9f40' size={120}/>
+                        </View>
+                        <View style={{alignItems: 'center', paddingHorizontal: 50, marginBottom: 20}}>
+                            <CustomText style={{marginBottom: 20, color: theme.colors.onBackground}} variant='displayLargeBold'>{errorCode}</CustomText>
+                            <CustomText variant='bodyLarge'>{errorMessage}</CustomText>
+                        </View>
+                        <HelpStrip/>
+                        <View style={{marginTop: 20}}>
+                            <Button 
+                                mode='contained-tonal'
+                                onPress={() => {
+                                    screenFlowModule.onGoBack();
+                                }}
+                            >
+                                    Go back
+                            </Button>
+                        </View>
+                    </ScrollView>
             }
             {
-                (errorCode && (errorCode >= 500 && errorCode < 602)) &&
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                    <View style={{ height: 150, marginTop: 50 }}>
-                        <CloudAlert color={theme.colors.primary} size={120} />
-                    </View>
-                    <View style={{ alignItems: 'center', paddingHorizontal: 50, marginBottom: 20 }}>
-                        {
-                            (errorCode < 601) &&
-                            <CustomText style={{ marginBottom: 20, color: theme.colors.onBackground }} variant='displayLargeBold'>{errorCode}</CustomText>
-                        }
-                        <CustomText variant='bodyLarge'>{errorMessage}</CustomText>
-                    </View>
-                    <HelpStrip />
-                    <View style={{ marginTop: 20 }}>
-                        <Button
-                            mode='contained-tonal'
-                            onPress={() => {
-                                screenFlowModule.onGoBack();
-                            }}
-                        >
-                            Go back
-                        </Button>
-                    </View>
-                </View>
+                (errorCode && (errorCode >= 500 && errorCode < 602)) && 
+                    <ScrollView style={{flex: 1}} contentContainerStyle={{alignItems: 'center', paddingBottom: 50}}>
+                        <View style={{height: 150, marginTop: 50}}>
+                            <CloudAlert color={theme.colors.primary} size={120}/>
+                        </View>
+                        <View style={{alignItems: 'center', paddingHorizontal: 50, marginBottom: 20}}>
+                            {
+                                (errorCode < 601) &&
+                                <CustomText style={{marginBottom: 20, color: theme.colors.onBackground}} variant='displayLargeBold'>{errorCode}</CustomText>
+                            }
+                            <CustomText variant='bodyLarge'>{errorMessage}</CustomText>
+                        </View>
+                        <HelpStrip/>
+                        <View style={{marginTop: 20}}>
+                            <Button 
+                                mode='contained-tonal'
+                                onPress={() => {
+                                    screenFlowModule.onGoBack();
+                                }}
+                            >
+                                    Go back
+                            </Button>
+                        </View>
+                    </ScrollView>
             }
         </View>
     )

@@ -1,0 +1,6 @@
+testOutputDir: .maestro/.outputs
+
+flows:
+  - auth/*
+  - skills maintenance/*
+  - utility/log_out.yml

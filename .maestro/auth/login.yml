@@ -1,0 +1,43 @@
+appId: com.stevencaoernox.cfuadminapplication
+---
+- launchApp
+- runFlow:
+    when:
+      visible: "Lets get started"
+    commands:
+      - tapOn: "Login"
+- runFlow:
+    when:
+      visible: "Sign In"
+    commands: 
+      - tapOn: 
+          below: "Your email address"
+      - eraseText
+      - inputText: "WAK816316"
+      - tapOn: 
+          below: "Fire and Rescue network login password"
+      - inputText: "BRIEFLY-receding-1!" 
+      - hideKeyboard
+      - tapOn: "Sign in"
+- runFlow:
+    when:
+      visible: "Verify with your password"
+    commands:   
+      - tapOn: 
+          below: "Fire and Rescue network login password"
+      - inputText: "BRIEFLY-receding-1!" 
+      - hideKeyboard
+      - tapOn: "Verify"
+- runFlow: 
+    when:
+      visible: "Set New Pin"
+    commands:
+      - inputText: "1234"
+      - assertVisible: "Confirm Set Pin"
+      - inputText: "1234"
+- runFlow:
+    when:
+      visible: "Enter Pin"
+    commands:
+      - inputText: "1234"
+- assertVisible: "Keep your info up to date"

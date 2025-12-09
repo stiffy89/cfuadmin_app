@@ -1,0 +1,9 @@
+appId: com.stevencaoernox.cfuadminapplication
+onFlowComplete:
+  - runFlow: "close_app.yml"
+---
+- assertVisible: "Keep your info up to date"
+- tapOn:
+    point: 90%,10%
+- assertVisible: "Are you sure you want to log out?"
+- tapOn: "Log Out"
