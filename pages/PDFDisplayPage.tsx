@@ -126,9 +126,9 @@ const PDFDisplayPage = ({ route }: props) => {
 
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            <View style={{ flexDirection: 'row', justifyContent: "space-around", alignItems: 'center', marginTop: 20, marginBottom: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: "space-between", alignItems: 'center', marginTop: 20, marginBottom: 10 }}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
-                <CustomText style={{ marginLeft: 20, marginRight: 60 }} variant='titleMediumBold'>{displayName}</CustomText>
+                <CustomText style={{position:"absolute", left: "50%", transform: [{translateX: "-50%"}]}} variant='titleMediumBold'>{displayName}</CustomText>
                 {
                     showSharing && (
                         <IconButton icon={() => <CustomIcon name="Share" color={!localFilePath ? theme.colors.surfaceDisabled : theme.colors.primary} size={25} />} disabled={!localFilePath} size={20} onPress={shareFile} />

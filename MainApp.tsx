@@ -123,11 +123,11 @@ const TabNavigator = () => {
 							break;
 					}
 
-					let iconColor = focused ? theme.colors.primary : "#000";
+					let iconColor = focused ? theme.colors.primary : theme.colors.onSurface;
 					return <CustomText variant='labelSmall' style={{ color: iconColor }}>{formattedRouteName}</CustomText>
 				},
 				tabBarIcon: ({ focused, color, size }) => {
-					let iconColor = focused ? theme.colors.primary : "#000";
+					let iconColor = focused ? theme.colors.primary : theme.colors.onSurface;
 
 					switch (route.name) {
 						case "HomeScreen":

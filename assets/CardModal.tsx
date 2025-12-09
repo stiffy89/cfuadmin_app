@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState} from 'react';
 import { View, Image, Animated } from 'react-native';
-import { Modal, IconButton } from 'react-native-paper';
+import { Modal, IconButton, useTheme } from 'react-native-paper';
 
 import CustomText from '../assets/CustomText';
 import CustomIcon from "../assets/CustomIcon"
@@ -22,6 +22,7 @@ const loadPhoto = async (pernr: string, setShowDialog: (val :boolean) => void) =
 }
 
 const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: boolean) => void}) => {
+	const theme = useTheme();
 	const user = useDataContext().currentUser[0];
 	const membership = useDataContext().membershipDetails[0];
 	const {setShowDialog} = useAppContext();
@@ -160,7 +161,7 @@ const CardModal = ({visible, setVisible}:{visible: boolean, setVisible: (val: bo
                     </View>
                 </View>
                 <Animated.View style={{backgroundColor: "#fff", marginHorizontal: "auto", marginTop: 80, borderRadius: "50%", opacity: closeFadeAnim}}>
-                    <IconButton icon={() => <CustomIcon name="X" color={"black"} size={30}/>} size={30} onPress={() => setVisible(false)} />
+                    <IconButton icon={() => <CustomIcon name="X" color={theme.colors.onSurface} size={30}/>} size={30} onPress={() => setVisible(false)} />
                 </Animated.View>
             </Modal>
         </>
