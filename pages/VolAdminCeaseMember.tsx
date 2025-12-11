@@ -13,6 +13,7 @@ import { registerTranslation, enGB, DatePickerModal } from 'react-native-paper-d
 import { useDataContext } from '../helper/DataContext';
 import { useAppContext } from '../helper/AppContext';
 import { useHelperValuesDataContext } from '../helper/HelperValuesDataContext';
+import PaletteData from '../assets/zsp_team_palette.json';
 
 
 type props = StackScreenProps<RootStackParamList, 'VolAdminCeaseMember'>;
@@ -41,6 +42,12 @@ const VolAdminCeaseMember = ({ route }: props) => {
 
     const theme = useTheme();
 
+    const mod = Number(employeeDetails .Pernr) % PaletteData.length;
+                                                   
+    const iconColor = PaletteData.filter((x) => {
+        return ((x.PaletteId / mod) == 1)
+    })[0];
+
     return (
         <View style={GlobalStyles.page}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginLeft: 20 }}>
@@ -60,12 +67,12 @@ const VolAdminCeaseMember = ({ route }: props) => {
                     <View
                         style={{
                             padding: 20,
-                            backgroundColor: "#d3d3d3ff",
+                            backgroundColor: iconColor.HexCode,
                             borderRadius: 50,
                             marginRight: 30
                         }}
                     >
-                        <UserRound size={50} />
+                        <UserRound color='#fff' size={50} />
                     </View>
                     <View
                         style={{ flex: 1, alignItems: 'flex-start' }}

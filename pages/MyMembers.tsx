@@ -286,7 +286,7 @@ const MyMembers = ({ route }: props) => {
                     <View style={{ marginLeft: 20 }}>
                         <CustomText variant='bodyLargeBold'>{selectedOrgUnit.Stext}</CustomText>
                     </View>
-                    <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                    <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
                         <Pressable
                             onPress={() => {
                                 setShowDropDown(!showDropDown);

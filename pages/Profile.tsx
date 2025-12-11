@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, ScrollView, Easing, Dimensions } from "react-native";
+import React from "react";
+import { View, ScrollView, Easing, Linking, Platform} from "react-native";
 import { useTheme, Button, List, Divider } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../assets/CustomText";
@@ -13,9 +13,7 @@ import { useAppContext } from "../helper/AppContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 
 import { screenFlowModule } from "../helper/ScreenFlowModule";
-
-import { authModule } from "../helper/AuthModule";
-import { OktaLoginResult } from "../types/AppTypes";
+import PaletteData from '../assets/zsp_team_palette.json';
 
 
 const ProfileHeader = () => {
@@ -23,6 +21,12 @@ const ProfileHeader = () => {
     const theme = useTheme();
     const user = useDataContext().currentUser[0];
     const membership = useDataContext().membershipDetails[0];
+
+    const mod = Number(user.Pernr) % PaletteData.length;
+                                                   
+    const iconColor = PaletteData.filter((x) => {
+        return ((x.PaletteId / mod) == 1)
+    })[0];
 
     return (
         <View style={{ padding: 20, backgroundColor: theme.colors.background }}>
@@ -46,11 +50,11 @@ const ProfileHeader = () => {
                 <View
                     style={{
                         padding: 20,
-                        backgroundColor: "#d3d3d3ff",
+                        backgroundColor: iconColor.HexCode,
                         borderRadius: 50,
                     }}
                 >
-                    <LucideIcons.UserRound size={50} />
+                    <LucideIcons.UserRound color='#fff' size={50} />
                 </View>
             </View>
             <CustomText

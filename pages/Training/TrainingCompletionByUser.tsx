@@ -11,6 +11,7 @@ import { registerTranslation, enGB, DatePickerModal } from "react-native-paper-d
 import { useAppContext } from "../../helper/AppContext";
 import { useDataContext } from "../../helper/DataContext";
 import { dataHandlerModule } from "../../helper/DataHandlerModule";
+import PaletteData from '../../assets/zsp_team_palette.json';
 
 type props = StackScreenProps<RootStackParamList, 'TrainingCompletionByUser'>;
 
@@ -128,6 +129,12 @@ const TrainingCompletionByUser = ({ route }: props) => {
         }
     }
 
+    const mod = Number(member.Pernr) % PaletteData.length;
+                                                   
+    const iconColor = PaletteData.filter((x) => {
+        return ((x.PaletteId / mod) == 1)
+    })[0];
+
     return (
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <Portal>
@@ -211,12 +218,12 @@ const TrainingCompletionByUser = ({ route }: props) => {
                     <View
                         style={{
                             padding: 20,
-                            backgroundColor: "#d3d3d3ff",
+                            backgroundColor: iconColor.HexCode,
                             borderRadius: 50,
                             marginLeft: 20
                         }}
                     >
-                        <LucideIcons.UserRound size={50} />
+                        <LucideIcons.UserRound color='#fff' size={50} />
                     </View>
                     <View style={{ alignItems: 'flex-start', marginLeft: 20 }}>
                         <CustomText

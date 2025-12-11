@@ -1,6 +1,6 @@
 import React from "react";
-import { View, ScrollView } from "react-native";
-import { useTheme, IconButton, Button } from "react-native-paper";
+import { View, ScrollView, Pressable } from "react-native";
+import { useTheme, IconButton, Button} from "react-native-paper";
 import { StackScreenProps } from "@react-navigation/stack";
 import {RootStackParamList } from "../types/AppTypes";
 import { screenFlowModule } from "../helper/ScreenFlowModule";
@@ -9,12 +9,15 @@ import * as LucideIcons from "lucide-react-native";
 import CustomText from "../assets/CustomText";
 import { useDataContext } from "../helper/DataContext";
 import GenericFormatter from "../helper/GenericFormatters";
+import GenericAppHelpers from "../helper/GenericAppHelpers";
 
 type props = StackScreenProps<RootStackParamList, "EmergencyContactsScreen">; //typing the navigation props
 
 const EmergencyContacts = ({ route, navigation }: props) => {
     const theme = useTheme();
     const dataContext = useDataContext();
+    const genericAppHelper = new GenericAppHelpers();
+
     const pernr = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMemberEmployeeDetails[0].Pernr : dataContext.employeeDetails[0].Pernr;
 
     const employeeAddresses = useDataContext().employeeAddresses;
@@ -107,9 +110,18 @@ const EmergencyContacts = ({ route, navigation }: props) => {
                                     {x.ZzindrlAtext}
                                 </CustomText>
                                 <CustomText style={{ marginBottom: 10 }}>{x.Telnr}</CustomText>
-                                <CustomText style={{ marginBottom: 10, flexWrap: 'wrap' }}>
-                                    {SecondaryAddressFormatter(x)}
-                                </CustomText>
+                                <Pressable
+                                    onPress={() => {
+                                        const address = SecondaryAddressFormatter(x);
+                                        if (address){
+                                            genericAppHelper.navigateToNativeMaps(address);
+                                        }
+                                    }}
+                                >
+                                    <CustomText style={{ marginBottom: 10, flexWrap: 'wrap', color: theme.colors.secondary }}>
+                                        {SecondaryAddressFormatter(x)}
+                                    </CustomText>
+                                </Pressable>
                             </View>
                             <IconButton
                                 icon={() => (

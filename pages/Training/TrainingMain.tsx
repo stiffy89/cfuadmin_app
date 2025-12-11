@@ -12,6 +12,7 @@ import * as LucideIcons from "lucide-react-native";
 import GlobalStyles from "../../style/GlobalStyles";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types/AppTypes";
+import PaletteData from '../../assets/zsp_team_palette.json';
 
 type props = StackScreenProps<RootStackParamList, "TrainingMain">;
 
@@ -214,6 +215,12 @@ const ByTeamMember = () => {
                   </List.Subheader>
                   {membersList[letter].map((member: any, ii: number) => {
 
+                    const mod = Number(member.Pernr) % PaletteData.length;
+                                                   
+                    const iconColor = PaletteData.filter((x) => {
+                        return ((x.PaletteId / mod) == 1)
+                    })[0];
+
                     const memberFirstname = showTeamMemberSearch ? member.Ename.split(' ')[0] : member.FirstName;
                     const memberLastName = showTeamMemberSearch ? member.Ename.split(' ')[1] : member.LastName;
                     const memberName = <View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{memberFirstname}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{memberLastName}</CustomText></View>
@@ -300,9 +307,9 @@ const ByTeamMember = () => {
                           )}
                           left={() => (
                               <Avatar.Icon 
-                                  style={{backgroundColor: theme.colors.surfaceDisabled}}
+                                  style={{backgroundColor: iconColor.HexCode}}
                                   size={40} 
-                                  icon={() => <LucideIcons.User color={theme.colors.onSurface}/>}
+                                  icon={() => <LucideIcons.User color={theme.colors.background}/>}
                               />
                           )}
                           style={{ marginLeft: 20 }}

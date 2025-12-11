@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Pressable } from 'react-native';
 import { useTheme, IconButton, TextInput, List } from 'react-native-paper';
 import { Pencil, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
@@ -9,6 +9,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../types/AppTypes';
 import GenericFormatter from '../helper/GenericFormatters';
 import { useDataContext } from '../helper/DataContext';
+import GenericAppHelpers from '../helper/GenericAppHelpers';
 
 type props = StackScreenProps<RootStackParamList, 'MembershipDetailsScreen'>; //typing the navigation props
 
@@ -21,6 +22,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
 
     const objectsOnLoan = dataContext.objectsOnLoan;
     const medalsAndAwards = dataContext.medalsAwards;
+    const genericHelper = new GenericAppHelpers();
 
     let membershipInfo;
 
@@ -56,7 +58,7 @@ const MembershipDetails = ({ route, navigation }: props) => {
                 <View style={{ paddingHorizontal: 20 }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <CustomText variant='bodyLargeBold'>Volunteer Data</CustomText>
-                        
+
                         {(dataContext.currentUser[0].TeamCoordinator || dataContext.currentUser[0].VolAdmin) && //only voladm and team coordinators get editing access to membership data
                             <Pencil
                                 style={{ marginRight: 10 }}
@@ -68,7 +70,32 @@ const MembershipDetails = ({ route, navigation }: props) => {
                     </View>
 
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Unit' value={membershipDetails.Otext} />
-                    <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Location' value={membershipDetails.Stext} />
+                    <View>
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            editable={false}
+                            mode='flat'
+                            underlineColor='transparent'
+                            label='Location'
+                            value={membershipDetails.Stext}
+                            textColor={theme.colors.secondary}
+                        />
+                        <Pressable
+                            onPress={() => {
+                                if (membershipDetails.Stext){
+                                    genericHelper.navigateToNativeMaps(membershipDetails.Stext);
+                                }
+                            }}
+                            style={{
+                                position: "absolute",
+                                left: 0,
+                                right: 0,
+                                top: 20,
+                                height: 60,
+                                zIndex: 10
+                            }}
+                        />
+                    </View>
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Start Date' value={genericFormatter.formatFromEdmDate(membershipDetails.StartDate)} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Member Since' value={genericFormatter.formatFromEdmDate(membershipDetails.FromDate)} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Service' value={membershipDetails.LengthServiceYears} />

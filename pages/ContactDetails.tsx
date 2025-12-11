@@ -11,6 +11,7 @@ import { useAppContext } from "../helper/AppContext";
 import { useDataContext } from "../helper/DataContext";
 import { dataHandlerModule } from "../helper/DataHandlerModule";
 import GenericFormatter from "../helper/GenericFormatters";
+import GenericAppHelpers from "../helper/GenericAppHelpers";
 
 type props = StackScreenProps<RootStackParamList, "ContactDetailsScreen">; //typing the navigation props
 
@@ -19,6 +20,7 @@ const ContactDetails = ({ route, navigation }: props) => {
     const dataContext = useDataContext();
     const params = (dataContext.currentProfile == 'MyMembers') ? dataContext.myMemberEmployeeDetails[0] : dataContext.employeeDetails[0];
     const appContext = useAppContext();
+    const genericAppHelper = new GenericAppHelpers();
 
     const EditData = async (dataObj: any) => {
         screenFlowModule.onNavigateToScreen("EditScreen", {
@@ -339,7 +341,24 @@ const ContactDetails = ({ route, navigation }: props) => {
                     mode="flat"
                     underlineColor="transparent"
                     label="Home Address"
+                    textColor={theme.colors.secondary}
                     value={addressFormatter("home")}
+                />
+                <Pressable
+                    onPress={() => {
+                        const address = addressFormatter("home");
+                        if (address){
+                            genericAppHelper.navigateToNativeMaps(address);
+                        }
+                    }}
+                    style={{
+                        position: "absolute",
+                        left: 20,
+                        right: 20,
+                        top: 40,
+                        bottom: 80,
+                        zIndex: 10
+                    }}
                 />
                 <TextInput
                     style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
@@ -348,6 +367,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                     underlineColor="transparent"
                     label="Mailing Address"
                     value={addressFormatter("mailing")}
+                    textColor={theme.colors.secondary}
                     right={
                         <TextInput.Icon
                             icon={() => (
@@ -401,6 +421,22 @@ const ContactDetails = ({ route, navigation }: props) => {
                             }}
                         />
                     }
+                />
+                <Pressable
+                    onPress={() => {
+                        const address = addressFormatter("mailing");
+                        if (address){
+                            genericAppHelper.navigateToNativeMaps(address);
+                        }
+                    }}
+                    style={{
+                        position: "absolute",
+                        left: 20,
+                        right: 20,
+                        top: 120,
+                        bottom: 0,
+                        zIndex: 10
+                    }}
                 />
             </View>
         </View>

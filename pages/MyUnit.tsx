@@ -11,6 +11,7 @@ import GenericFormatter from '../helper/GenericFormatters';
 import { useDataContext } from '../helper/DataContext';
 import { useAppContext } from '../helper/AppContext';
 import { dataHandlerModule } from '../helper/DataHandlerModule';
+import GenericAppHelpers from '../helper/GenericAppHelpers';
 
 type props = StackScreenProps<RootStackParamList, 'MyUnitDetailsScreen'>; //typing the navigation props
 
@@ -23,6 +24,8 @@ const MyUnit = ({ route, navigation }: props) => {
     const [UnitData, setUnitData] = useState(dataContext.myOrgUnitDetails[0]);
     const [selectedOrgUnit, setSelectedOrgUnit] = useState<any | undefined>(undefined);
     const [showDropDown, setShowDropDown] = useState(false);
+
+    const genericAppHelper = new GenericAppHelpers();
 
     useEffect(() => {
         if (dataContext.rootOrgUnits.length > 1){
@@ -44,7 +47,7 @@ const MyUnit = ({ route, navigation }: props) => {
                 {
                     (dataContext.rootOrgUnits.length > 1) && (
                         <>
-                            <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+                            <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
                                 <Pressable
                                     onPress={() => {
                                         setShowDropDown(!showDropDown);
@@ -121,7 +124,33 @@ const MyUnit = ({ route, navigation }: props) => {
                 </View>
                 <View style={{ paddingHorizontal: 20 }}>
                     <CustomText variant='bodyLargeBold'>Contact Information</CustomText>
-                    <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} multiline editable={false} mode='flat' underlineColor='transparent' label='Location' value={UnitData ? genericFormatter.formatAddress(UnitData) : ''} />
+                    <TextInput 
+                        style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} 
+                        multiline editable={false} 
+                        mode='flat' 
+                        underlineColor='transparent' 
+                        label='Location'
+                        textColor={theme.colors.secondary} 
+                        value={UnitData ? genericFormatter.formatAddress(UnitData) : ''} 
+                    />
+                    <Pressable
+                        onPress={() => {
+                            if (UnitData){
+                                const address = genericFormatter.formatAddress(UnitData);
+                                if (address) {
+                                    genericAppHelper.navigateToNativeMaps(address);
+                                }
+                            }
+                        }}
+                        style={{
+                            position: "absolute",
+                            left: 20,
+                            right: 20,
+                            top: 40,
+                            height: 60,
+                            zIndex: 10
+                        }}
+                    />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station' value={UnitData ? UnitData.Station : ''} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station Phone' value={UnitData ? UnitData.StationPhone : ''} />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Maintenance Schedule' value={UnitData ? genericFormatter.formatFromEdmDate(UnitData.OpReadyCheckDate) : ''} />

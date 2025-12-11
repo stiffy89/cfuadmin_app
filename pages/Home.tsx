@@ -201,7 +201,7 @@ const HomePage = () => {
     ); */
 
     return (
-        <ScrollView contentContainerStyle={{ paddingBottom: "24%", backgroundColor: theme.colors.background }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: "12%", backgroundColor: theme.colors.background }}>
             <Portal>
                 <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>
                     <Dialog.Content>
@@ -228,7 +228,7 @@ const HomePage = () => {
             </Portal>
             <View style={{ height: "18%" }}>
                 <View style={{ flex: 1, backgroundColor: theme.colors.background, paddingBottom: 10 }}>
-                    <ImageBackground imageStyle={{ top: "-20%" }} source={headerBg}
+                    <ImageBackground imageStyle={{ top: "-20%", }} source={headerBg}
                         style={{
                             position: "relative",
                             flex: 1,

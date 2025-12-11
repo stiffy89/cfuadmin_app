@@ -42,7 +42,7 @@ const storePDF = async (contentString: string, filename: string) => {
         src.write(bytes)
         return src.uri
     } catch (error) {
-        console.error('Error saving file from Base64:', error);
+        throw new Error('Error saving file from Base64');
     }
 }
 
@@ -60,6 +60,7 @@ const PDFDisplayPage = ({ route }: props) => {
     const displayName = params!.displayName;
     const filePath = params!.filePath;
     const cache = params!.cache;
+    const appContext = useAppContext();
 
     useEffect(() => {
 
@@ -71,6 +72,9 @@ const PDFDisplayPage = ({ route }: props) => {
         if (cache) {
             const fileName = params!.fileName;
             if (!fileName){
+                appContext.setShowBusyIndicator(false);
+                appContext.setShowDialog(false);
+
                 const error = {
                     isAxiosError : false,
                     message : 'No PDF filename provided'
@@ -83,15 +87,23 @@ const PDFDisplayPage = ({ route }: props) => {
             const file = new File(Paths.cache, fileName);
 
             if (file.exists) {
+                appContext.setShowBusyIndicator(false);
+                appContext.setShowDialog(false);
+                
                 setLocalFilePath(file.uri)
                 setPdfSource(file.uri)
             } else {
                 loadPDF(filePath)
                 .then((pdfString) => {
+                    appContext.setShowBusyIndicator(false);
+                    appContext.setShowDialog(false);
+
                     setPdfSource(`data:application/pdf;base64,${pdfString}`)
                     storePDF(pdfString, fileName).then(res => setLocalFilePath(res))
                 })
                 .catch(() => {
+                    appContext.setShowBusyIndicator(false);
+                    appContext.setShowDialog(false);
                     
                     const error = {
                         isAxiosError : false,
@@ -105,9 +117,15 @@ const PDFDisplayPage = ({ route }: props) => {
         else {
             loadPDF(filePath)
             .then((pdfString) => {
+                appContext.setShowBusyIndicator(false);
+                appContext.setShowDialog(false);
+
                 setPdfSource(`data:application/pdf;base64,${pdfString}`)
             })
             .catch(() => {
+                appContext.setShowBusyIndicator(false);
+                appContext.setShowDialog(false);
+
                 const error = {
                     isAxiosError : false,
                     message : 'PDF cannot be loaded'
