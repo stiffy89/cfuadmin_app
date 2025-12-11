@@ -386,7 +386,7 @@ export default function MainApp() {
 						<Stack.Navigator initialRouteName='SplashScreen' screenOptions={{ headerShown: false , cardStyle: [GlobalStyles.AppBackground, {marginTop: Constants.statusBarHeight}]}}>
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='SplashScreen' component={SplashScreen} options={{cardStyle: {marginTop: 0}}}/>
-							<Stack.Screen name='LocalAuthScreen' component={LocalAuth}/>
+							<Stack.Screen name='LocalAuthScreen' component={LocalAuth} options={{animation: "fade"}}/>
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
