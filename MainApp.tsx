@@ -123,11 +123,11 @@ const TabNavigator = () => {
 							break;
 					}
 
-					let iconColor = focused ? theme.colors.primary : "#000";
+					let iconColor = focused ? theme.colors.primary : theme.colors.onSurface;
 					return <CustomText variant='labelSmall' style={{ color: iconColor }}>{formattedRouteName}</CustomText>
 				},
 				tabBarIcon: ({ focused, color, size }) => {
-					let iconColor = focused ? theme.colors.primary : "#000";
+					let iconColor = focused ? theme.colors.primary : theme.colors.onSurface;
 
 					switch (route.name) {
 						case "HomeScreen":
@@ -386,7 +386,7 @@ export default function MainApp() {
 						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: [GlobalStyles.AppBackground, {marginTop: Constants.statusBarHeight}]}}>
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
 							<Stack.Screen name='SplashScreen' component={SplashScreen} options={{cardStyle: {marginTop: 0}}}/>
-							<Stack.Screen name='LocalAuthScreen' component={LocalAuth}/>
+							<Stack.Screen name='LocalAuthScreen' component={LocalAuth} options={{animation: "fade"}}/>
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>

@@ -16,7 +16,7 @@ import { useDataContext } from '../helper/DataContext';
 import { useHelperValuesDataContext } from '../helper/HelperValuesDataContext';
 import { isAxiosError } from 'axios';
 import * as SecureStore from 'expo-secure-store';
-import unlockGIF from '../assets/gif/padlock.gif';
+import unlock from "../assets/gif/unlock.gif"
 
 const LocalAuth = () => {
 
@@ -26,7 +26,37 @@ const LocalAuth = () => {
     const [errorText, setErrorText] = useState('');
     const [hasPin, setHasPin] = useState(false);
     const [pinTitle, setPinTitle] = useState('Set New Pin');
+    const [authSuccess, setAuthSuccess] = useState(false)
+    const [showCurtain, setShowCurtain] = useState(false)
     const theme = useTheme();
+
+    const curtainFade = useRef(new Animated.Value(1)).current;
+    const curtainFadeIn = () => {
+        setShowCurtain(true)
+		Animated.timing(curtainFade, {
+        	toValue: 1,
+        	duration: 500, 
+        	useNativeDriver: true,
+      	}).start();
+	}
+	const curtainFadeOut = () => {
+		Animated.timing(curtainFade, {
+        	toValue: 0,
+        	duration: 500, 
+        	useNativeDriver: true,
+      	}).start(() => {
+            setShowCurtain(false)
+        });
+	}
+    const unlockFade = useRef(new Animated.Value(1)).current;
+	const unlockFadeOut = () => {
+		Animated.timing(unlockFade, {
+        	toValue: 0,
+            delay:1200,
+        	duration: 250, 
+        	useNativeDriver: true,
+      	}).start();
+	}
 
     useEffect(() => {
         async function onMount() {
@@ -44,24 +74,14 @@ const LocalAuth = () => {
 
             //checking to see if user has biometrics available and active on their device. If not, default to the pin
             if ((pin) && (await hasHardwareAsync() && await isEnrolledAsync())) {
+                curtainFadeIn()
                 const securityLevel = await getEnrolledLevelAsync();
                 if (securityLevel > 0) {
                     const localAuthResult = await authModule.onLocalAuthLogin();
-                    if (localAuthResult) {
-                        screenFlowModule.onNavigateToScreen('SplashScreen');
-                        //refresh the tokens first and then get all data
-                        onRefreshAllTokens()
-                            .then(async (tokenResponse) => {
-                                const newAccessToken = tokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
-                                const newRefreshToken = tokenResponse.data.TOKEN_RESPONSE.REFRESH_TOKEN;
-                                await SecureStore.setItemAsync('access-token', newAccessToken);
-                                await SecureStore.setItemAsync('refresh-token', newRefreshToken);
-
-                                onGetInitialLoad();
-                            })
-                            .catch((error: any) => {
-                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                            })
+                    if(!localAuthResult){
+                        curtainFadeOut()
+                    }else if (localAuthResult) {
+                        onAuthSuccess()
                         return;
                     }
                 }
@@ -75,6 +95,30 @@ const LocalAuth = () => {
     const appContext = useAppContext();
     const helperDataContext = useHelperValuesDataContext();
     const dataContext = useDataContext();
+
+    
+    const onAuthSuccess = async () => {
+        setAuthSuccess(true)
+        unlockFadeOut()
+        //wait til the unlock gif is done
+        setTimeout(() => {
+            screenFlowModule.onNavigateToScreen('SplashScreen');
+
+            //refresh the tokens first and then get all data
+            onRefreshAllTokens()
+                .then(async (tokenResponse) => {
+                    const newAccessToken = tokenResponse!.data.TOKEN_RESPONSE.ACCESS_TOKEN;
+                    const newRefreshToken = tokenResponse!.data.TOKEN_RESPONSE.REFRESH_TOKEN;
+                    await SecureStore.setItemAsync('access-token', newAccessToken);
+                    await SecureStore.setItemAsync('refresh-token', newRefreshToken);
+
+                    onGetInitialLoad();
+                })
+                .catch((error: any) => {
+                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                })
+        }, 1480);
+    }
 
     const onRefreshAllTokens = async () => {
         const refreshToken = await SecureStore.getItemAsync('refresh-token');
@@ -408,9 +452,8 @@ const LocalAuth = () => {
         )
     ]
 
-    const unlockAnimation = <Image source={unlockGIF} style={{ width: 100, height: 100 }} />;
-
     const PinBody = (
+        <>
         <View>
             {
                 <View style={{ marginTop: 20 }}>
@@ -436,21 +479,7 @@ const LocalAuth = () => {
                                 if (hasPin) {
                                     const pinSuccess = await authModule.onPinLogin(text);
                                     if (pinSuccess) {
-                                        screenFlowModule.onNavigateToScreen('SplashScreen');
-
-                                        //refresh the tokens first and then get all data
-                                        onRefreshAllTokens()
-                                            .then(async (tokenResponse) => {
-                                                const newAccessToken = tokenResponse!.data.TOKEN_RESPONSE.ACCESS_TOKEN;
-                                                const newRefreshToken = tokenResponse!.data.TOKEN_RESPONSE.REFRESH_TOKEN;
-                                                await SecureStore.setItemAsync('access-token', newAccessToken);
-                                                await SecureStore.setItemAsync('refresh-token', newRefreshToken);
-
-                                                onGetInitialLoad();
-                                            })
-                                            .catch((error: any) => {
-                                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                                            })
+                                        onAuthSuccess()
                                     } else {
                                         if (attempts > 1) {
                                             const attemptsRemaining = attempts - 1;
@@ -527,22 +556,19 @@ const LocalAuth = () => {
                 </View>
             }
         </View>
+        {showCurtain && <Animated.View style={{ position: "absolute", height: "100%", width: "100%", backgroundColor: "#4C4E4F", opacity: curtainFade }} />}
+        </>
     )
 
+    if(authSuccess){
+        return (
+            <Animated.View style={{flex:1, backgroundColor: "#4C4E4F", display: "flex", justifyContent:"center", alignItems:"center"}}>
+                <Animated.Image source={unlock} style={{ width: 100, height: 100, opacity: unlockFade }} />
+            </Animated.View>
+        )
+    }
+
     return PinBody;
-
-
-
-
-    /*    return (
-            <ImageBackground source={BackgroundImage} style={GlobalStyles.backgroundImagePin}>
-                <View style={GlobalStyles.backgroundOverlay} />
-                <View style={{ height: 310, width: '100%', backgroundColor: theme.colors.background, borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-                    <PinBody />
-                </View>
-            </ImageBackground>
-        ) */
-
 
 }
 

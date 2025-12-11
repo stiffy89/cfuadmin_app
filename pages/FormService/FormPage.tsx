@@ -118,12 +118,12 @@ const FormPage = ({ route, navigation }: props) => {
 
     return (
         <View style={{ flex: 1, backgroundColor: "#fff", marginTop: 5, borderTopLeftRadius: 25, borderTopRightRadius: 25, boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.8)" }}>
-            <View style={{flexDirection: 'row', justifyContent: "space-around", alignItems: 'center', marginTop: 20, marginBottom: 10}}>
+            <View style={{flexDirection: 'row', justifyContent: "space-between", alignItems: 'center', marginTop: 20, marginBottom: 10, marginHorizontal: 10}}>
                 <Button contentStyle={{height: 50}} mode="text" onPress={() => screenFlowModule.onGoBack()} >
                     <CustomText style={{color: theme.colors.primary}} variant='titleMediumBold'>Done</CustomText>
                 </Button>
-                <CustomText style={{width: "50%"}} numberOfLines={1} ellipsizeMode="tail" variant='titleLargeBold'>{formsLaunchSet.Title}</CustomText>
-                <IconButton icon={() => <CustomIcon name="RotateCcw" color={theme.colors.primary} size={25}/>} style={{opacity: features.refresh ? 1 : 0}} disabled={!features.refresh} size={20} onPress={webViewRefresh} />
+                <CustomText style={{width: "50%", position:"absolute", left: "50%", transform: [{translateX: "-45%"}]}} numberOfLines={1} ellipsizeMode="tail" variant='titleLargeBold'>{formsLaunchSet.Title}</CustomText>
+                {features.refresh && <IconButton icon={() => <CustomIcon name="RotateCcw" color={theme.colors.primary} size={25}/>} size={20} onPress={webViewRefresh} />}
             </View>
             <View style={{flex: 1, marginBottom: 100, marginHorizontal: 20}}>
                 <WebView

@@ -32,6 +32,7 @@ import headerBg from "../assets/images/header-bg-transparent.png"
 
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { OktaLoginResult } from '../types/AppTypes';
+import { StatusBar } from 'expo-status-bar';
 
 const Services = () => {
     const theme = useTheme();
@@ -189,19 +190,21 @@ const HomePage = () => {
     const theme = useTheme();
     const user = useDataContext().currentUser[0];
     const [showDialog, setShowDialog] = useState(false);
+    const [inHome, setInHome] = useState(true)
     const appContext = useAppContext();
 
-/*    useFocusEffect(
+    useFocusEffect(
         useCallback(() => {
-            appContext.setShowTopEdge(false);
+            setInHome(true)
             return () => {
-                //appContext.setShowTopEdge(true);
+                setInHome(false)
             };
         }, [])
-    ); */
+    );
 
     return (
-        <ScrollView contentContainerStyle={{ paddingBottom: "12%", backgroundColor: theme.colors.background }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: "24%", backgroundColor: theme.colors.background }}>
+            <StatusBar style={inHome ? 'light':'dark'}/>
             <Portal>
                 <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>
                     <Dialog.Content>
