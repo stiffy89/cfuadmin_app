@@ -202,6 +202,7 @@ const HomePage = () => {
         }, [])
     );
 
+
     return (
         <ScrollView contentContainerStyle={{ paddingBottom: "24%", backgroundColor: theme.colors.background }}>
             <StatusBar style={inHome ? 'light':'dark'}/>

@@ -143,7 +143,7 @@ const TabNavigator = () => {
 			})}
 		>
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
-			<Tab.Screen name="ContactsScreen" component={ContactsPage} options={{sceneStyle: {marginTop: Constants.statusBarHeight}}}/>
+			<Tab.Screen name="ContactsScreen" component={ContactsPage} options={{sceneStyle: {paddingTop: Constants.statusBarHeight}}}/>
 			{
 				(!dataContext.currentUser[0].VolAdmin) && (
 					<Tab.Screen 
@@ -295,17 +295,6 @@ export default function MainApp() {
 		currentUser.current = dataContext.currentUser;
 	}, [dataContext.currentUser])
 
-/*	useEffect(() => {
-		if (appContext.showTopEdge){
-			setEdges(['top']);
-			setStatusBarColor('dark');
-		}
-		else {
-			setEdges([]);
-			setStatusBarColor('light');
-		}
-	}, [appContext.showTopEdge]). */
-
 
 	const { loaded, fonts } = useCustomFonts();
 
@@ -383,16 +372,16 @@ export default function MainApp() {
 							}
 						}}
 					>
-						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: [GlobalStyles.AppBackground, {marginTop: Constants.statusBarHeight}]}}>
+						<Stack.Navigator screenOptions={{ headerShown: false , cardStyle: [GlobalStyles.AppBackground, {paddingTop: Constants.statusBarHeight}]}}>
 							<Stack.Screen name='LoginScreen' component={LoginPage} />
-							<Stack.Screen name='SplashScreen' component={SplashScreen} options={{cardStyle: {marginTop: 0}}}/>
+							<Stack.Screen name='SplashScreen' component={SplashScreen} options={{cardStyle: {paddingTop: 0}}}/>
 							<Stack.Screen name='LocalAuthScreen' component={LocalAuth} options={{animation: "fade"}}/>
 							<Stack.Screen name='MyMembers' component={MyMembers}/>
 							<Stack.Screen name='MyMembersProfile' component={MyMembersProfile}/>
 							<Stack.Screen name='Resources' component={ResourceStack}/>
 							<Stack.Screen name='FormService' component={FormServiceStack}/>
 							<Stack.Screen name="SkillsMaintenance" component={SkillsMaintenanceStack}/>
-							<Stack.Screen name='MainTabs' component={TabNavigator} options={{cardStyle: {marginTop: 0, backgroundColor: "#fff"}}}/>
+							<Stack.Screen name='MainTabs' component={TabNavigator} options={{cardStyle: {paddingTop: 0, backgroundColor: "#fff"}}}/>
 							<Stack.Screen name='MyDetailsScreen' component={MyDetails}/>
 							<Stack.Screen name='ContactDetailsScreen' component={ContactDetails}/>
 							<Stack.Screen name='EmergencyContactsScreen' component={EmergencyContacts} />
@@ -410,7 +399,7 @@ export default function MainApp() {
 							<Stack.Screen name='VolAdminSearch' component={VolAdminSearch}/>
 							<Stack.Screen name='VolAdminCeaseMember' component={VolAdminCeaseMember}/>
 							<Stack.Screen name='FeedbackScreen' component={FeedbackScreen} options={{animation: "fade",presentation:"transparentModal", cardStyle: {backgroundColor: '#bdbdbdd0'}}}/>
-							<Stack.Screen name='AllServicesListScreen' component={AllServicesListScreen} options={{animation: "slide_from_bottom", gestureEnabled: false, cardStyle: {backgroundColor: '#bdbdbdd0', marginTop: Constants.statusBarHeight}}}/>
+							<Stack.Screen name='AllServicesListScreen' component={AllServicesListScreen} options={{animation: "slide_from_bottom", gestureEnabled: false, cardStyle: {backgroundColor: '#bdbdbdd0', paddingTop: Constants.statusBarHeight}}}/>
 							<Stack.Screen name='VolunteerNotes' component={VolunteerNotes}/>
 							<Stack.Screen name='PositionHistory' component={PositionHistory}/>
 							<Stack.Screen name='EquityDiversity' component={EquityDiversity}/>
