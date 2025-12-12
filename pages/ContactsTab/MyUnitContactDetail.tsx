@@ -64,7 +64,7 @@ const MyUnitContactDetail = ({ route }: props) => {
                     <Pressable
                         onPress={() => {
                             let mobNumber = `tel:${params.MobilePhone}}`;
-                            Linking.openURL(mobNumber);
+                            genericAppHelper.navigateToPhone(mobNumber);
                         }}
                         style={{
                             position: "absolute",
@@ -91,7 +91,7 @@ const MyUnitContactDetail = ({ route }: props) => {
                     <Pressable
                         onPress={() => {
                             let email = `mailTo:${params.Email}`;
-                            Linking.openURL(email);
+                            genericAppHelper.navigateToEmail(email);
                         }}
                         style={{
                             position: "absolute",
@@ -143,8 +143,8 @@ const MyUnitContactDetail = ({ route }: props) => {
                     />
                     <Pressable
                         onPress={() => {
-                            let HomePhone = `tel:${params.HomePhone}`;
-                            Linking.openURL(HomePhone);
+                            let homePhone = `tel:${params.HomePhone}`;
+                            genericAppHelper.navigateToPhone(homePhone);
                         }}
                         style={{
                             position: "absolute",
@@ -170,8 +170,8 @@ const MyUnitContactDetail = ({ route }: props) => {
                     />
                     <Pressable
                         onPress={() => {
-                            let WorkPhone = `tel:${params.WorkPhone}`;
-                            Linking.openURL(WorkPhone);
+                            let workPhone = `tel:${params.WorkPhone}`;
+                            genericAppHelper.navigateToPhone(workPhone);
                         }}
                         style={{
                             position: "absolute",

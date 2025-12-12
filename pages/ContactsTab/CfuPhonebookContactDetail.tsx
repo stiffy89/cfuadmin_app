@@ -59,7 +59,7 @@ const CfuPhonebookContactDetail = ({ route }: props) => {
                     <Pressable
                         onPress={() => {
                             let mobNumber = `tel:${params.ContactNo}}`;
-                            Linking.openURL(mobNumber);
+                            genericAppHelper.navigateToPhone(mobNumber);
                         }}
                         style={{
                             position: "absolute",

@@ -153,7 +153,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let mobNumber= `tel:${params.Telnr}`;
-                                    Linking.openURL(mobNumber);
+                                    genericAppHelper.navigateToPhone(mobNumber);
                                 }}
                                 style={{
                                     position: "absolute",
@@ -206,7 +206,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let homeNumber = `tel:${params.Zznum01}`;
-                                    Linking.openURL(homeNumber);
+                                    genericAppHelper.navigateToPhone(homeNumber);
                                 }}
                                 style={{
                                     position: "absolute",
@@ -259,7 +259,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let workNumber = `tel:${params.Zznum02}`;
-                                    Linking.openURL(workNumber);
+                                    genericAppHelper.navigateToPhone(workNumber);
                                 }}
                                 style={{
                                     position: "absolute",
@@ -319,7 +319,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                             <Pressable
                                 onPress={() => {
                                     let emailAddress = `mailto:${params.Email}`;
-                                    Linking.openURL(emailAddress);
+                                    genericAppHelper.navigateToEmail(emailAddress);
                                 }}
                                 style={{
                                     position: "absolute",
@@ -432,7 +432,7 @@ const ContactDetails = ({ route, navigation }: props) => {
                     style={{
                         position: "absolute",
                         left: 20,
-                        right: 20,
+                        right: 80,
                         top: 120,
                         bottom: 0,
                         zIndex: 10

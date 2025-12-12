@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, Pressable } from 'react-native';
+import { View, ScrollView, Pressable, Linking } from 'react-native';
 import { useTheme, IconButton, TextInput, List, Divider } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule, ScreenFlowModule } from '../helper/ScreenFlowModule';
@@ -152,7 +152,31 @@ const MyUnit = ({ route, navigation }: props) => {
                         }}
                     />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station' value={UnitData ? UnitData.Station : ''} />
-                    <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station Phone' value={UnitData ? UnitData.StationPhone : ''} />
+                    <View>
+                        <TextInput 
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} 
+                            editable={false} 
+                            mode='flat' 
+                            underlineColor='transparent' 
+                            label='Station Phone' 
+                            value={UnitData ? UnitData.StationPhone : ''} 
+                            textColor={theme.colors.secondary}
+                        />
+                        <Pressable
+                            onPress={() => {
+                                let number= `tel:${UnitData.StationPhone }`;
+                                genericAppHelper.navigateToPhone(number);
+                            }}
+                            style={{
+                                position: "absolute",
+                                left: 0,
+                                right: 0,
+                                top: 20,
+                                height: 60,
+                                zIndex: 10
+                            }}
+                        />
+                    </View>
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Maintenance Schedule' value={UnitData ? genericFormatter.formatFromEdmDate(UnitData.OpReadyCheckDate) : ''} />
                 </View>
                 <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
