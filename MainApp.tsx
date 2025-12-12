@@ -143,7 +143,7 @@ const TabNavigator = () => {
 			})}
 		>
 			<Tab.Screen name="HomeScreen" component={HomePage}/>
-			<Tab.Screen name="ContactsScreen" component={ContactsPage} options={{sceneStyle: {paddingTop: Constants.statusBarHeight}}}/>
+			<Tab.Screen name="ContactsScreen" component={ContactsPage} options={{sceneStyle: {paddingTop: Constants.statusBarHeight, backgroundColor: "#fff"}}}/>
 			{
 				(!dataContext.currentUser[0].VolAdmin) && (
 					<Tab.Screen 
