@@ -177,7 +177,7 @@ export type DataContextType = {
 }
 
 export type OktaLoginResult = {
-    response: AuthSession.TokenResponse
+    response: AuthSession.TokenResponse | null;
 }
 
 export type TokenError = {

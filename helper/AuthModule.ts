@@ -14,9 +14,9 @@ import { OktaLoginResult, TokenError } from '../types/AppTypes';
 
 export class AuthModule {
 
-    isAuthenticating : boolean = false;
+    isAuthenticating: boolean = false;
 
-    async onFRNSWLogin () : Promise<OktaLoginResult> {
+    async onFRNSWLogin(): Promise<OktaLoginResult> {
         this.isAuthenticating = true;
 
         //to ensure close login widget
@@ -54,20 +54,61 @@ export class AuthModule {
                 prompt: AuthSession.Prompt.Login //<-- this will use existing session, otherwise users will need to log in everytime
             });
 
-            const requestState = request.state;
-            const result = await request.promptAsync(discovery);
+            /*  OLD AUTH CODE  
+                const requestState = request.state;
+                const result = await request.promptAsync(discovery);
+    
+                //check to see if result.type is cancel or dismiss - if so, return them back and dismiss this
+                if (result.type == 'error' || result.type == 'dismiss'){
+                    return {
+                        response : null
+                    }
+                }
+    
+                //AuthSessionResult returns an error
+                if (result.type !== 'success') {
+                    this.isAuthenticating = false;
+                    throw new Error('Auth session error');
+                }
+    
+                const { state, code } = result.params;
+    
+                if (state !== requestState) {
+                    this.isAuthenticating = false;
+                    throw new Error('Auth session - state miss match');
+                } */
 
-            //AuthSessionResult returns an error
+
+            const authUrl = await request.makeAuthUrlAsync(discovery);
+
+            const result = await WebBrowser.openAuthSessionAsync(authUrl, oktaConfig.redirectUri, {
+                showInRecents: true, // This helps Android keep the tab alive in the background
+            });
+
+            // 3. Handle the result (which is still an AuthSessionResult)
+            if (result.type === 'cancel' || result.type === 'dismiss') {
+                return { response: null };
+            }
+
             if (result.type !== 'success') {
                 this.isAuthenticating = false;
                 throw new Error('Auth session error');
             }
 
-            const { state, code } = result.params;
+            // 4. Parse the URL returned in the success result
+            // result.params is NOT automatically populated in openAuthSessionAsync
+            // You must extract the params from result.url
+            const url = new URL(result.url);
+            const code = url.searchParams.get('code');
+            const state = url.searchParams.get('state');
 
-            if (state !== requestState) {
+            if (state !== request.state) {
                 this.isAuthenticating = false;
-                throw new Error('Auth session - state miss match');
+                throw new Error('Auth session - state mismatch');
+            }
+
+            if (!code) {
+                throw new Error('No code returned from provider');
             }
 
             const tokenRequestParams = {
@@ -138,7 +179,7 @@ export class AuthModule {
                 await SecureStore.deleteItemAsync('access-token'),
                 await SecureStore.deleteItemAsync('refresh-token')
             ])
-        } 
+        }
         catch (error) {
             throw error;
         }
@@ -147,16 +188,16 @@ export class AuthModule {
     async onLogOut() {
         try {
             await this.onClearAllDeviceTokens();
-            const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking').default; 
-            RCTNetworking.clearCookies((result : any) => {
+            const RCTNetworking = require('react-native/Libraries/Network/RCTNetworking').default;
+            RCTNetworking.clearCookies((result: any) => {
                 console.log('cookies cleared');
                 screenFlowModule.onNavigateToScreen('LoginScreen');
             });
         }
-        catch (error : any) {
+        catch (error: any) {
             const errorObj = {
-                isAxiosError : false,
-                message : 'Token deletion error : (' + error.name + " " + error.message + ")"
+                isAxiosError: false,
+                message: 'Token deletion error : (' + error.name + " " + error.message + ")"
             }
 
             screenFlowModule.onNavigateToScreen('ErrorPage', errorObj);

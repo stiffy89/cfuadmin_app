@@ -40,7 +40,15 @@ const LoginPage = () => {
                         authModule.onFRNSWLogin()
                             .then(async (result: OktaLoginResult) => {
 
-                                const oktaIDToken = result.response.idToken;
+                                if (!result.response){
+                                    appContext.setShowBusyIndicator(false);
+                                    appContext.setShowDialog(false);
+                                    return;
+                                }
+
+                                //response should never be null here
+                                const oktaIDToken = result.response!.idToken;
+
                                 if (oktaIDToken) {
                                     const tokenResponse = await dataHandlerModule.getFRNSWInitialTokens(oktaIDToken);
 
