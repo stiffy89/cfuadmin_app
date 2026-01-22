@@ -54,32 +54,32 @@ export class AuthModule {
                 prompt: AuthSession.Prompt.Login //<-- this will use existing session, otherwise users will need to log in everytime
             });
 
-            /*  OLD AUTH CODE  
-                const requestState = request.state;
-                const result = await request.promptAsync(discovery);
-    
-                //check to see if result.type is cancel or dismiss - if so, return them back and dismiss this
-                if (result.type == 'error' || result.type == 'dismiss'){
-                    return {
-                        response : null
-                    }
+            
+            const requestState = request.state;
+            const result = await request.promptAsync(discovery);
+
+            //check to see if result.type is cancel or dismiss - if so, return them back and dismiss this
+            if (result.type == 'error' || result.type == 'dismiss'){
+                return {
+                    response : null
                 }
-    
-                //AuthSessionResult returns an error
-                if (result.type !== 'success') {
-                    this.isAuthenticating = false;
-                    throw new Error('Auth session error');
-                }
-    
-                const { state, code } = result.params;
-    
-                if (state !== requestState) {
-                    this.isAuthenticating = false;
-                    throw new Error('Auth session - state miss match');
-                } */
+            }
+
+            //AuthSessionResult returns an error
+            if (result.type !== 'success') {
+                this.isAuthenticating = false;
+                throw new Error('Auth session error');
+            }
+
+            const { state, code } = result.params;
+
+            if (state !== requestState) {
+                this.isAuthenticating = false;
+                throw new Error('Auth session - state miss match');
+            } 
 
 
-            const authUrl = await request.makeAuthUrlAsync(discovery);
+        /*    const authUrl = await request.makeAuthUrlAsync(discovery);
 
             const result = await WebBrowser.openAuthSessionAsync(authUrl, oktaConfig.redirectUri, {
                 showInRecents: true, // This helps Android keep the tab alive in the background
@@ -110,7 +110,7 @@ export class AuthModule {
             if (!code) {
                 throw new Error('No code returned from provider');
             }
-
+*/
             const tokenRequestParams = {
                 code,
                 clientId: oktaConfig.clientId,
