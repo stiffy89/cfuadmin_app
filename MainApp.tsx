@@ -6,6 +6,7 @@ import * as Crypto from 'expo-crypto';
 import * as LucideIcons from 'lucide-react-native';
 import { PlatformPressable } from '@react-navigation/elements';
 import Constants from 'expo-constants';
+import DeviceInfo from 'react-native-device-info';
 
 import { Provider as PaperProvider, MD3LightTheme, Dialog, Portal, ActivityIndicator, Button, useTheme } from 'react-native-paper';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -174,6 +175,13 @@ export default function MainApp() {
 	const [statusBarColor, setStatusBarColor] = useState<StatusBarStyle>('dark');
 
 	const onAppWake = async () => {
+
+		//get the bundle id and the version number
+		const bundleID = DeviceInfo.getBundleId();
+		const versionNo = DeviceInfo.getVersion();
+
+		console.log('bundleID : ', bundleID);
+		console.log('versionID : ', versionNo);
 
 		//see if we have installation id saved
 		const installationId = await AsyncStorage.getItem('installation-id');

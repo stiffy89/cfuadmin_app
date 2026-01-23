@@ -99,7 +99,7 @@ const VolAdminSearch = ({ route }: props) => {
                                     );
 
                                     if (results.responseBody.error) {
-                                        throw new Error('SAP error - ', results.responseBody.error.message.value)
+                                        throw new Error('Error - ', results.responseBody.error.message.value)
                                     }
 
                                     setUnitSearchResults(results.responseBody.d.results);
@@ -145,7 +145,7 @@ const VolAdminSearch = ({ route }: props) => {
                                     );
 
                                     if (results.responseBody.error) {
-                                        throw new Error('SAP error - ', results.responseBody.error.message.value)
+                                        throw new Error('Error - ', results.responseBody.error.message.value)
                                     }
 
                                     setStationSearchResults(results.responseBody.d.results);

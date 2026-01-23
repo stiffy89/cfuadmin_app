@@ -22,13 +22,24 @@ import { ServiceData } from '../types/AppTypes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //menu icons
-import defaultIcon from '../assets/menuicons/menu-default.png';
-import formIcon from '../assets/menuicons/menu-forms.png';
-import resourcesIcon from '../assets/menuicons/menu-resources.png';
-import skillsMaintIcon from '../assets/menuicons/menu-skills-maint.png';
-import trainingIcon from '../assets/menuicons/menu-training.png';
-import allServicesIcon from "../assets/menuicons/menu-all-services.png"
-import headerBg from "../assets/images/header-bg-transparent.png"
+import defaultIcon from '../assets/new_menuicons/menu-default.png';
+import formIcon from '../assets/new_menuicons/menu-forms.png';
+import resourcesIcon from '../assets/new_menuicons/menu-resources.png';
+import skillsMaintIcon from '../assets/new_menuicons/menu-skills-maint.png';
+import trainingIcon from '../assets/new_menuicons/menu-training.png';
+import allServicesIcon from "../assets/new_menuicons/menu-all-services.png";
+import annualInventoryCheckIcon from '../assets/new_menuicons/menu-annual-inventory-check.png';
+import idCardReplacementIcon from '../assets/new_menuicons/menu-id-card-replacement.png';
+import maintenanceIcon from '../assets/new_menuicons/menu-maintenance.png';
+import manageMembersIcon from '../assets/new_menuicons/menu-manage-members2.png';
+import membershipDeregistrationIcon from '../assets/new_menuicons/menu-membership-deregistration.png';
+import uniformReplacementIcon from '../assets/new_menuicons/menu-uniform-replacement.png';
+import unitDetailsIcon from '../assets/new_menuicons/menu-unit-details.png';
+import practicalTrainingRegistrationIcon from '../assets/new_menuicons/menu-practical-training-registration.png';
+import menuEquipmentRepair from '../assets/new_menuicons/menu-equipment-repair.png';
+
+import headerBg from "../assets/images/header-bg-transparent.png";
+
 
 import { dataHandlerModule } from '../helper/DataHandlerModule';
 import { OktaLoginResult } from '../types/AppTypes';
@@ -40,14 +51,23 @@ const Services = () => {
     const { services, setCurrentProfile, setVolAdminMembersSearchFilter, currentUser, volAdminLastSelectedOrgUnit, setOrgUnitTeamMembers } = useDataContext();
 
 
-    const iconMapping: any = {
-        'menu-skills-maint.png': skillsMaintIcon,
-        'menu-resources.png': resourcesIcon,
+    const iconMapping : any = {
         'menu-default.png': defaultIcon,
         'menu-forms.png': formIcon,
+        'menu-resources.png': resourcesIcon,
+        'menu-skills-maint.png': skillsMaintIcon,
         'menu-training.png': trainingIcon,
-        'menu-all-services.png': allServicesIcon
-    }
+        'menu-all-services.png': allServicesIcon,
+        'menu-annual-inventory-check.png': annualInventoryCheckIcon,
+        'menu-id-card-replacement.png': idCardReplacementIcon,
+        'menu-maintenance.png': maintenanceIcon,
+        'menu-manage-members2.png': manageMembersIcon,
+        'menu-membership-deregistration.png': membershipDeregistrationIcon,
+        'menu-uniform-replacement.png': uniformReplacementIcon,
+        'menu-unit-details.png': unitDetailsIcon,
+        'menu-practical-training-registration.png': practicalTrainingRegistrationIcon,
+        'menu-equipment-repair.png' : menuEquipmentRepair
+    };
 
     //map callbacks to the targetPaths
     const targetMapping: any = {
@@ -111,7 +131,7 @@ const Services = () => {
 
     const Tile = ({ service, style }: { service: any, style?: StyleProp<ViewStyle> }) => {
         const { IconFilename, TargetPath, Title } = service
-        const imageIcon = iconMapping[IconFilename];
+        const imageIcon = iconMapping[IconFilename] ? iconMapping[IconFilename] : defaultIcon;
         let path = TargetPath;
         if (slashCount(TargetPath) > 1) {
             //we have a path param (i.e /path/param)

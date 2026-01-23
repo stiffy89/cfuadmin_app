@@ -126,6 +126,11 @@ const LocalAuth = () => {
         async function FullLogin() {
             try {
                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                
+                if (oktaLoginResponse.response == null){
+                    throw new Error('Refresh response is empty, please try again');
+                }
+
                 const oktaIDToken = oktaLoginResponse.response.idToken;
                 const initialTokenResponse = await dataHandlerModule.getFRNSWInitialTokens(oktaIDToken!);
                 return initialTokenResponse;
@@ -185,7 +190,7 @@ const LocalAuth = () => {
             try {
                 const brigadesResult = await dataHandlerModule.batchGet('Brigades', 'Z_VOL_MEMBER_SRV', 'Brigades');
                 if (brigadesResult.responseBody.error) {
-                    throw new Error('SAP Error when calling brigades')
+                    throw new Error('Error when calling Brigades')
                 }
 
                 dataContext.setBrigadeSummary(brigadesResult.responseBody.d.results);
@@ -202,7 +207,7 @@ const LocalAuth = () => {
             try {
                 const brigadeSummaryResult = await dataHandlerModule.batchGet(`BrigadeSummaries?$filter=Zzplans%20eq%20%27${zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'Brigades');
                 if (brigadeSummaryResult.responseBody.error) {
-                    throw new Error('SAP Error when calling brigade summaries')
+                    throw new Error('Error when calling brigade summaries')
                 }
 
                 dataContext.setBrigadeSummary(brigadeSummaryResult.responseBody.d.results);

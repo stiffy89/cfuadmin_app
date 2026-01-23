@@ -7,7 +7,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "test": "maestro test --format HTML --output .maestro/.outputs/%date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%_report.html .maestro" 
+    "test": "maestro test --format HTML --output .maestro/.outputs/%date:~10,4%%date:~4,2%%date:~7,2%_%time:~0,2%%time:~3,2%%time:~6,2%_report.html .maestro"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -38,6 +38,7 @@
     "react-hook-form": "^7.65.0",
     "react-native": "0.81.5",
     "react-native-blob-util": "^0.22.2",
+    "react-native-device-info": "^15.0.1",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-mask-text": "^0.15.0",
     "react-native-pager-view": "6.9.1",

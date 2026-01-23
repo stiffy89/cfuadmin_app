@@ -61,7 +61,7 @@ const ErrorPage = ({ route }: props) => {
             //SAP error
             setErrorCode(700);
             setSapErrorMessage(error.message);
-            setErrorMessage('There appears to be an error from the SAP system. The error message is listed below. You can go back and try again or contact your IT administrator for further assistance.')
+            setErrorMessage('There appears to be an error from the system. The error message is listed below. You can go back and try again or contact your IT administrator for further assistance.')
         }
     }, [])
 

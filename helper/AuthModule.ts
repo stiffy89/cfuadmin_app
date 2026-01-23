@@ -59,7 +59,7 @@ export class AuthModule {
             const result = await request.promptAsync(discovery);
 
             //check to see if result.type is cancel or dismiss - if so, return them back and dismiss this
-            if (result.type == 'error' || result.type == 'dismiss'){
+            if (result.type == 'cancel' || result.type == 'dismiss'){
                 return {
                     response : null
                 }

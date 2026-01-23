@@ -249,7 +249,7 @@ class DataHandlerModule {
             if (jsonResponse.error) {
                 const newError = {
                     isAxiosError: false,
-                    message: 'SAP Error - ' + jsonResponse.error.message.value
+                    message: 'Error - ' + jsonResponse.error.message.value
                 }
 
                 throw newError;
@@ -278,6 +278,9 @@ class DataHandlerModule {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                if (oktaLoginResponse.response == null){
+                                    throw new Error('Refresh response is empty, please try again');
+                                }
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
                                 const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
@@ -319,7 +322,7 @@ class DataHandlerModule {
                     if (retryAuthJsonResponse.error) {
                         const newAuthError = {
                             isAxiosError: false,
-                            message: 'SAP Error - ' + retryAuthJsonResponse.error.message.value
+                            message: 'Error - ' + retryAuthJsonResponse.error.message.value
                         }
 
                         throw newAuthError;
@@ -371,7 +374,7 @@ class DataHandlerModule {
                     if (retryCSRFJsonResponse.error) {
                         const newCSRFError = {
                             isAxiosError: false,
-                            message: 'SAP Error - ' + retryCSRFJsonResponse.error.message.value
+                            message: 'Error - ' + retryCSRFJsonResponse.error.message.value
                         }
 
                         throw newCSRFError;
@@ -443,7 +446,7 @@ class DataHandlerModule {
             if (jsonResponse.error) {
                 const newError = {
                     isAxiosError: false,
-                    message: 'SAP Error - ' + jsonResponse.error.message.value
+                    message: 'Error - ' + jsonResponse.error.message.value
                 }
 
                 throw newError;
@@ -471,6 +474,9 @@ class DataHandlerModule {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                if (oktaLoginResponse.response == null){
+                                    throw new Error('Refresh response is empty, please try again');
+                                }
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
                                 const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
@@ -512,7 +518,7 @@ class DataHandlerModule {
                     if (retryAuthJsonResponse.error) {
                         const newAuthError = {
                             isAxiosError: false,
-                            message: 'SAP Error - ' + retryAuthJsonResponse.error.message.value
+                            message: 'Error - ' + retryAuthJsonResponse.error.message.value
                         }
 
                         throw newAuthError;
@@ -564,7 +570,7 @@ class DataHandlerModule {
                     if (retryCSRFJsonResponse.error) {
                         const newCSRFError = {
                             isAxiosError: false,
-                            message: 'SAP Error - ' + retryCSRFJsonResponse.error.message.value
+                            message: 'Error - ' + retryCSRFJsonResponse.error.message.value
                         }
 
                         throw newCSRFError;
@@ -632,7 +638,7 @@ class DataHandlerModule {
             if (jsonResponse.error) {
                 const newError = {
                     isAxiosError: false,
-                    message: 'SAP Error - ' + jsonResponse.error.message.value
+                    message: 'Error - ' + jsonResponse.error.message.value
                 }
 
                 throw newError;
@@ -662,6 +668,9 @@ class DataHandlerModule {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                if (oktaLoginResponse.response == null){
+                                    throw new Error('Refresh response is empty, please try again');
+                                }
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
                                 const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
@@ -702,7 +711,7 @@ class DataHandlerModule {
                     if (retryAuthJsonResponse.error) {
                         const newAuthError = {
                             isAxiosError: false,
-                            message: 'SAP Error - ' + retryAuthJsonResponse.error.message.value
+                            message: 'Error - ' + retryAuthJsonResponse.error.message.value
                         }
 
                         throw newAuthError;
@@ -787,6 +796,9 @@ class DataHandlerModule {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                if (oktaLoginResponse.response == null){
+                                    throw new Error('Refresh response is empty, please try again');
+                                }
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
                                 const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
@@ -869,6 +881,9 @@ class DataHandlerModule {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                if (oktaLoginResponse.response == null){
+                                    throw new Error('Refresh response is empty, please try again');
+                                }
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
                                 const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
@@ -966,6 +981,9 @@ class DataHandlerModule {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                if (oktaLoginResponse.response == null){
+                                    throw new Error('Refresh response is empty, please try again');
+                                }
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
                                 const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
@@ -1084,6 +1102,9 @@ class DataHandlerModule {
                                 //if refresh token is busted, get new refresh token
                                 //check what the error looks like
                                 const oktaLoginResponse = await authModule.onFRNSWLogin();
+                                if (oktaLoginResponse.response == null){
+                                    throw new Error('Refresh response is empty, please try again');
+                                }
                                 const oktaIDToken = oktaLoginResponse.response.idToken;
                                 const initialTokenResponse = await this.getFRNSWInitialTokens(oktaIDToken!);
                                 const newAccessToken = initialTokenResponse.data.TOKEN_RESPONSE.ACCESS_TOKEN;
