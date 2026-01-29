@@ -177,7 +177,7 @@ const MyUnit = ({ route, navigation }: props) => {
                             }}
                         />
                     </View>
-                    <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Maintenance Schedule' value={UnitData ? genericFormatter.formatFromEdmDate(UnitData.OpReadyCheckDate) : ''} />
+                    <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Maintenance Schedule' value={UnitData.MaintSchedDesc ? UnitData.MaintSchedDesc : ''} />
                 </View>
                 <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
                     <CustomText variant='bodyLargeBold'>Other Details</CustomText>

@@ -149,9 +149,14 @@ const ContactsMyUnit = () => {
                                                    
                                                     const mod = Number(contact.Pernr) % PaletteData.length;
                                                    
-                                                    const iconColor = PaletteData.filter((x) => {
-                                                        return ((x.PaletteId / mod) == 1)
+                                                    let iconColor = PaletteData.filter((x) => {
+                                                        return x.PaletteId == mod;
                                                     })[0];
+
+                                                    //if iconColor is null, then assign it to something so it wont crash. Just incase it NaN's
+                                                    if (!iconColor){
+                                                        iconColor = PaletteData[0]
+                                                    }
         
                                                     return (
                                                         <React.Fragment key={`contact_${letter}_${ii}`}>

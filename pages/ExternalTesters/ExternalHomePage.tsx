@@ -8,6 +8,7 @@ import GlobalStyles from '../../style/GlobalStyles';
 import defaultIcon from '../../assets/menuicons/menu-default.png';
 import CustomGrid from '../../helper/CustomGrid';
 import { Phone, Mail, Heart } from 'lucide-react-native';
+import {Linking, Platform} from 'react-native';
 
 const NameBanner = () => {
     const theme = useTheme();
@@ -182,6 +183,7 @@ const Services = () => {
     )
 }
 
+
 const ContactUs = () => {
     const theme = useTheme();
     return (
@@ -197,7 +199,43 @@ const ContactUs = () => {
                     <Mail style={{marginRight: 20}} color={theme.colors.primary}/>
                     <CustomText variant='bodyLarge'>info@fire.nsw.gov.au</CustomText>
                 </Pressable>
-                <Pressable style={({pressed})=> [pressed ? {opacity: 0.6}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', paddingVertical:16}]} >
+                <Pressable style={({pressed})=> [pressed ? {opacity: 0.6}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', paddingVertical:16}]} onPress={async () => {
+                    //test the punchout here
+                    const punchoutUrls = {
+                        ios : {
+                            native : 'itms-apps://itunes.apple.com/app/id389801252',
+                            url : 'https://apps.apple.com/app/id389801252'
+                        },
+                        android : {
+                            native : 'market://details?id=com.instagram.android',
+                            url : 'https://play.google.com/store/apps/details?id=com.instagram.android'
+                        }
+                    }
+
+
+                    let deepLinkUrl, browserUrl;
+
+                    if (Platform.OS == 'android'){
+                        deepLinkUrl = punchoutUrls.android.native;
+                        browserUrl = punchoutUrls.android.url;
+                    } else {
+                        deepLinkUrl = punchoutUrls.ios.native;
+                        browserUrl = punchoutUrls.ios.url;
+                    }
+
+                    try {
+                        const supported = await Linking.canOpenURL(deepLinkUrl);
+
+                        if (supported) {
+                            await Linking.openURL(deepLinkUrl);
+                        } else {
+                            // Fallback: Use standard https if the native scheme isn't recognized
+                            Linking.openURL(browserUrl);
+                        }
+                    } catch (error) {
+                        console.log('cannot punch out to app store')
+                    }
+                }}>
                     <Heart style={{marginRight: 20}} color={theme.colors.primary}/>
                     <CustomText variant='bodyLarge'>Rate this app</CustomText>
                 </Pressable>
