@@ -25,7 +25,7 @@ const ProfileHeader = () => {
     const mod = Number(employeeDetails.Pernr) % PaletteData.length;
                                                    
     const iconColor = PaletteData.filter((x) => {
-        return ((x.PaletteId / mod) == 1)
+        return x.PaletteId == mod;
     })[0];
 
     return (

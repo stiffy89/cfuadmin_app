@@ -218,7 +218,7 @@ const ByTeamMember = () => {
                     const mod = Number(member.Pernr) % PaletteData.length;
                                                    
                     const iconColor = PaletteData.filter((x) => {
-                        return ((x.PaletteId / mod) == 1)
+                        return x.PaletteId == mod;
                     })[0];
 
                     const memberFirstname = showTeamMemberSearch ? member.Ename.split(' ')[0] : member.FirstName;
