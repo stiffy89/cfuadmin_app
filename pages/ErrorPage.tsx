@@ -50,7 +50,7 @@ const ErrorPage = ({ route }: props) => {
             }
             else if (error.response?.status >= 500 && error.response?.status < 600) {
                 setErrorCode(error.response?.status);
-                setErrorMessage('Oh no! There appears to a connection issue to the server. You can go back and try again or if the problem persists, please contact your IT administrator for further assistance.');
+                setErrorMessage('Oh no! There appears to be a connection issue to the server. You can go back and try again or if the problem persists, please contact your IT administrator for further assistance.');
             }
             else {
                 setErrorCode(601);

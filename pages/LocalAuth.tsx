@@ -8,6 +8,8 @@ import { useState, useRef, useEffect } from 'react';
 import { hasHardwareAsync, isEnrolledAsync, getEnrolledLevelAsync } from 'expo-local-authentication';
 import { authModule } from '../helper/AuthModule';
 import { Circle } from 'lucide-react-native';
+import { Directory, File, Paths } from 'expo-file-system';
+import { unzip } from "react-native-zip-archive";
 
 import { screenFlowModule } from '../helper/ScreenFlowModule';
 import { useAppContext } from '../helper/AppContext';
@@ -16,7 +18,7 @@ import { useDataContext } from '../helper/DataContext';
 import { useHelperValuesDataContext } from '../helper/HelperValuesDataContext';
 import { isAxiosError } from 'axios';
 import * as SecureStore from 'expo-secure-store';
-import unlock from "../assets/gif/unlock.gif"
+import unlock from "../assets/gif/unlock_v3.gif"
 
 const LocalAuth = () => {
 
@@ -52,7 +54,7 @@ const LocalAuth = () => {
 	const unlockFadeOut = () => {
 		Animated.timing(unlockFade, {
         	toValue: 0,
-            delay:1200,
+            delay:1750,
         	duration: 250, 
         	useNativeDriver: true,
       	}).start();
@@ -117,7 +119,7 @@ const LocalAuth = () => {
                 .catch((error: any) => {
                     screenFlowModule.onNavigateToScreen('ErrorPage', error);
                 })
-        }, 1480);
+        }, 2000);
     }
 
     const onRefreshAllTokens = async () => {
@@ -219,6 +221,8 @@ const LocalAuth = () => {
                 return;
             }
         }
+
+        // await getMenuIcons()
 
         //set the plans for the contact printing
         dataContext.setContactsPrintPlans(zzplans);
@@ -392,6 +396,65 @@ const LocalAuth = () => {
         }
 
         screenFlowModule.onNavigateToScreen('HomeScreen');
+    }
+
+    const getMenuIcons = async () => {
+        const extractZip = (sourcePath:string) =>{
+            const targetPath = Paths.document.uri
+            const charset = "UTF-8";
+
+            unzip(sourcePath, targetPath, charset)
+                .then((path : any) => {
+                    console.log(`unzip completed at ${path}`);
+                })
+                .catch((error: any) => {
+                    console.error(error);
+            });
+        }
+
+        const checkZip = async () => {
+            const zipPath = `${Paths.document.uri}cfu-admin-service-icons-main.zip`
+            //if not then check if zip file exists
+            const iconsZip = new File(zipPath)
+            console.log("Icons Zip Exists:", iconsZip.exists)
+            if(iconsZip.exists){
+                console.log("Extracting Zip")
+                //if yes then extract
+                const sourcePath = zipPath;
+                extractZip(sourcePath)
+            }else {
+                console.log("Downloading Zip")
+                //if not then download then extract
+                const downloadedZip = await File.downloadFileAsync("https://github.com/eSantos16/cfu-admin-service-icons/archive/refs/heads/main.zip", new Directory(Paths.document));
+                console.log(downloadedZip.uri)
+                
+                console.log("Extracting Zip")
+                //unzip newly downloaded
+                const sourcePath = downloadedZip.uri;
+                extractZip(sourcePath)
+            }
+        }
+
+        console.log("Checking Menu Icons...")
+        //check if the menu icons directory exists first
+        const menuIconsDirectory = new Directory(`${Paths.document.uri}cfu-admin-service-icons-main/`)
+        console.log("Menu Icons Directory Exists: ", menuIconsDirectory.exists)
+        if(menuIconsDirectory.exists){
+            //if yes then check if it has icons
+            const files = menuIconsDirectory.list()
+            //if missing any icons then download zip
+            const iconCount = 15;
+            // files.forEach((file) => {
+            //     console.log("Menu Icons Directory Files:", file.uri)
+            // })
+            
+            if(files.length < iconCount){
+                console.log("missing icons")
+                await checkZip()
+            }
+        }else {
+            await checkZip()
+        }
     }
 
     const shake = useRef(new Animated.Value(0)).current;
@@ -568,7 +631,7 @@ const LocalAuth = () => {
     if(authSuccess){
         return (
             <Animated.View style={{flex:1, backgroundColor: "#4C4E4F", display: "flex", justifyContent:"center", alignItems:"center"}}>
-                <Animated.Image source={unlock} style={{ width: 100, height: 100, opacity: unlockFade }} />
+                <Animated.Image source={unlock} style={{ width: 150, height: 150, opacity: unlockFade }} />
             </Animated.View>
         )
     }
