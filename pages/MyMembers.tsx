@@ -399,7 +399,7 @@ const MyMembers = ({ route }: props) => {
 
                                         const iconColor = PaletteData.filter((x) => {
                                             return x.PaletteId == mod;
-                                        })[0];
+                                        })[0] || PaletteData[0];;
 
                                         const memberNameStr = showTeamMemberSearch ? member.Ename : member.Stext;
                                         const memberFirstname = memberNameStr.split(' ')[0];

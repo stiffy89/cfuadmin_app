@@ -79,7 +79,7 @@ const CfuPhonebookContactsList = ({route} : props) => {
                                                    
                                                 const iconColor = PaletteData.filter((x) => {
                                                     return x.PaletteId == mod;
-                                                })[0];
+                                                })[0] || PaletteData[0];;
 
                                                 return (
                                                     <React.Fragment key={`contact_${letter}_${ii}`}>

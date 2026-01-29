@@ -26,7 +26,7 @@ const ProfileHeader = () => {
                                                    
     const iconColor = PaletteData.filter((x) => {
         return x.PaletteId == mod;
-    })[0];
+    })[0] || PaletteData[0];;
 
     return (
         <View style={{ padding: 20, backgroundColor: theme.colors.background }}>

@@ -219,7 +219,7 @@ const ByTeamMember = () => {
                                                    
                     const iconColor = PaletteData.filter((x) => {
                         return x.PaletteId == mod;
-                    })[0];
+                    })[0] || PaletteData[0];
 
                     const memberFirstname = showTeamMemberSearch ? member.Ename.split(' ')[0] : member.FirstName;
                     const memberLastName = showTeamMemberSearch ? member.Ename.split(' ')[1] : member.LastName;

@@ -151,7 +151,7 @@ const ContactsMyUnit = () => {
                                                    
                                                     let iconColor = PaletteData.filter((x) => {
                                                         return x.PaletteId == mod;
-                                                    })[0];
+                                                    })[0] || PaletteData[0];;
 
                                                     //if iconColor is null, then assign it to something so it wont crash. Just incase it NaN's
                                                     if (!iconColor){

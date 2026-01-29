@@ -22,7 +22,7 @@ const MyUnitContactDetail = ({ route }: props) => {
                                                    
     const iconColor = PaletteData.filter((x) => {
         return x.PaletteId == mod;
-    })[0];
+    })[0] || PaletteData[0];;
 
     return (
         <View style={{ flex: 1 }}>
