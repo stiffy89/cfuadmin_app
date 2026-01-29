@@ -398,7 +398,7 @@ const MyMembers = ({ route }: props) => {
                                         const mod = Number(member.Pernr) % PaletteData.length;
 
                                         const iconColor = PaletteData.filter((x) => {
-                                            return ((x.PaletteId / mod) == 1)
+                                            return x.PaletteId == mod;
                                         })[0];
 
                                         const memberNameStr = showTeamMemberSearch ? member.Ename : member.Stext;
