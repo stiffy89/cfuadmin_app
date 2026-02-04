@@ -9,6 +9,7 @@ import { screenFlowModule } from "../../helper/ScreenFlowModule";
 import { useAppContext } from '../../helper/AppContext';
 import { ResourceStackParamList } from "../../types/AppTypes";
 import { StackScreenProps } from "@react-navigation/stack";
+import CustomGrid from "../../helper/CustomGrid";
 
 type props = StackScreenProps<ResourceStackParamList, "ResourceCategoriesPage">;
 
@@ -73,34 +74,31 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
         <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
         <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>{params.title}</CustomText>
       </View>
-      <ScrollView style={{ flex: 1, width:"100%", backgroundColor: theme.colors.background }} contentContainerStyle={{flexDirection: "row", flexWrap:"wrap", justifyContent: "flex-start", gap: 20, margin: 20}}>
-        {
-          categories.map((category, index) => {
-            return (
-              <Pressable
-                key={index}
-                style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, { flexGrow: 1, maxWidth:maxWidth, alignItems: "center", height: 120,  aspectRatio: 1 }]}
-                onPress={() => navigate(category)}
-                onLayout={(e) => {
-                    if(index == 0){
-                        setMaxWidth(e.nativeEvent.layout.width)
-                    }
-                }}
-              >
-                <View style={{borderRadius: 5, alignItems: "center", justifyContent: "space-between", backgroundColor: "#fff", height: "100%", width: "100%", paddingVertical: 20}}>
-                  <CustomText
-                    variant="titleMedium"
-                    style={{ textAlign: "center", marginHorizontal: 20 }}
-                  >
-                    {category.ParentRid}
-                  </CustomText>
-                  <CustomIcon style={{ width: "100%" }} size={50} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
-                </View>
+      <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: theme.colors.background}} contentContainerStyle={{paddingBottom: 50}}>
+        <CustomGrid columns={2} style={{ gap: 20, rowGap: 20, paddingTop: 20, height: "100%" }}>
+          {
+            categories.map((category, index) => {
+              return (
+                <Pressable
+                  key={index}
+                  style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, { alignItems: "center",  aspectRatio: 1, width: 150 }]}
+                  onPress={() => navigate(category)}
+                >
+                  <View style={{borderRadius: 5, alignItems: "center", justifyContent: "space-between", backgroundColor: "#fff", width: "100%", aspectRatio: 1, paddingVertical: 20}}>
+                    <CustomText
+                      variant="titleMedium"
+                      style={{ textAlign: "center", marginHorizontal: 20 }}
+                    >
+                      {category.ParentRid}
+                    </CustomText>
+                    <CustomIcon style={{ width: "100%" }} size={50} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
+                  </View>
 
-              </Pressable>
-            );
-          })
-        }
+                </Pressable>
+              );
+            })
+          }
+        </CustomGrid>
       </ScrollView>
     </View>
   );
