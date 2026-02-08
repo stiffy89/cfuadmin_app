@@ -194,7 +194,7 @@ const ContactUs = () => {
     return (
         <View style={{ marginVertical: verticalMargin, paddingHorizontal: horizontalPadding }}>
             <CustomText style={{ marginVertical: 15, color: theme.colors.primary }} variant='titleLargeBold'>Contact us</CustomText>
-            <CustomText style={{ marginVertical: 15 }}>If you need assistance please reach out to the CFU Team</CustomText>
+            <CustomText style={{ marginVertical: 15 }} variant='bodyMedium'>If you need assistance please reach out to the CFU Team</CustomText>
             <View style={{ paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#fff', ...GlobalStyles.globalBorderRadius }}>
                 <Pressable style={({ pressed }) => [pressed ? { opacity: 0.6 } : { opacity: 1 }, { flexDirection: 'row', alignItems: 'center', paddingVertical: 16 }]} onPress={() => Linking.openURL(`tel:1300 238 238`)}>
                     <LucideIcons.Phone style={{ marginRight: 20 }} color={theme.colors.primary} />

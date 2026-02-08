@@ -73,6 +73,7 @@ const VolAdminSearch = ({ route }: props) => {
                                 ...GlobalStyles.inputRoundedCorners,
                                 marginBottom: 20
                             }}
+                            maxFontSizeMultiplier={1.5}
                             placeholder='Search Unit'
                             value={searchFilter.unit}
                             onChangeText={(text) => {
@@ -120,6 +121,7 @@ const VolAdminSearch = ({ route }: props) => {
                                 backgroundColor: theme.colors.background,
                                 ...GlobalStyles.inputRoundedCorners
                             }}
+                            maxFontSizeMultiplier={1.5}
                             placeholder='Search Station'
                             value={searchFilter.station}
                             onChangeText={(text) => {
@@ -168,6 +170,7 @@ const VolAdminSearch = ({ route }: props) => {
                                     backgroundColor: theme.colors.background,
                                     ...GlobalStyles.inputRoundedCorners
                                 }}
+                                maxFontSizeMultiplier={1.5}
                                 placeholder='Search Personnel No'
                                 value={searchFilter.pernr}
                                 onChangeText={(text) => {

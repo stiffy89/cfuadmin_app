@@ -618,7 +618,7 @@ const LocalAuth = () => {
                                     authModule.onLogOut();
                                 }}
                             >
-                                <CustomText style={{color : '#e5182b'}} variant='displaySmall'>Reset your PIN</CustomText>
+                                <CustomText style={{color : '#e5182b'}} variant='titleLarge'>Reset your PIN</CustomText>
                             </Button>
                         </View>
                     }

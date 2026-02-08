@@ -189,7 +189,7 @@ const ContactUs = () => {
     return (
         <View style={{marginVertical: 20, paddingHorizontal: 15}}>
             <CustomText style={{marginVertical: 15, color: theme.colors.primary}} variant='titleLargeBold'>Contact us</CustomText>
-            <CustomText style={{marginVertical: 15}}>If you need assistance please reach out to the IT team</CustomText>
+            <CustomText style={{marginVertical: 15}} variant='bodyMedium'>If you need assistance please reach out to the IT team</CustomText>
             <View style={{paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#fff', ...GlobalStyles.globalBorderRadius}}>
                 <Pressable style={({pressed})=> [pressed ? {opacity: 0.6}:{opacity: 1},{flexDirection: 'row', alignItems: 'center', paddingVertical:16}]}>
                     <Phone style={{marginRight: 20}} color={theme.colors.primary}/>

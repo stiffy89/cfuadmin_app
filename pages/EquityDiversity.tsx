@@ -63,12 +63,12 @@ const EquityDiversity = ({route, navigation} : props) => {
                 <Pencil style={{marginRight: 20}} color={theme.colors.primary} size={20} onPress={() => EditData()}/>
             </View>
             <View style={{paddingHorizontal: 20}}>
-                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Main non-english language spoken' value={employeeDetails.MslngText}/>
-                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Gender for Equity and Diversity' value={employeeDetails.GeschText}/>
-                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Aboriginal or Torres Strait Islander' value={employeeDetails.PermiText}/>
-                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Racial/Ethnic/Religious Minority' value={employeeDetails.MovecText} />
-                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='First Language' value={employeeDetails.FslngText}/>
-                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Disability' value={employeeDetails.DisapText}/>
+                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Main non-english language spoken' maxFontSizeMultiplier={1.5} value={employeeDetails.MslngText}/>
+                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Gender for Equity and Diversity' maxFontSizeMultiplier={1.5} value={employeeDetails.GeschText}/>
+                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Aboriginal or Torres Strait Islander' maxFontSizeMultiplier={1.5} value={employeeDetails.PermiText}/>
+                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Racial/Ethnic/Religious Minority' maxFontSizeMultiplier={1.5} value={employeeDetails.MovecText} />
+                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='First Language' maxFontSizeMultiplier={1.5} value={employeeDetails.FslngText}/>
+                <TextInput style={{marginTop: 20, ...GlobalStyles.disabledTextInput}} editable={false} mode='flat' underlineColor='transparent' label='Disability' maxFontSizeMultiplier={1.5} value={employeeDetails.DisapText}/>
             </View>
         </View>
     )
