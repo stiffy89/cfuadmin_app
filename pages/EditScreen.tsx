@@ -929,7 +929,8 @@ const EmergencyContactsEdit = (data: any) => {
                                         <React.Fragment key={'Fragment_' + i}>
                                             <List.Item
                                                 key={i}
-                                                title={`${x.Atext}`}
+                                                title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Atext}`}</CustomText></View>}
+                                                //title={`${x.Atext}`}
                                                 style={{
                                                     backgroundColor: (x.Atext === emergencyContact.ZzindrlAtext) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                                 }}
@@ -1023,7 +1024,8 @@ const EmergencyContactsEdit = (data: any) => {
                                         <React.Fragment key={'Fragment_' + i}>
                                             <List.Item
                                                 key={i}
-                                                title={`${x.Bland}`}
+                                                title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Bland}`}</CustomText></View>}
+                                                //title={`${x.Bland}`}
                                                 style={{
                                                     backgroundColor: (x.Bland === emergencyContact.Statekey) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                                 }}
