@@ -60,7 +60,8 @@ const VolunteerNotes = ({ route, navigation }: props) => {
                                         style={{ marginLeft: 20 }}
                                         key={'note_' + i}
                                         title={note.Notes}
-                                        description={genericFormatter.formatFromEdmDate(note.Begda)}
+                                        description={<CustomText variant='titleMedium'>{genericFormatter.formatFromEdmDate(note.Begda)}</CustomText>}
+                                        //description={genericFormatter.formatFromEdmDate(note.Begda)}
                                         right={() => (
                                             <Pencil
                                                 color={theme.colors.primary}

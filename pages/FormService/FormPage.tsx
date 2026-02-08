@@ -119,7 +119,7 @@ const FormPage = ({ route, navigation }: props) => {
     return (
         <View style={{ flex: 1, backgroundColor: "#fff", marginTop: 5, borderTopLeftRadius: 25, borderTopRightRadius: 25, boxShadow: "0px 5px 10px rgba(0, 0, 0, 0.8)" }}>
             <View style={{flexDirection: 'row', justifyContent: "space-between", alignItems: 'center', marginTop: 20, marginBottom: 10, marginHorizontal: 10}}>
-                <Button contentStyle={{height: 50}} mode="text" onPress={() => screenFlowModule.onGoBack()} >
+                <Button maxFontSizeMultiplier={1.5} contentStyle={{height: 50}} mode="text" onPress={() => screenFlowModule.onGoBack()} >
                     <CustomText style={{color: theme.colors.primary}} variant='titleMediumBold'>Done</CustomText>
                 </Button>
                 <CustomText style={{width: "50%", position:"absolute", left: "50%", transform: [{translateX: "-45%"}]}} numberOfLines={1} ellipsizeMode="tail" variant='titleLargeBold'>{formsLaunchSet.Title}</CustomText>

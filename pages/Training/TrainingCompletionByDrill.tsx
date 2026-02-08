@@ -101,13 +101,15 @@ const TrainingCompletionByDrill = ({ route }: props) => {
     <>
       <Portal>
         <Dialog visible={showCancelDialog} dismissable={false}>
-          <Dialog.Title>Cancel Changes</Dialog.Title>
+          <Dialog.Title>
+            <CustomText variant='bodyLarge'>Cancel Changes</CustomText>
+          </Dialog.Title>
           <Dialog.Content>
             <CustomText variant="bodyMedium">Are you sure you want to discard you changes?</CustomText>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setShowCancelDialog(false)}>Go Back</Button>
-            <Button onPress={() => {
+            <Button maxFontSizeMultiplier={1.5} onPress={() => setShowCancelDialog(false)}>Go Back</Button>
+            <Button maxFontSizeMultiplier={1.5} onPress={() => {
               setIsEditing(false);
               setShowCancelDialog(false);
               setTrainingCompletions(drillCompletions)
@@ -160,6 +162,7 @@ const TrainingCompletionByDrill = ({ route }: props) => {
             )}
             {isEditing && (
               <Button
+                maxFontSizeMultiplier={1.5}
                 onPress={() => {
                   setShowCancelDialog(true);
                 }}
@@ -176,11 +179,9 @@ const TrainingCompletionByDrill = ({ route }: props) => {
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <DataTable>
             <DataTable.Header>
-              <DataTable.Title style={{ flex: 0.5 }}> </DataTable.Title>
-              <DataTable.Title style={{ flex: 2 }}>Name</DataTable.Title>
-              <DataTable.Title style={{ flex: 2 }}>
-                Date Completed
-              </DataTable.Title>
+              <DataTable.Title style={{ flex: 0.5 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'> </CustomText></DataTable.Title>
+              <DataTable.Title style={{ flex: 2 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>Name</CustomText></DataTable.Title>
+              <DataTable.Title style={{ flex: 2 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>Date Completed</CustomText></DataTable.Title>
             </DataTable.Header>
             {trainingCompletions!.slice(from, to).map((item, i) => {
               return (
@@ -191,7 +192,7 @@ const TrainingCompletionByDrill = ({ route }: props) => {
                     {statusBadge(item)}
                   </DataTable.Cell>
                   <DataTable.Cell style={{ flex: 2 }}>
-                    {item.Emnam}
+                    <CustomText style={{ flexWrap: 'wrap' }} maxFontSizeMultiplier={1} variant='bodyLarge'>{item.Emnam}</CustomText>
                   </DataTable.Cell>
                   <DataTable.Cell style={{ flex: 2 }}>
                     {isEditing ? (
@@ -205,6 +206,7 @@ const TrainingCompletionByDrill = ({ route }: props) => {
                           underlineColor="transparent"
                           editable={false}
                           value={genericFormatter.formatFromEdmDate(item.Start)}
+                          maxFontSizeMultiplier={1}
                           right={
                             <TextInput.Icon
                               onPress={() => {
@@ -231,7 +233,7 @@ const TrainingCompletionByDrill = ({ route }: props) => {
                 trainingCompletions!.length / itemsPerPage
               )}
               onPageChange={(page) => setPage(page)}
-              label={`${from + 1}-${to} of ${trainingCompletions!.length}`}
+              label={<CustomText variant='bodyMedium' maxFontSizeMultiplier={1}>{`${from + 1}-${to} of ${trainingCompletions!.length}`}</CustomText>}
               numberOfItemsPerPage={itemsPerPage}
               showFastPaginationControls
               selectPageDropdownLabel={"Rows per page"}
@@ -286,6 +288,7 @@ const TrainingCompletionByDrill = ({ route }: props) => {
           {isEditing && (
             <View style={{ alignItems: "center" }}>
               <Button
+                maxFontSizeMultiplier={1.5}
                 style={{ width: "80%", marginBottom: 30 }}
                 mode="contained"
                 onPress={async () => {

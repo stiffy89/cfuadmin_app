@@ -37,16 +37,16 @@ const TrainingHistory = ({ route, navigation }: props) => {
         <View
             onLayout={(e) => calculateMaxRows(e.nativeEvent.layout.height)}
             style={GlobalStyles.page}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>Training History</CustomText>
             </View>
             <DataTable>
                 <DataTable.Header>
-                    <DataTable.Title style={{ flex: 3.5, marginRight: 10 }}>Name</DataTable.Title>
-                    <DataTable.Title style={{ flex: 2 }}>From</DataTable.Title>
-                    <DataTable.Title style={{ flex: 2 }}>To</DataTable.Title>
-                    <DataTable.Title style={{ flex: 0.5 }}> </DataTable.Title>
+                    <DataTable.Title style={{ flex: 3.5, marginRight: 10 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>Name</CustomText></DataTable.Title>
+                    <DataTable.Title style={{ flex: 2 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>From</CustomText></DataTable.Title>
+                    <DataTable.Title style={{ flex: 2 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>To</CustomText></DataTable.Title>
+                    <DataTable.Title style={{ flex: 0.5 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'> </CustomText></DataTable.Title>
                 </DataTable.Header>
                 {
                     trainingData.slice(from, to).map((item, i) => {
@@ -54,9 +54,9 @@ const TrainingHistory = ({ route, navigation }: props) => {
                             <DataTable.Row key={i} onPress={() => {
                                 screenFlowModule.onNavigateToScreen('TrainingDetailsScreen', item)
                             }}>
-                                <DataTable.Cell style={{ flex: 3.5, marginRight: 10 }}><CustomText style={{ flexWrap: 'wrap' }}>{item.QualificationName}</CustomText></DataTable.Cell>
-                                <DataTable.Cell style={{ flex: 2 }}>{genericFormatter.formatFromEdmDate(item.ValidFrom)}</DataTable.Cell>
-                                <DataTable.Cell style={{ flex: 2 }}>{genericFormatter.formatFromEdmDate(item.ValidTo)}</DataTable.Cell>
+                                <DataTable.Cell style={{ flex: 3.5, marginRight: 10 }}><CustomText maxFontSizeMultiplier={1} style={{ flexWrap: 'wrap' }}>{item.QualificationName}</CustomText></DataTable.Cell>
+                                <DataTable.Cell style={{ flex: 2 }}><CustomText maxFontSizeMultiplier={1} style={{ flexWrap: 'wrap' }}>{genericFormatter.formatFromEdmDate(item.ValidFrom)}</CustomText></DataTable.Cell>
+                                <DataTable.Cell style={{ flex: 2 }}><CustomText maxFontSizeMultiplier={1} style={{ flexWrap: 'wrap' }}>{genericFormatter.formatFromEdmDate(item.ValidTo)}</CustomText></DataTable.Cell>
                                 <DataTable.Cell style={{ flex: 0.5 }}><LucideIcons.ChevronRight color={theme.colors.primary}/></DataTable.Cell>
                             </DataTable.Row>
                         )
@@ -66,7 +66,7 @@ const TrainingHistory = ({ route, navigation }: props) => {
                     page={page}
                     numberOfPages={Math.ceil(trainingData.length / itemsPerPage)}
                     onPageChange={(page) => setPage(page)}
-                    label={`${from + 1}-${to} of ${trainingData.length}`}
+                    label={<CustomText variant='bodyMedium' maxFontSizeMultiplier={1}>{`${from + 1}-${to} of ${trainingData.length}`}</CustomText>}
                     numberOfItemsPerPage={itemsPerPage}
                     showFastPaginationControls
                     selectPageDropdownLabel={'Rows per page'}

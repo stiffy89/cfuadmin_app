@@ -237,7 +237,7 @@ const HomePage = () => {
                         </View>
                     </Dialog.Content>
                     <Dialog.Actions>
-                        <Button onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
+                        <Button maxFontSizeMultiplier={1.5} onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
                         <Button 
                             onPress={() => {
                                 setShowDialog(false);

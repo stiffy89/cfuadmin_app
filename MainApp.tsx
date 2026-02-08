@@ -343,6 +343,7 @@ export default function MainApp() {
 										{
 											showDialogCancelButton && (
 												<Button
+													maxFontSizeMultiplier={1.5}
 													onPress={() => {
 														setShowDialog(false);
 													}}>
@@ -351,6 +352,7 @@ export default function MainApp() {
 											)
 										}
 										<Button
+											maxFontSizeMultiplier={1.5}
 											onPress={() => {
 												setShowDialog(false);
 												dialogActionFunction?.();

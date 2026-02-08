@@ -44,7 +44,7 @@ const WithdrawnSwitch = () => {
                     dataContext.setOrgUnitTeamMembers(results.responseBody.d.results);
                     dataContext.setVolAdminMembersSearchFilter({
                         ...dataContext.volAdminMembersSearchFilter,
-                        withdrawn : !showWithdrawn
+                        withdrawn: !showWithdrawn
                     })
                     appContext.setShowDialog(false);
                 }
@@ -66,14 +66,14 @@ const FilterTokens = () => {
     const [filters, setFilters] = useState<any[]>([]);
 
     useEffect(() => {
-        const memberVolAdminFilter : any = dataContext.volAdminMembersSearchFilter;
+        const memberVolAdminFilter: any = dataContext.volAdminMembersSearchFilter;
         let currentFilters: any[] = [];
 
         ['firstName', 'lastName', 'pernr'].forEach(x => {
             if (memberVolAdminFilter[x]) {
                 const filterObj: any = {
-                    filter : '',
-                    value : ''
+                    filter: '',
+                    value: ''
                 };
                 filterObj.filter = x;
                 filterObj.value = memberVolAdminFilter[x];
@@ -86,35 +86,35 @@ const FilterTokens = () => {
     }, [dataContext.volAdminMembersSearchFilter])
 
     return (
-        <View style={{flexDirection: 'row', marginVertical: 10}}>
+        <View style={{ flexDirection: 'row', marginVertical: 10 }}>
             {
                 filters.map((x, i) => {
                     return (
                         <Chip
                             key={'chip' + i}
-                            textStyle={{fontSize: 15}}
-                            style={{marginRight: 10}}
+                            textStyle={{ fontSize: 15 }}
+                            style={{ marginRight: 10 }}
                             closeIcon={() => <LucideIcons.X size={15} />}
                             onClose={async () => {
                                 //update the datacontext filters first
-                               
-                                const newFilter : any = {
+
+                                const newFilter: any = {
                                     ...dataContext.volAdminMembersSearchFilter,
-                                    [x.filter] : ''
+                                    [x.filter]: ''
                                 }
 
                                 appContext.setShowBusyIndicator(true);
                                 appContext.setShowDialog(true);
                                 //do a read on members list based on whatever filters left
-                                if (newFilter.firstName || newFilter.lastName){
+                                if (newFilter.firstName || newFilter.lastName) {
                                     //do a read on one of them
                                     let query = '';
 
-                                    if (newFilter.firstName){
+                                    if (newFilter.firstName) {
                                         const cleanedFirstname = newFilter.lastName.replace(/\s+/g, '');
                                         query = `Brigades?$skip=0&$top=100&$filter=substringof(%27${cleanedFirstname}%27,Vorna)`
                                     }
-                                    else if (newFilter.lastName){
+                                    else if (newFilter.lastName) {
                                         const cleanedLastname = newFilter.lastName.replace(/\s+/g, '');
                                         query = `Brigades?$skip=0&$top=100&$filter=substringof(%27${cleanedLastname}%27,Nachn)`
                                     }
@@ -142,7 +142,7 @@ const FilterTokens = () => {
                                             'Z_VOL_MANAGER_SRV',
                                             'Brigades'
                                         );
-                                        
+
                                         dataContext.setOrgUnitTeamMembers(results.responseBody.d.results);
                                         dataContext.setVolAdminMembersSearchFilter(newFilter);
                                         appContext.setShowDialog(false);
@@ -177,7 +177,7 @@ const MyMembers = ({ route }: props) => {
     const [title, setTitle] = useState('');
 
     //not vol admin
-    if (!dataContext.currentUser[0].VolAdmin){
+    if (!dataContext.currentUser[0].VolAdmin) {
         useEffect(() => {
             if (route.params!.title) {
                 setTitle(route.params!.title);
@@ -186,14 +186,14 @@ const MyMembers = ({ route }: props) => {
             setOrgUnitList(dataContext.rootOrgUnits);
 
             //set the selected org unit to your default org unit from /Brigades
-            if (dataContext.rootOrgUnits.length > 1){
+            if (dataContext.rootOrgUnits.length > 1) {
                 const defaultRootUnit = dataContext.rootOrgUnits.filter(x => x.Plans == dataContext.myOrgUnitDetails[0].Zzplans)[0];
                 setSelectedOrgUnit(defaultRootUnit);
             } else {
                 setSelectedOrgUnit(dataContext.rootOrgUnits[0]);
             }
-            
-            
+
+
             const filteredList = filterAndFormatList(dataContext.orgUnitTeamMembers);
             setMembersList(filteredList);
         }, []);
@@ -205,8 +205,8 @@ const MyMembers = ({ route }: props) => {
             }
             //look at the filters to see if we have pernr, first name or last name
             let selectedList = [];
-            
-            if (dataContext.volAdminMembersSearchFilter.firstName || dataContext.volAdminMembersSearchFilter.lastName || dataContext.volAdminMembersSearchFilter.pernr){
+
+            if (dataContext.volAdminMembersSearchFilter.firstName || dataContext.volAdminMembersSearchFilter.lastName || dataContext.volAdminMembersSearchFilter.pernr) {
                 selectedList = filterAndFormatList(dataContext.volAdminMemberDetailSearchResults, 'Ename');
                 setShowTeamMemberSearch(true);
             }
@@ -214,21 +214,21 @@ const MyMembers = ({ route }: props) => {
                 selectedList = filterAndFormatList(dataContext.orgUnitTeamMembers);
                 setShowTeamMemberSearch(false);
             }
-           
+
             setMembersList(selectedList);
 
         }, [dataContext.orgUnitTeamMembers, dataContext.volAdminMemberDetailSearchResults])
     }
-    
+
 
     //filter our contacts - field is there for filtering on Ename which is /Brigades but with team members on vol adm search
-    const filterAndFormatList = (results?: any[], field?:string) => {
+    const filterAndFormatList = (results?: any[], field?: string) => {
         let dataList = results ? results : dataContext.orgUnitTeamMembers;
         let compareField = 'Stext';
-        if (field){
+        if (field) {
             compareField = field;
         }
-        const sortedList = [...dataList].sort((a, b) =>{
+        const sortedList = [...dataList].sort((a, b) => {
             const aLastName = a[compareField].split(' ')[1];
             const bLastName = b[compareField].split(' ')[1];
 
@@ -308,57 +308,60 @@ const MyMembers = ({ route }: props) => {
                             </View>
                         </Pressable>
                         {(showDropDown) &&
-                            <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
-                                {orgUnitList.map((x, i) => {
-                                    return (
-                                        <React.Fragment key={'Fragment_' + i}>
-                                            <List.Item
-                                                key={i}
-                                                title={`${x.Short} ${x.Stext}`}
-                                                style={{
-                                                    backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
-                                                }}
-                                                onPress={async () => {
-                                                    const plans = x.Plans;
-                                                    setSelectedOrgUnit(x);
+                            <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1, maxHeight: 450 }}>
+                                <List.Section>
+                                    {orgUnitList.map((x, i) => {
+                                        return (
+                                            <React.Fragment key={'Fragment_' + i}>
+                                                <List.Item
+                                                    key={i}
+                                                    title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Short} ${x.Stext}`}</CustomText></View>}
+                                                    //title={`${x.Short} ${x.Stext}`}
+                                                    style={{
+                                                        backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                    }}
+                                                    onPress={async () => {
+                                                        const plans = x.Plans;
+                                                        setSelectedOrgUnit(x);
 
-                                                    //when we set the selected org unit, we need to update the members list aswell
-                                                    setShowDropDown(!showDropDown);
+                                                        //when we set the selected org unit, we need to update the members list aswell
+                                                        setShowDropDown(!showDropDown);
 
 
-                                                    appContext.setShowBusyIndicator(true);
-                                                    appContext.setShowDialog(true);
+                                                        appContext.setShowBusyIndicator(true);
+                                                        appContext.setShowDialog(true);
 
-                                                    //read the org unit team members
-                                                    try {
-                                                        const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
-                                                        appContext.setShowBusyIndicator(false);
+                                                        //read the org unit team members
+                                                        try {
+                                                            const orgUnitTeamMembers = await dataHandlerModule.batchGet(`Members?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27%20and%20InclWithdrawn%20eq%20false`, 'Z_VOL_MANAGER_SRV', 'Members');
+                                                            appContext.setShowBusyIndicator(false);
 
-                                                        if (orgUnitTeamMembers.responseBody.error) {
-                                                            appContext.setDialogMessage(
-                                                                orgUnitTeamMembers.responseBody.error.message.value
-                                                            );
+                                                            if (orgUnitTeamMembers.responseBody.error) {
+                                                                appContext.setDialogMessage(
+                                                                    orgUnitTeamMembers.responseBody.error.message.value
+                                                                );
 
-                                                            return;
+                                                                return;
+                                                            }
+
+                                                            dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results);
+                                                            const newTeamList = filterAndFormatList(orgUnitTeamMembers.responseBody.d.results);
+
+                                                            setMembersList(newTeamList);
+                                                            appContext.setShowDialog(false);
                                                         }
-
-                                                        dataContext.setOrgUnitTeamMembers(orgUnitTeamMembers.responseBody.d.results);
-                                                        const newTeamList = filterAndFormatList(orgUnitTeamMembers.responseBody.d.results);
-
-                                                        setMembersList(newTeamList);
-                                                        appContext.setShowDialog(false);
-                                                    }
-                                                    catch (error) {
-                                                        appContext.setShowDialog(false);
-                                                        screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                                                    }
-                                                }}
-                                            />
-                                            <Divider key={'divider' + i} />
-                                        </React.Fragment>
-                                    )
-                                })}
-                            </List.Section>
+                                                        catch (error) {
+                                                            appContext.setShowDialog(false);
+                                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                                                        }
+                                                    }}
+                                                />
+                                                <Divider key={'divider' + i} />
+                                            </React.Fragment>
+                                        )
+                                    })}
+                                </List.Section>
+                            </ScrollView>
                         }
                     </View>
                 </>
@@ -367,8 +370,8 @@ const MyMembers = ({ route }: props) => {
                 (dataContext.currentUser[0].VolAdmin) &&
                 <View style={{ paddingHorizontal: 20, marginVertical: 10 }}>
                     <WithdrawnSwitch />
-                    <View style={{marginLeft: 10, marginTop: 20}}>
-                        <CustomText style={{marginBottom: 10}} variant='bodyMediumBold'>Showing results for :</CustomText>
+                    <View style={{ marginLeft: 10, marginTop: 20 }}>
+                        <CustomText style={{ marginBottom: 10 }} variant='bodyMediumBold'>Showing results for :</CustomText>
                         {
                             (!showTeamMemberSearch) && (
                                 <CustomText variant='bodyLarge'>{dataContext.volAdminLastSelectedOrgUnit[0].Stext}</CustomText>
@@ -376,7 +379,7 @@ const MyMembers = ({ route }: props) => {
                         }
                         {
                             (showTeamMemberSearch) && (
-                                <FilterTokens/>
+                                <FilterTokens />
                             )
                         }
                     </View>
@@ -405,7 +408,7 @@ const MyMembers = ({ route }: props) => {
                                         const memberFirstname = memberNameStr.split(' ')[0];
                                         const memberLastName = memberNameStr.split(' ')[1];
 
-                                        const memberName = <View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{memberFirstname}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{memberLastName}</CustomText></View>
+                                        const memberName = <View style={{ flexDirection: 'row' }}><CustomText variant='bodyLarge'>{memberFirstname}</CustomText><CustomText style={{ marginLeft: 4 }} variant='bodyLargeBold'>{memberLastName}</CustomText></View>
 
                                         return (
                                             <React.Fragment key={`contact_${letter}_${ii}`}>
@@ -416,7 +419,7 @@ const MyMembers = ({ route }: props) => {
                                                         appContext.setShowDialog(true);
                                                         appContext.setShowBusyIndicator(true);
 
-                                                        if (member.Ceased){
+                                                        if (member.Ceased) {
                                                             //save this to the selected ceased team member because we need their zzplans for personal details
                                                             dataContext.setVolAdminCeasedSelectedMember(member);
                                                         }
@@ -424,12 +427,12 @@ const MyMembers = ({ route }: props) => {
                                                         try {
                                                             const membershipDetails = await dataHandlerModule.batchGet(`MembershipDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_VOL_MEMBER_SRV', 'MembershipDetails');
                                                             const employeeDetails = await dataHandlerModule.batchGet(`EmployeeDetails?$filter=Pernr%20eq%20%27${member.Pernr}%27%20and%20Zzplans%20eq%20%27${member.Zzplans}%27`, 'Z_ESS_MSS_SRV', 'EmployeeDetails');
-                                                            
+
                                                             dataContext.setMyMembersMembershipDetails(membershipDetails.responseBody.d.results);
                                                             dataContext.setMyMemberEmployeeDetails(employeeDetails.responseBody.d.results);
 
                                                             //vol admins - member notes
-                                                            if (dataContext.currentUser[0].VolAdmin){
+                                                            if (dataContext.currentUser[0].VolAdmin) {
                                                                 const volNotes = await dataHandlerModule.batchGet(`VolunteerNotes?$skip=0&$top=100&$filter=Pernr%20eq%20%27${member.Pernr}%27`, 'Z_ESS_MSS_SRV', 'VolunteerNotes');
                                                                 dataContext.setVolAdminMemberNotes(volNotes.responseBody.d.results);
                                                             }
@@ -452,17 +455,18 @@ const MyMembers = ({ route }: props) => {
                                                         />
                                                     )}
                                                     left={() => (
-                                                        <Avatar.Icon 
-                                                            style={{backgroundColor: iconColor.HexCode}}
-                                                            size={40} 
-                                                            icon={() => <LucideIcons.User color={theme.colors.background}/>}
+                                                        <Avatar.Icon
+                                                            style={{ backgroundColor: iconColor.HexCode }}
+                                                            size={40}
+                                                            icon={() => <LucideIcons.User color={theme.colors.background} />}
                                                         />
                                                     )}
                                                     style={{ marginLeft: 20 }}
                                                     key={"item_" + ii}
                                                     //title={(showTeamMemberSearch ? member.Ename : member.Stext)}
                                                     title={memberName}
-                                                    description={genericFormatter.formatRole(member.MembershipType)}
+                                                    description={<CustomText variant='titleMedium'>{genericFormatter.formatRole(member.MembershipType)}</CustomText>}
+                                                //description={genericFormatter.formatRole(member.MembershipType)}
                                                 />
                                                 <Divider />
                                             </React.Fragment>

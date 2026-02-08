@@ -57,10 +57,10 @@ const DrillPage = ({ route, navigation }: props) => {
                 <CustomText style={{marginHorizontal: 20, marginTop: 20}} variant='bodyLarge'>{category.BlurbText}</CustomText>
             </ScrollView>
             <View style={{position: "absolute", bottom: 10, width: "100%", gap: 10 }}>
-                <Button icon={() => <CustomIcon name="File" color={category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled} size={20}/>}style={{marginHorizontal: 20, borderRadius: 10, borderWidth: 1, borderColor: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} contentStyle={{height: 50}} mode="outlined" disabled={!category.InstructionLink} onPress={navigateToDrillInstructions} >
+                <Button maxFontSizeMultiplier={1.5} icon={() => <CustomIcon name="File" color={category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled} size={20}/>}style={{marginHorizontal: 20, borderRadius: 10, borderWidth: 1, borderColor: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} contentStyle={{height: 50}} mode="outlined" disabled={!category.InstructionLink} onPress={navigateToDrillInstructions} >
                     <CustomText style={{color: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} variant='titleMediumBold'>Open instructions</CustomText>
                 </Button>
-                <Button buttonColor={theme.colors.primary} style={{marginHorizontal: 20, borderRadius: 10, borderWidth: 1, borderColor: theme.colors.primary}} contentStyle={{height: 50}} mode="contained" onPress={navigateToDrillCards} >
+                <Button maxFontSizeMultiplier={1.5} buttonColor={theme.colors.primary} style={{marginHorizontal: 20, borderRadius: 10, borderWidth: 1, borderColor: theme.colors.primary}} contentStyle={{height: 50}} mode="contained" onPress={navigateToDrillCards} >
                     <CustomText style={{color: "#fff"}} variant='titleMediumBold'>Begin group discussion</CustomText>
                 </Button>
             </View>

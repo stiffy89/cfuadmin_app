@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Pressable } from 'react-native';
+import { View, Pressable, ScrollView } from 'react-native';
 import { IconButton, TextInput, List, Divider, Button, Portal, Dialog, useTheme } from 'react-native-paper';
 import { ScreenFlowModule, screenFlowModule } from '../helper/ScreenFlowModule';
 import { X, UserRound, Calendar, ChevronDown } from 'lucide-react-native';
@@ -131,13 +131,15 @@ const VolAdminCeaseMember = ({ route }: props) => {
                     </View>
                 </Pressable>
                 {(showDropDown) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
+                <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1, maxHeight: 450 }}>
+                    <List.Section>
                         {helperDataContext.cessationReasons.map((x, i) => {
                             return (
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
                                         key={i}
-                                        title={x.Mgtxt}
+                                        title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{x.Mgtxt}</CustomText></View>}
+                                        //title={x.Mgtxt}
                                         style={{
                                             backgroundColor: (x.Mgtxt === ceaseReason.Mgtxt) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                         }}
@@ -154,12 +156,14 @@ const VolAdminCeaseMember = ({ route }: props) => {
                             )
                         })}
                     </List.Section>
+                </ScrollView>
                 }
             </View>
             <View
                 style={{ flex: 1, paddingHorizontal: 20, justifyContent: 'flex-end' }}
             >
                 <Button
+                    maxFontSizeMultiplier={1.5}
                     style={{ marginBottom: 40 }}
                     mode='contained'
                     onPress={async () => {
@@ -281,7 +285,7 @@ const VolAdminCeaseMember = ({ route }: props) => {
                         </CustomText>
                     </Dialog.Content>
                     <Dialog.Actions>
-                        <Button onPress={() => setShowDialog(!showDialog)} textColor={theme.colors.secondary}>OK</Button>
+                        <Button maxFontSizeMultiplier={1.5} onPress={() => setShowDialog(!showDialog)} textColor={theme.colors.secondary}>OK</Button>
                     </Dialog.Actions>
                 </Dialog>
             </Portal>

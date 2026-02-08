@@ -98,6 +98,7 @@ const ErrorPage = ({ route }: props) => {
                         <HelpStrip/>
                         <View style={{marginTop: 20}}>
                             <Button 
+                                maxFontSizeMultiplier={1.5}
                                 mode='contained-tonal'
                                 onPress={() => {
                                     if (sapErrorMessage.includes('(splash screen timed out)')){
@@ -126,6 +127,7 @@ const ErrorPage = ({ route }: props) => {
                         <HelpStrip/>
                         <View style={{marginTop: 20}}>
                             <Button 
+                                maxFontSizeMultiplier={1.5}
                                 mode='contained-tonal'
                                 onPress={() => {
                                     screenFlowModule.onGoBack();
@@ -152,6 +154,7 @@ const ErrorPage = ({ route }: props) => {
                         <HelpStrip/>
                         <View style={{marginTop: 20}}>
                             <Button 
+                                maxFontSizeMultiplier={1.5}
                                 mode='contained-tonal'
                                 onPress={() => {
                                     screenFlowModule.onGoBack();

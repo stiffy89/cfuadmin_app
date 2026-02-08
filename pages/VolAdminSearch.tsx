@@ -259,6 +259,7 @@ const VolAdminSearch = ({ route }: props) => {
                                 }}
                             />
                             <Button
+                                maxFontSizeMultiplier={1.5}
                                 mode='outlined'
                                 style={{ borderColor: theme.colors.primary, marginTop: 20 }}
                                 onPress={async () => {
@@ -343,7 +344,8 @@ const VolAdminSearch = ({ route }: props) => {
                                     <List.Item
                                         key={'item_' + i}
                                         title={x.Stext}
-                                        description={x.Short}
+                                        description={<CustomText variant='titleMedium'>{x.Short}</CustomText>}
+                                        //description={x.Short}
                                         left={() => (
                                             <View
                                                 style={{
@@ -432,7 +434,8 @@ const VolAdminSearch = ({ route }: props) => {
                                     <List.Item
                                         key={'item_' + i}
                                         title={x.Stext}
-                                        description={x.Otext}
+                                        description={<CustomText variant='titleMedium'>{x.Otext}</CustomText>}
+                                        //description={x.Otext}
                                         left={() => (
                                             <View
                                                 style={{

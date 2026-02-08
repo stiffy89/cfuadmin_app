@@ -224,17 +224,17 @@ const DrillCardsPage = ({ route, navigation }: props) => {
             </View>
             <View style={{width:"90%", position: "absolute", bottom: 10, gap: 10, marginHorizontal: 20}}>
                 {completed && (
-                    <Button icon={() => <CustomIcon name="File" color={category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled} size={20}/>}style={{borderRadius: 10, borderWidth: 1, borderColor: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} contentStyle={{height: 50}} mode="outlined" disabled={!category.InstructionLink} onPress={navigateToDrillInstructions} >
+                    <Button maxFontSizeMultiplier={1.5} icon={() => <CustomIcon name="File" color={category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled} size={20}/>}style={{borderRadius: 10, borderWidth: 1, borderColor: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} contentStyle={{height: 50}} mode="outlined" disabled={!category.InstructionLink} onPress={navigateToDrillInstructions} >
                         <CustomText style={{color: category.InstructionLink ? theme.colors.primary : theme.colors.surfaceDisabled}} variant='titleMediumBold'>Open instructions</CustomText>
                     </Button>
                 )}
                 <View style={{flex: 1,  flexDirection: "row", gap: 10}}>
                     {!completed && (questionIndex > 0 || answerRevealed) && (
-                        <Button icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} style={{marginLeft: "50%"}}/>} style={{borderRadius: 10, borderWidth: 1, borderColor: theme.colors.primary}} contentStyle={{height: 50, aspectRatio: 1 }} mode="outlined" onPress={goBack} >
+                        <Button maxFontSizeMultiplier={1.5} icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} style={{marginLeft: "50%"}}/>} style={{borderRadius: 10, borderWidth: 1, borderColor: theme.colors.primary}} contentStyle={{height: 50, aspectRatio: 1 }} mode="outlined" onPress={goBack} >
                             {" "}
                         </Button>
                     )}
-                    <Button buttonColor={completed ? theme.colors.primary:"#fff"}style={{flex: 0.8, flexGrow: 1, borderRadius: 10, borderWidth: 1, borderColor: theme.colors.primary}} contentStyle={{height: 50}} mode="outlined" onPress={() => {completed ? navigateToSkillsMaintenance() : answer()}} >
+                    <Button maxFontSizeMultiplier={1.5} buttonColor={completed ? theme.colors.primary:"#fff"}style={{flex: 0.8, flexGrow: 1, borderRadius: 10, borderWidth: 1, borderColor: theme.colors.primary}} contentStyle={{height: 50}} mode="outlined" onPress={() => {completed ? navigateToSkillsMaintenance() : answer()}} >
                         <CustomText style={{ color: completed ? "#fff":theme.colors.primary}} variant='titleMediumBold'>{completed ? "End group discussion" : !answerRevealed ? questionButtonText : answerButtonText}</CustomText>
                     </Button>
                 </View>

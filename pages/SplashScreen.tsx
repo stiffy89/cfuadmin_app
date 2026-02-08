@@ -41,6 +41,7 @@ const SplashScreen = () => {
                     <View style={{marginTop: 50, paddingHorizontal: 20, alignItems: 'center'}}>
                         <CustomText variant='bodyLarge' style={{color: theme.colors.background}}>This is taking longer than usual, please go back to either page and try re-authenticating again</CustomText>
                         <Button
+                            maxFontSizeMultiplier={1.5}
                             style={{width: 200, marginVertical: 20}}
                             mode='contained-tonal'
                             onPress={() => {
@@ -48,6 +49,7 @@ const SplashScreen = () => {
                             }}
                         >Login Page</Button>
                         <Button
+                            maxFontSizeMultiplier={1.5}
                             style={{width: 200}}
                             mode='contained-tonal'
                             onPress={() => {

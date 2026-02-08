@@ -29,6 +29,7 @@ const ExternalLoginPage = () => {
                 <HelperText style={{ marginBottom: 5 }} type='error'>password cannot be empty</HelperText>
             }
             <Button
+                maxFontSizeMultiplier={1.5}
                 style={{marginTop: 20}}
                 mode='contained'
                 onPress={() => {

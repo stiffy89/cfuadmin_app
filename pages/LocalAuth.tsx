@@ -612,12 +612,13 @@ const LocalAuth = () => {
                         <View style={{ alignItems: 'flex-start', marginLeft: 20 }}>
                             <CustomText variant='bodyLarge' style={{ marginLeft: 12, marginBottom: 5 }}>Forgotten PIN?</CustomText>
                             <Button
+                                maxFontSizeMultiplier={1.5}
                                 labelStyle={{ fontSize: 16 }}
                                 onPress={() => {
                                     authModule.onLogOut();
                                 }}
                             >
-                                Reset your PIN
+                                <CustomText style={{color : '#e5182b'}} variant='displaySmall'>Reset your PIN</CustomText>
                             </Button>
                         </View>
                     }

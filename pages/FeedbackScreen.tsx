@@ -217,7 +217,7 @@ export const FeedbackScreen = () => {
                             <TextInput multiline={true} placeholder='Add a comment...' value={comment} onChangeText={text => setComment(text)}  style={{flex: 1, paddingTop: 10, marginHorizontal: 20}}mode='outlined'/>
                         </View>
                         <View style={{ marginVertical: 20}}>
-                            <Button style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} disabled={(comment.length < 1 && !rating) || submitting} onPress={onSubmit} >
+                            <Button maxFontSizeMultiplier={1.5} style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} disabled={(comment.length < 1 && !rating) || submitting} onPress={onSubmit} >
                                 <CustomText style={{marginLeft: 20, color: "#fff"}} variant='titleMediumBold'>Submit</CustomText>
                             </Button>
                         </View>
@@ -230,7 +230,7 @@ export const FeedbackScreen = () => {
                             <CustomText style={{marginHorizontal: 20, marginTop: 10}} variant='headlineMedium'>We appreciate your time and input, which will help us enhance the quality and performance of our app.</CustomText>
                         </Animated.View>
                         <View style={{ position: "absolute", bottom: 20, width: "100%" }}>
-                            <Button style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} disabled={comment.length < 1 && !rating} onPress={hideScreen} >
+                            <Button maxFontSizeMultiplier={1.5} style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} disabled={comment.length < 1 && !rating} onPress={hideScreen} >
                                 <CustomText style={{marginLeft: 20, color: "#fff"}} variant='titleMediumBold'>Close</CustomText>
                             </Button>
                         </View>

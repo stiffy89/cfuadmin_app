@@ -59,6 +59,7 @@ const MyDetailsEdit = (data: any) => {
                     backgroundColor: theme.colors.primary,
                     ...GlobalStyles.floatingButtonBottom,
                 }}
+                maxFontSizeMultiplier={1.5}
                 mode="elevated"
                 textColor={theme.colors.background}
                 onPress={async () => {
@@ -469,8 +470,11 @@ const ContactDetailsEdit = (data: any) => {
                         </View>
                     </Dialog.Content>
                     <Dialog.Actions>
-                        <Button onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
+                        <Button 
+                            maxFontSizeMultiplier={1.5}
+                            onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
                         <Button
+                            maxFontSizeMultiplier={1.5}
                             onPress={() => {
                                 setShowDialog(false);
                                 deleteMailingAddress();
@@ -640,7 +644,8 @@ const ContactDetailsEdit = (data: any) => {
                                             <React.Fragment key={'Fragment_' + i}>
                                                 <List.Item
                                                     key={i}
-                                                    title={`${x.Bland}`}
+                                                     title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Bland}`}</CustomText></View>}
+                                                    //title={`${x.Bland}`}
                                                     style={{
                                                         backgroundColor: (x.Bland === contactDetails.mail_state) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                                     }}
@@ -676,6 +681,7 @@ const ContactDetailsEdit = (data: any) => {
                 </View>
             )}
             <Button
+                maxFontSizeMultiplier={1.5}
                 style={{
                     backgroundColor: theme.colors.primary,
                     ...GlobalStyles.floatingButtonBottom,
@@ -843,8 +849,9 @@ const EmergencyContactsEdit = (data: any) => {
                         </View>
                     </Dialog.Content>
                     <Dialog.Actions>
-                        <Button onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
+                        <Button maxFontSizeMultiplier={1.5} onPress={() => setShowDialog(false)} textColor={theme.colors.secondary}>Cancel</Button>
                         <Button
+                            maxFontSizeMultiplier={1.5}
                             onPress={() => {
                                 setShowDialog(false);
                                 deleteContact();
@@ -1051,6 +1058,7 @@ const EmergencyContactsEdit = (data: any) => {
                 />
             </ScrollView>
             <Button
+                maxFontSizeMultiplier={1.5}
                 style={{
                     backgroundColor: theme.colors.primary,
                     marginTop: 20
@@ -1197,6 +1205,7 @@ const UniformDetailsEdit = (data: any) => {
                         marginTop: 20,
                         backgroundColor: theme.colors.primary
                     }}
+                    maxFontSizeMultiplier={1.5}
                     mode="elevated"
                     textColor={theme.colors.background}
                     onPress={() => {
@@ -1255,6 +1264,7 @@ const VolunteerDetailsEdit = (data: any) => {
             {hasError && <HelperText type="error">{errorMsg}</HelperText>}
             <View style={{ flex: 1 }}></View>
             <Button
+                maxFontSizeMultiplier={1.5}
                 style={{
                     backgroundColor: theme.colors.primary,
                     ...GlobalStyles.floatingButtonBottom,
@@ -1581,6 +1591,7 @@ const VolunteerEdit = (data: any) => {
                     marginTop: 20,
                     backgroundColor: theme.colors.primary
                 }}
+                maxFontSizeMultiplier={1.5}
                 mode="elevated"
                 textColor={theme.colors.background}
                 onPress={async () => {
@@ -2043,6 +2054,7 @@ const EquityDiversity = (data: any) => {
                     marginTop: 20,
                     backgroundColor: theme.colors.primary
                 }}
+                maxFontSizeMultiplier={1.5}
                 mode="elevated"
                 textColor={theme.colors.background}
                 onPress={async () => {
