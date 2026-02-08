@@ -1746,6 +1746,7 @@ const EquityDiversity = (data: any) => {
                             mode='flat'
                             value={selectedNESL.Eddes}
                             editable={false}
+                            maxFontSizeMultiplier={1.5}
                             label='Main non-english language spoken'
                             right={
                                 <TextInput.Icon
@@ -1765,7 +1766,8 @@ const EquityDiversity = (data: any) => {
                                     <React.Fragment key={'Fragment_' + i}>
                                         <List.Item
                                             key={i}
-                                            title={`${x.Eddes}`}
+                                            title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Eddes}`}</CustomText></View>}
+                                            //title={`${x.Eddes}`}
                                             style={{
                                                 backgroundColor: (x.Edseq === selectedNESL.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                             }}
@@ -1818,7 +1820,8 @@ const EquityDiversity = (data: any) => {
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
                                         key={i}
-                                        title={`${x.Ddtext}`}
+                                        title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Ddtext}`}</CustomText></View>}
+                                        //title={`${x.Ddtext}`}
                                         style={{
                                             backgroundColor: (x.DomvalueL === selectedGender.DomvalueL) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                         }}
@@ -1871,7 +1874,8 @@ const EquityDiversity = (data: any) => {
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
                                         key={i}
-                                        title={`${x.Eddes}`}
+                                        title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Eddes}`}</CustomText></View>}
+                                        //title={`${x.Eddes}`}
                                         style={{
                                             backgroundColor: (x.Edseq === selectedAboriginal.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                         }}
@@ -1923,7 +1927,8 @@ const EquityDiversity = (data: any) => {
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
                                         key={i}
-                                        title={`${x.Eddes}`}
+                                        title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Eddes}`}</CustomText></View>}
+                                        //title={`${x.Eddes}`}
                                         style={{
                                             backgroundColor: (x.Edseq === selectedRacial.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                         }}
@@ -1975,7 +1980,8 @@ const EquityDiversity = (data: any) => {
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
                                         key={i}
-                                        title={`${x.Eddes}`}
+                                        title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Eddes}`}</CustomText></View>}
+                                        //title={`${x.Eddes}`}
                                         style={{
                                             backgroundColor: (x.Edseq === selectedFirstLanguage.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                         }}
@@ -2028,7 +2034,8 @@ const EquityDiversity = (data: any) => {
                                 <React.Fragment key={'Fragment_' + i}>
                                     <List.Item
                                         key={i}
-                                        title={`${x.Eddes}`}
+                                        title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Eddes}`}</CustomText></View>}
+                                        //title={`${x.Eddes}`}
                                         style={{
                                             backgroundColor: (x.Edseq === selectedDisability.Edseq) ? theme.colors.surfaceVariant : theme.colors.onPrimary
                                         }}
