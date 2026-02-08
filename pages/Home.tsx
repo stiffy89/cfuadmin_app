@@ -1,7 +1,7 @@
 import { useState, useCallback} from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { Button, IconButton, Portal, Dialog } from 'react-native-paper';
-import { ScrollView, Image, Linking, ViewStyle, StyleProp, ImageBackground } from 'react-native';
+import { ScrollView, Image, Linking, ViewStyle, StyleProp, ImageBackground, PixelRatio } from 'react-native';
 import CustomText from '../assets/CustomText';
 import { View, Pressable } from 'react-native';
 import Constants from 'expo-constants';
@@ -49,7 +49,7 @@ const Services = () => {
     const theme = useTheme();
     const appContext = useAppContext();
     const { services, setCurrentProfile, setVolAdminMembersSearchFilter, currentUser, volAdminLastSelectedOrgUnit, setOrgUnitTeamMembers } = useDataContext();
-
+    const fontScale = Math.round(PixelRatio.getFontScale() * 10) / 10;
 
     const iconMapping : any = {
         'menu-default.png': defaultIcon,
@@ -159,10 +159,14 @@ const Services = () => {
         )
     }
 
+    //if the fontScale is large, then we do two columns, and maximum 8 services
+    const maxServices = fontScale >= 1.3 ? 8 : 9
+    const columns = fontScale >= 1.3 ? 2 : 3
+
     const ServiceTiles = []
     for (let i = 0; i < services.length; i++) {
         const service = services[i]
-        if (i > 7 && services.length > 9) {
+        if (i > maxServices - 2 && services.length > maxServices) {
             //we only want a maximum of 9 services
             ServiceTiles.push(<Tile key={`service_${service.MenuId}`} service={{ IconFilename: "menu-all-services.png", TargetPath: "/all-services", Title: "All Services" }} />)
             break;
@@ -174,7 +178,7 @@ const Services = () => {
     return (
         <View style={{ marginVertical: 20, width: "100%" }}>
             <CustomText style={{ marginVertical: 15, color: theme.colors.primary, paddingHorizontal: 15 }} variant='titleLargeBold'>Keep your info up to date</CustomText>
-            <CustomGrid columns={3} style={{ gap: 10, rowGap: 20 }}>
+            <CustomGrid columns={columns} style={{ gap: 10, rowGap: 20 }}>
                 {ServiceTiles}
             </CustomGrid>
         </View>
@@ -183,8 +187,12 @@ const Services = () => {
 
 const ContactUs = () => {
     const theme = useTheme();
+    const fontScale = Math.round(PixelRatio.getFontScale() * 10) / 10;
+    //increase the margin and padding based on fontScale
+    const verticalMargin = fontScale >= 1.3 ? 40 : 20
+    const horizontalPadding = fontScale >= 1.3 ? 30 : 15
     return (
-        <View style={{ marginVertical: 20, paddingHorizontal: 15 }}>
+        <View style={{ marginVertical: verticalMargin, paddingHorizontal: horizontalPadding }}>
             <CustomText style={{ marginVertical: 15, color: theme.colors.primary }} variant='titleLargeBold'>Contact us</CustomText>
             <CustomText style={{ marginVertical: 15 }}>If you need assistance please reach out to the CFU Team</CustomText>
             <View style={{ paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#fff', ...GlobalStyles.globalBorderRadius }}>
@@ -212,6 +220,9 @@ const HomePage = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [inHome, setInHome] = useState(true)
     const appContext = useAppContext();
+    const fontScale = Math.round(PixelRatio.getFontScale() * 10) / 10;
+
+    const bottomPadding = fontScale >= 1.3 ? 48 : 24
 
     useFocusEffect(
         useCallback(() => {
@@ -224,7 +235,7 @@ const HomePage = () => {
 
 
     return (
-        <ScrollView contentContainerStyle={{ paddingBottom: "24%", backgroundColor: theme.colors.background }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: `${bottomPadding}%`, backgroundColor: theme.colors.background }}>
             <StatusBar style={inHome ? 'light':'dark'}/>
             <Portal>
                 <Dialog visible={showDialog} theme={{ colors: { primary: 'green' } }} onDismiss={() => setShowDialog(!showDialog)}>

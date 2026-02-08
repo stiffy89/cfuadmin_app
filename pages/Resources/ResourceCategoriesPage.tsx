@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, ScrollView, Pressable } from "react-native";
+import { View, ScrollView, Pressable, PixelRatio } from "react-native";
 import { useTheme, Button, IconButton} from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
@@ -18,6 +18,7 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
   const [maxWidth, setMaxWidth] = useState<number>()
   const theme = useTheme();
   const params = route.params ?? {};
+  const fontScale = Math.round(PixelRatio.getFontScale() * 10) / 10;
 
   interface CategoryIcons {
     [key:string] : string
@@ -68,6 +69,9 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
     }, 500);
   };
 
+  const columns = fontScale >= 1.3 ? 1 : 2
+  const iconSize = fontScale >= 1.3 ? 100 : 50
+
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
@@ -75,7 +79,7 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
         <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>{params.title}</CustomText>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} style={{backgroundColor: theme.colors.background}} contentContainerStyle={{paddingBottom: 50}}>
-        <CustomGrid columns={2} style={{ gap: 20, rowGap: 20, paddingTop: 20, height: "100%" }}>
+        <CustomGrid columns={columns} style={{ gap: 20, rowGap: 20, paddingTop: 20, height: "100%" }}>
           {
             categories.map((category, index) => {
               return (
@@ -91,7 +95,7 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
                     >
                       {category.ParentRid}
                     </CustomText>
-                    <CustomIcon style={{ width: "100%" }} size={50} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
+                    <CustomIcon style={{ width: "100%" }} size={iconSize} name={categoryIcons[category.ParentRid]} color={theme.colors.primary} />
                   </View>
 
                 </Pressable>

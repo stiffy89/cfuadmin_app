@@ -4,7 +4,13 @@ import { View, Pressable, ScrollView, Image, FlatList, NativeSyntheticEvent, Nat
 
 const CustomGrid = ({columns, style, children} : {columns: number, style: StyleProp<ViewStyle>, children: React.ReactNode}) => {
     
-    const basis = Math.min(Math.floor((100 / columns) / 10) * 10, 40)
+    const colNumBasisMap: any = {
+        1 : 80,
+        2 : 40,
+        3 : 30,
+        4 : 20
+    }
+    const basis = colNumBasisMap[columns]
     
     return (
         <View style={[style, {flexDirection: "row", flexWrap: "wrap", justifyContent:"center"}]}>

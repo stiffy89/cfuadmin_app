@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, Pressable, Image } from "react-native";
+import { View, ScrollView, Pressable, Image, PixelRatio } from "react-native";
 import { useTheme, IconButton } from "react-native-paper";
 import * as LucideIcons from "lucide-react-native";
 import CustomText from "../../assets/CustomText";
@@ -34,7 +34,8 @@ const SkillsMaintenancePage = ({ route, navigation }: props) => {
 
     const theme = useTheme();
     const params = route.params ?? {};
-
+    const fontScale = Math.round(PixelRatio.getFontScale() * 10) / 10;
+    
     useEffect(() => {
         loadSkillsMaintenanceCategories(setShowDialog).then((res) => {
             setCategories(res)
@@ -53,19 +54,23 @@ const SkillsMaintenancePage = ({ route, navigation }: props) => {
         }, 500);
     };
 
+    //adjust card and text container height based on fontScale
+    const cardHeight = fontScale >= 1.3 ? 180 : 90
+    const textContHeight = fontScale >= 1.3 ? 80 : 50
+    const cardGap = fontScale * 20
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
             <View style={{flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 10}}>
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25}/>} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 <CustomText style={{marginLeft: 20}} variant='titleLargeBold'>{params.title}</CustomText>
             </View>
-            <ScrollView style={{ flex: 1, width:"100%", backgroundColor: theme.colors.background }} contentContainerStyle={{flexDirection: "row", flexWrap:"wrap", justifyContent: "flex-start", gap: 20, margin: 20}}>
+            <ScrollView style={{ flex: 1, width:"100%", backgroundColor: theme.colors.background }} contentContainerStyle={{paddingBottom: "20%", flexDirection: "row", flexWrap:"wrap", justifyContent: "flex-start", gap: cardGap, margin: 20}}>
                 {
                     categories.map((category:SkillsMaintenanceCategory, index) => {
                     return (
                         <Pressable
                             key={index}
-                            style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexGrow: 1, maxWidth: maxWidth, alignItems: "center", height: 90, aspectRatio: 1.8, marginBottom: 50}]}
+                            style={({ pressed }) => [pressed ? {opacity: 0.6} : {opacity: 1}, {flexGrow: 1, maxWidth: maxWidth, alignItems: "center", height: cardHeight, aspectRatio: 1.8, marginBottom: 50}]}
                             onPress={() => navigate(category)}
                             onLayout={(e) => {
                                 if(index == 0){
@@ -76,7 +81,7 @@ const SkillsMaintenancePage = ({ route, navigation }: props) => {
                             <View style={{borderTopLeftRadius: 5, borderTopRightRadius: 5, alignItems: "center", justifyContent: "center", width: "100%"}}>
                                 <Image source={{uri: `data:image/png;base64,${category.QuestionImg}`}} style={{height: "100%", width: "100%", borderTopLeftRadius: 5, borderTopRightRadius: 5}} resizeMode="cover"/>
                             </View>
-                            <View style={{backgroundColor: "#fff", borderBottomLeftRadius: 5, borderBottomRightRadius: 5, padding: 5, width: "100%", height: 50}}>
+                            <View style={{backgroundColor: "#fff", borderBottomLeftRadius: 5, borderBottomRightRadius: 5, padding: 5, width: "100%", height: textContHeight}}>
                                 <CustomText variant="bodyMedium">{category.Name}</CustomText>
                             </View>
                         </Pressable>
