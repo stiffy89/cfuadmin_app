@@ -112,7 +112,8 @@ const ByDrill = () => {
                   }}
                   style={{ marginLeft: 20 }}
                   key={"item_" + i}
-                  title={`${drill.Description}`}
+                  title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${drill.Description}`}</CustomText></View>}
+                //title={`${drill.Description}`}
                 />
                 <Divider />
               </React.Fragment>
@@ -167,7 +168,7 @@ const ByTeamMember = () => {
       compareField = field;
     }
 
-    const sortedList = [...dataList].sort((a, b) =>{
+    const sortedList = [...dataList].sort((a, b) => {
       const aLastName = showTeamMemberSearch ? a[compareField].split(' ')[1] : a[compareField];
       const bLastName = showTeamMemberSearch ? b[compareField].split(' ')[1] : b[compareField];
       return aLastName.localeCompare(bLastName)
@@ -216,14 +217,14 @@ const ByTeamMember = () => {
                   {membersList[letter].map((member: any, ii: number) => {
 
                     const mod = Number(member.Pernr) % PaletteData.length;
-                                                   
+
                     const iconColor = PaletteData.filter((x) => {
-                        return x.PaletteId == mod;
+                      return x.PaletteId == mod;
                     })[0] || PaletteData[0];
 
                     const memberFirstname = showTeamMemberSearch ? member.Ename.split(' ')[0] : member.FirstName;
                     const memberLastName = showTeamMemberSearch ? member.Ename.split(' ')[1] : member.LastName;
-                    const memberName = <View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{memberFirstname}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{memberLastName}</CustomText></View>
+                    const memberName = <View style={{ flexDirection: 'row' }}><CustomText variant='bodyLarge'>{memberFirstname}</CustomText><CustomText style={{ marginLeft: 4 }} variant='bodyLargeBold'>{memberLastName}</CustomText></View>
 
                     return (
                       <React.Fragment key={`contact_${letter}_${ii}`}>
@@ -306,17 +307,18 @@ const ByTeamMember = () => {
                             />
                           )}
                           left={() => (
-                              <Avatar.Icon 
-                                  style={{backgroundColor: iconColor.HexCode}}
-                                  size={40} 
-                                  icon={() => <LucideIcons.User color={theme.colors.background}/>}
-                              />
+                            <Avatar.Icon
+                              style={{ backgroundColor: iconColor.HexCode }}
+                              size={40}
+                              icon={() => <LucideIcons.User color={theme.colors.background} />}
+                            />
                           )}
                           style={{ marginLeft: 20 }}
                           key={"item_" + ii}
                           //title={(showTeamMemberSearch ? member.Ename : `${member.FirstName} ${member.LastName}`)}
                           title={memberName}
-                          description={(showTeamMemberSearch ? '' : `${member.Stext}`)}
+                          description={<CustomText variant='titleMedium'>{(showTeamMemberSearch ? '' : `${member.Stext}`)}</CustomText>}
+                        //description={(showTeamMemberSearch ? '' : `${member.Stext}`)}
                         />
                         <Divider />
                       </React.Fragment>
@@ -453,13 +455,13 @@ const TrainingMain = ({ route }: props) => {
   const title = route.params!.title;
 
   useFocusEffect(
-      useCallback(() => {
-        console.log('training')
-          appContext.setShowTopEdge(true);
-          return () => {
-              //appContext.setShowTopEdge(true);
-          };
-      }, [])
+    useCallback(() => {
+      console.log('training')
+      appContext.setShowTopEdge(true);
+      return () => {
+        //appContext.setShowTopEdge(true);
+      };
+    }, [])
   );
 
   if (dataContext.currentUser[0].VolAdmin) {
@@ -559,86 +561,78 @@ const TrainingMain = ({ route }: props) => {
           {orgUnitList.length > 1 && (
             <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
               <Pressable
-                  onPress={() => {
-                    setShowDropDown(!showDropDown);
-                  }}
+                onPress={() => {
+                  setShowDropDown(!showDropDown);
+                }}
               >
-                  <View pointerEvents="none">
-                      <TextInput
-                        mode="outlined"
-                        value={`${dataContext.trainingSelectedOrgUnit.Short}`}
-                        editable={false}
-                        right={
-                          <TextInput.Icon
-                            icon={() => {
-                              return <LucideIcons.ChevronDown />;
-                            }}
-                          />
-                        }
+                <View pointerEvents="none">
+                  <TextInput
+                    mode="outlined"
+                    value={`${dataContext.trainingSelectedOrgUnit.Short}`}
+                    editable={false}
+                    right={
+                      <TextInput.Icon
+                        icon={() => {
+                          return <LucideIcons.ChevronDown />;
+                        }}
                       />
-                  </View>
+                    }
+                  />
+                </View>
               </Pressable>
               {showDropDown && (
-                <List.Section
-                  style={{
-                    backgroundColor: theme.colors.onSecondary,
-                    position: "absolute",
-                    width: "100%",
-                    top: 50,
-                    left: 20,
-                    zIndex: 100,
-                    borderColor: 'rgba(99, 99, 99, 1)', 
-                    borderWidth: 1
-                  }}
-                >
-                  {orgUnitList.map((x, i) => {
-                    return (
-                      <React.Fragment key={'Fragment_' + i}>
-                        <List.Item
-                          style={{
-                            backgroundColor: (x.Plans === dataContext.trainingSelectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
-                          }}
-                          key={i}
-                          title={`${x.Short} ${x.Stext}`}
-                          onPress={async () => {
-                            dataContext.setTrainingSelectedOrgUnit(x);
-                            setShowDropDown(!showDropDown);
+                <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1, maxHeight: 450 }}>
+                  <List.Section>
+                    {orgUnitList.map((x, i) => {
+                      return (
+                        <React.Fragment key={'Fragment_' + i}>
+                          <List.Item
+                            style={{
+                              backgroundColor: (x.Plans === dataContext.trainingSelectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                            }}
+                            key={i}
+                            title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Short} ${x.Stext}`}</CustomText></View>}
+                            //title={`${x.Short} ${x.Stext}`}
+                            onPress={async () => {
+                              dataContext.setTrainingSelectedOrgUnit(x);
+                              setShowDropDown(!showDropDown);
 
-                            appContext.setShowBusyIndicator(true);
-                            appContext.setShowDialog(true);
+                              appContext.setShowBusyIndicator(true);
+                              appContext.setShowDialog(true);
 
-                            //do a read on both memberdrill details and drill completion
-                            const plans = x.Plans;
+                              //do a read on both memberdrill details and drill completion
+                              const plans = x.Plans;
 
-                            try {
-                              const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
-                              const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
-                              appContext.setShowBusyIndicator(false);
+                              try {
+                                const memberDrillDownCompletion = await dataHandlerModule.batchGet(`MemberDrillCompletions?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'MemberDrillCompletions');
+                                const drillDetails = await dataHandlerModule.batchGet(`DrillDetails?$skip=0&$top=100&$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MANAGER_SRV', 'DrillDetails');
+                                appContext.setShowBusyIndicator(false);
 
-                              if (memberDrillDownCompletion.responseBody.error || drillDetails.responseBody.error) {
-                                let sMessage = '';
-                                memberDrillDownCompletion.responseBody.error ? sMessage += (memberDrillDownCompletion.responseBody.error.message.value + `/n`) : '';
-                                drillDetails.responseBody.error ? sMessage += (drillDetails.responseBody.error.message.value + `/n`) : '';
+                                if (memberDrillDownCompletion.responseBody.error || drillDetails.responseBody.error) {
+                                  let sMessage = '';
+                                  memberDrillDownCompletion.responseBody.error ? sMessage += (memberDrillDownCompletion.responseBody.error.message.value + `/n`) : '';
+                                  drillDetails.responseBody.error ? sMessage += (drillDetails.responseBody.error.message.value + `/n`) : '';
 
-                                appContext.setDialogMessage(sMessage);
-                                return;
+                                  appContext.setDialogMessage(sMessage);
+                                  return;
+                                }
+
+                                dataContext.setDrillDetails(drillDetails.responseBody.d.results);
+                                dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
+                                appContext.setShowDialog(false);
                               }
-
-                              dataContext.setDrillDetails(drillDetails.responseBody.d.results);
-                              dataContext.setMemberDrillCompletion(memberDrillDownCompletion.responseBody.d.results);
-                              appContext.setShowDialog(false);
-                            }
-                            catch (error) {
-                              appContext.setShowDialog(false);
-                              screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                            }
-                          }}
-                        />
-                        <Divider key={'divider' + i} />
-                      </React.Fragment>
-                    );
-                  })}
-                </List.Section>
+                              catch (error) {
+                                appContext.setShowDialog(false);
+                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                              }
+                            }}
+                          />
+                          <Divider key={'divider' + i} />
+                        </React.Fragment>
+                      );
+                    })}
+                  </List.Section>
+                </ScrollView>
               )}
             </View>
           )}

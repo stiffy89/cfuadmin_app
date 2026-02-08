@@ -36,6 +36,7 @@ const ProfileHeader = () => {
                     onPress={async () => {
                         setCardModalVisible(true);
                     }}
+                    maxFontSizeMultiplier={1.5}
                 >
                     ID Card
                 </Button>

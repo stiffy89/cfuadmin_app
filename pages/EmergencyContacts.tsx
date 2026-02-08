@@ -133,6 +133,7 @@ const EmergencyContacts = ({ route, navigation }: props) => {
                     );
                 })}
                 <Button
+                    maxFontSizeMultiplier={1.5}
                     onPress={() => {
                         const genericFormatter = new GenericFormatter();
 

@@ -97,7 +97,8 @@ const CfuPhonebookContactsList = ({route} : props) => {
                                                                 />
                                                             }  
                                                             title={<View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{contact.FirstName}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{contact.Surname}</CustomText></View>} 
-                                                            description={genericFormatter.formatRole(contact.Role)}
+                                                            //description={genericFormatter.formatRole(contact.Role)}
+                                                            description={<CustomText variant='titleMedium'>{genericFormatter.formatRole(contact.Role)}</CustomText>}
                                                         />
                                                         <Divider/>
                                                     </React.Fragment>

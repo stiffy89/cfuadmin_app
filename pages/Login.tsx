@@ -30,6 +30,7 @@ const LoginPage = () => {
                     <CustomText variant='titleMediumBold'>Lets get started</CustomText>
                 </View>
                 <Button
+                    maxFontSizeMultiplier={1.5}
                     buttonColor={theme.colors.primary}
                     textColor={theme.colors.background}
                     mode='elevated'

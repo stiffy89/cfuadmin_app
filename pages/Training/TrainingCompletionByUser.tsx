@@ -139,32 +139,41 @@ const TrainingCompletionByUser = ({ route }: props) => {
         <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
             <Portal>
                 <Dialog visible={showCancelDialog} dismissable={false}>
-                    <Dialog.Title>{
-                        showDialogActionButton ? '' : 'Cancel Changes'}</Dialog.Title>
+                    <Dialog.Title>
+                        {
+                            showDialogActionButton ? <CustomText variant='bodyLarge'>Cancel Changes</CustomText> : ''
+                        }
+                    </Dialog.Title>
                     <Dialog.Content>
                         <CustomText variant="bodyMedium">{dialogMessage}</CustomText>
                     </Dialog.Content>
                     <Dialog.Actions>
                         {
                             !showDialogActionButton &&
-                            <Button onPress={() => {
-                                setShowCancelDialog(false)
-                                setShowDialogActionButton(true);
-                                setDialogMessage('Are you sure you want to discard you changes?')
-                            }}>OK</Button>
+                            <Button 
+                                maxFontSizeMultiplier={1.5}
+                                onPress={() => {
+                                    setShowCancelDialog(false)
+                                    setShowDialogActionButton(true);
+                                    setDialogMessage('Are you sure you want to discard you changes?')
+                                }}
+                            >OK</Button>
                         }
                         {
                             showDialogActionButton &&
-                            <Button onPress={() => setShowCancelDialog(false)}>Go Back</Button>
+                            <Button maxFontSizeMultiplier={1.5} onPress={() => setShowCancelDialog(false)}>Go Back</Button>
                         }
                         {
                             showDialogActionButton &&
-                            <Button onPress={() => {
-                                setIsEditing(false);
-                                setShowCancelDialog(false);
-                                setTrainingDetails(initialTrainingDetails);
+                            <Button 
+                                maxFontSizeMultiplier={1.5}
+                                onPress={() => {
+                                    setIsEditing(false);
+                                    setShowCancelDialog(false);
+                                    setTrainingDetails(initialTrainingDetails);
 
-                            }}>Discard</Button>
+                                }}
+                            >Discard</Button>
                         }
                     </Dialog.Actions>
                 </Dialog>
@@ -202,6 +211,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                     )}
                     {isEditing && (
                         <Button
+                            maxFontSizeMultiplier={1.5}
                             onPress={() => {
                                 setShowCancelDialog(true);
                             }}
@@ -249,17 +259,17 @@ const TrainingCompletionByUser = ({ route }: props) => {
                 <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-evenly' }}>
                     {!isEditing &&
                         <View>
-                            <CustomText style={{ marginBottom: 10 }} variant='labelMedium'>Member Status :</CustomText>
-                            <CustomText variant='bodyLarge'>{trainingDetails.Stext}</CustomText>
+                            <CustomText style={{ marginBottom: 10 }} variant='labelMedium' maxFontSizeMultiplier={1}>Member Status :</CustomText>
+                            <CustomText variant='bodyLarge' maxFontSizeMultiplier={1}>{trainingDetails.Stext}</CustomText>
                         </View>
                     }
                     <View>
-                        <CustomText style={{ marginBottom: 10 }} variant='labelMedium'>Joined :</CustomText>
-                        <CustomText variant='bodyLarge'>{genericFormatter.formatFromEdmDate(trainingDetails.Joindate)}</CustomText>
+                        <CustomText style={{ marginBottom: 10 }} variant='labelMedium' maxFontSizeMultiplier={1}>Joined :</CustomText>
+                        <CustomText variant='bodyLarge' maxFontSizeMultiplier={1}>{genericFormatter.formatFromEdmDate(trainingDetails.Joindate)}</CustomText>
                     </View>
                     <View>
-                        <CustomText style={{ marginBottom: 10 }} variant='labelMedium'>Inducted :</CustomText>
-                        <CustomText variant='bodyLarge'>{genericFormatter.formatFromEdmDate(trainingDetails.Inducted)}</CustomText>
+                        <CustomText style={{ marginBottom: 10 }} variant='labelMedium' maxFontSizeMultiplier={1}>Inducted :</CustomText>
+                        <CustomText variant='bodyLarge' maxFontSizeMultiplier={1}>{genericFormatter.formatFromEdmDate(trainingDetails.Inducted)}</CustomText>
                     </View>
                 </View>
                 {
@@ -303,7 +313,8 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         return (
                                             <List.Item
                                                 key={i}
-                                                title={x.Stext}
+                                                title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Stext}`}</CustomText></View>}
+                                                //title={x.Stext}
                                                 onPress={() => {
                                                     if (x.Statu == '02') {
                                                         //check to see if we are currently 02
@@ -345,18 +356,18 @@ const TrainingCompletionByUser = ({ route }: props) => {
             <ScrollView style={{ backgroundColor: theme.colors.onPrimary }} contentContainerStyle={{ paddingBottom: 40 }}>
                 <DataTable>
                     <DataTable.Header>
-                        <DataTable.Title style={{ flex: 1 }}>Status</DataTable.Title>
-                        <DataTable.Title style={{ flex: 2 }}>Name</DataTable.Title>
-                        <DataTable.Title style={{ flex: 2.5 }}>Date Completed</DataTable.Title>
+                        <DataTable.Title style={{ flex: 1 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>Status</CustomText></DataTable.Title>
+                        <DataTable.Title style={{ flex: 2 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>Name</CustomText></DataTable.Title>
+                        <DataTable.Title style={{ flex: 2.5 }}><CustomText maxFontSizeMultiplier={1} variant='bodyLarge'>Date Completed</CustomText></DataTable.Title>
                     </DataTable.Header>
                     <DataTable.Row>
                         <DataTable.Cell
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         >
-                            {!isEditing && trainingStatus(trainingDetails.Expiry1, trainingDetails.Zzvstat)}
+                            {!isEditing && <CustomText maxFontSizeMultiplier={1}>{trainingStatus(trainingDetails.Expiry1, trainingDetails.Zzvstat)}</CustomText>}
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            {`Drill 1 ` + (isEditing ? 'Completed' : 'Expiry')}
+                            <CustomText maxFontSizeMultiplier={1}>{`Drill 1 ` + (isEditing ? 'Completed' : 'Expiry')}</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -370,6 +381,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(trainingDetails.Start1)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -382,7 +394,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(trainingDetails.Expiry1)}
                                 </CustomText>
                             )}
@@ -392,10 +404,10 @@ const TrainingCompletionByUser = ({ route }: props) => {
                         <DataTable.Cell
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         >
-                            {!isEditing && trainingStatus(trainingDetails.Expiry2, trainingDetails.Zzvstat)}
+                            {!isEditing && <CustomText maxFontSizeMultiplier={1}>{trainingStatus(trainingDetails.Expiry2, trainingDetails.Zzvstat)}</CustomText>}
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            {`Drill 2 ` + (isEditing ? 'Completed' : 'Expiry')}
+                            <CustomText maxFontSizeMultiplier={1}>{`Drill 2 ` + (isEditing ? 'Completed' : 'Expiry')}</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -409,6 +421,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(trainingDetails.Start2)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -421,7 +434,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(trainingDetails.Expiry2)}
                                 </CustomText>
                             )}
@@ -431,10 +444,10 @@ const TrainingCompletionByUser = ({ route }: props) => {
                         <DataTable.Cell
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         >
-                            {!isEditing && trainingStatus(trainingDetails.Expiry3, trainingDetails.Zzvstat)}
+                            {!isEditing && <CustomText maxFontSizeMultiplier={1}>{trainingStatus(trainingDetails.Expiry3, trainingDetails.Zzvstat)}</CustomText>}
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            {`Drill 3 ` + (isEditing ? 'Completed' : 'Expiry')}
+                            <CustomText maxFontSizeMultiplier={1}>{`Drill 3 ` + (isEditing ? 'Completed' : 'Expiry')}</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -448,6 +461,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(trainingDetails.Start3)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -460,7 +474,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(trainingDetails.Expiry3)}
                                 </CustomText>
                             )}
@@ -470,10 +484,10 @@ const TrainingCompletionByUser = ({ route }: props) => {
                         <DataTable.Cell
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         >
-                            {!isEditing && trainingStatus(trainingDetails.Expiry4, trainingDetails.Zzvstat)}
+                            {!isEditing && <CustomText maxFontSizeMultiplier={1}>{trainingStatus(trainingDetails.Expiry4, trainingDetails.Zzvstat)}</CustomText>}
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            {`Drill 4 ` + (isEditing ? 'Completed' : 'Expiry')}
+                            <CustomText maxFontSizeMultiplier={1}>{`Drill 4 ` + (isEditing ? 'Completed' : 'Expiry')}</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -487,6 +501,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(trainingDetails.Start4)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -499,7 +514,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(trainingDetails.Expiry4)}
                                 </CustomText>
                             )}
@@ -509,10 +524,10 @@ const TrainingCompletionByUser = ({ route }: props) => {
                         <DataTable.Cell
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         >
-                            {!isEditing && trainingStatus(trainingDetails.Expiry5, trainingDetails.Zzvstat)}
+                            {!isEditing && <CustomText maxFontSizeMultiplier={1}>{trainingStatus(trainingDetails.Expiry5, trainingDetails.Zzvstat)}</CustomText>}
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            {`Drill 5 ` + (isEditing ? 'Completed' : 'Expiry')}
+                            <CustomText maxFontSizeMultiplier={1}>{`Drill 5 ` + (isEditing ? 'Completed' : 'Expiry')}</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -526,6 +541,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(trainingDetails.Start5)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -538,7 +554,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(trainingDetails.Expiry5)}
                                 </CustomText>
                             )}
@@ -548,10 +564,10 @@ const TrainingCompletionByUser = ({ route }: props) => {
                         <DataTable.Cell
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         >
-                            {!isEditing && trainingStatus(trainingDetails.Expiry6, trainingDetails.Zzvstat)}
+                            {!isEditing && <CustomText maxFontSizeMultiplier={1}>{trainingStatus(trainingDetails.Expiry6, trainingDetails.Zzvstat)}</CustomText>}
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            {`Drill 6 ` + (isEditing ? 'Completed' : 'Expiry')}
+                            <CustomText maxFontSizeMultiplier={1}>{`Drill 6 ` + (isEditing ? 'Completed' : 'Expiry')}</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -565,6 +581,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(trainingDetails.Start6)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -577,7 +594,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(trainingDetails.Expiry6)}
                                 </CustomText>
                             )}
@@ -588,7 +605,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         > </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            Station Engagement
+                            <CustomText maxFontSizeMultiplier={1}>Station Engagement</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -602,6 +619,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(trainingDetails.Startsr)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -614,7 +632,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(trainingDetails.Startsr)}
                                 </CustomText>
                             )}
@@ -625,7 +643,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                             style={{ flex: 1, justifyContent: "flex-start" }}
                         > </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2 }}>
-                            Op Readiness Check
+                            <CustomText maxFontSizeMultiplier={1}>Op Readiness Check</CustomText>
                         </DataTable.Cell>
                         <DataTable.Cell style={{ flex: 2.5 }}>
                             {isEditing ? (
@@ -639,6 +657,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                         underlineColor="transparent"
                                         editable={false}
                                         value={genericFormatter.formatFromEdmDate(brigades.OpReadyCheckDate)}
+                                        maxFontSizeMultiplier={1}
                                         right={
                                             <TextInput.Icon
                                                 onPress={() => {
@@ -651,7 +670,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                                     />
                                 </View>
                             ) : (
-                                <CustomText>
+                                <CustomText maxFontSizeMultiplier={1}>
                                     {genericFormatter.formatFromEdmDate(brigades.OpReadyCheckDate)}
                                 </CustomText>
                             )}
@@ -711,6 +730,7 @@ const TrainingCompletionByUser = ({ route }: props) => {
                     (isEditing) &&
                     <View style={{ marginTop: 20, alignItems: 'center' }}>
                         <Button
+                            maxFontSizeMultiplier={1.5}
                             style={{ width: '80%' }}
                             mode='contained'
                             onPress={async () => {

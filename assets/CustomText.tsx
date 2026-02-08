@@ -41,7 +41,6 @@ const Text = customText<
 const CustomText = (props : React.ComponentProps<typeof Text>) => {
 
     const smallVariants = [
-        'titleLargeItalic',
         'titleMediumItalic',
         'titleSmallItalic',
         'labelLargeItalic', 
@@ -50,7 +49,6 @@ const CustomText = (props : React.ComponentProps<typeof Text>) => {
         'bodySmallItalic',
         'bodyMediumItalic',
         'bodyLargeItalic',
-        'titleLargeBold',
         'titleMediumBold',
         'titleSmallBold',
         'labelLargeBold',
@@ -59,7 +57,6 @@ const CustomText = (props : React.ComponentProps<typeof Text>) => {
         'bodySmallBold',
         'bodyMediumBold',
         'bodyLargeBold',
-        'titleLarge',
         'titleMedium',
         'titleSmall',
         'labelLarge',

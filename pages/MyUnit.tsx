@@ -28,7 +28,7 @@ const MyUnit = ({ route, navigation }: props) => {
     const genericAppHelper = new GenericAppHelpers();
 
     useEffect(() => {
-        if (dataContext.rootOrgUnits.length > 1){
+        if (dataContext.rootOrgUnits.length > 1) {
             //find the default org unit
             const matchingUnit = dataContext.rootOrgUnits.filter(x => x.Plans == dataContext.myOrgUnitDetails[0].Zzplans)[0];
             setSelectedOrgUnit(matchingUnit);
@@ -69,46 +69,49 @@ const MyUnit = ({ route, navigation }: props) => {
                                     </View>
                                 </Pressable>
                                 {(showDropDown) &&
-                                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
-                                        {dataContext.rootOrgUnits.map((x, i) => {
-                                            return (
-                                                <React.Fragment key={'Fragment_' + i}>
-                                                    <List.Item
-                                                        key={i}
-                                                        title={`${x.Short} ${x.Stext}`}
-                                                        style={{
-                                                            backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
-                                                        }}
-                                                        onPress={async () => {
-                                                            const plans = x.Plans;
-                                                            setSelectedOrgUnit(x);
+                                    <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1, maxHeight: 450 }}>
+                                        <List.Section>
+                                            {dataContext.rootOrgUnits.map((x, i) => {
+                                                return (
+                                                    <React.Fragment key={'Fragment_' + i}>
+                                                        <List.Item
+                                                            key={i}
+                                                            title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Short} ${x.Stext}`}</CustomText></View>}
+                                                            //title={`${x.Short} ${x.Stext}`}
+                                                            style={{
+                                                                backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                            }}
+                                                            onPress={async () => {
+                                                                const plans = x.Plans;
+                                                                setSelectedOrgUnit(x);
 
-                                                            //when we set the selected org unit, we need to update the members list aswell
-                                                            setShowDropDown(!showDropDown);
-
-
-                                                            appContext.setShowBusyIndicator(true);
-                                                            appContext.setShowDialog(true);
-
-                                                            //read the org unit team members
-                                                            try {
-                                                                const selectedOrgUnitDetail = await dataHandlerModule.batchGet(`Brigades?$filter=Zzplans%20eq%20%27${x.Plans}%27`, 'Z_VOL_MEMBER_SRV', 'Brigades');
-                                                                setUnitData(selectedOrgUnitDetail.responseBody.d.results[0]);
-                                                                appContext.setShowDialog(false);
-                                                            }
-                                                            catch (error) {
-                                                                appContext.setShowDialog(false);
-                                                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                                                            }
+                                                                //when we set the selected org unit, we need to update the members list aswell
+                                                                setShowDropDown(!showDropDown);
 
 
-                                                        }}
-                                                    />
-                                                    <Divider key={'divider' + i} />
-                                                </React.Fragment>
-                                            )
-                                        })}
-                                    </List.Section>
+                                                                appContext.setShowBusyIndicator(true);
+                                                                appContext.setShowDialog(true);
+
+                                                                //read the org unit team members
+                                                                try {
+                                                                    const selectedOrgUnitDetail = await dataHandlerModule.batchGet(`Brigades?$filter=Zzplans%20eq%20%27${x.Plans}%27`, 'Z_VOL_MEMBER_SRV', 'Brigades');
+                                                                    setUnitData(selectedOrgUnitDetail.responseBody.d.results[0]);
+                                                                    appContext.setShowDialog(false);
+                                                                }
+                                                                catch (error) {
+                                                                    appContext.setShowDialog(false);
+                                                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                                                                }
+
+
+                                                            }}
+                                                        />
+                                                        <Divider key={'divider' + i} />
+                                                    </React.Fragment>
+                                                )
+                                            })}
+                                        </List.Section>
+                                    </ScrollView>
                                 }
                             </View>
                         </>
@@ -124,18 +127,18 @@ const MyUnit = ({ route, navigation }: props) => {
                 </View>
                 <View style={{ paddingHorizontal: 20 }}>
                     <CustomText variant='bodyLargeBold'>Contact Information</CustomText>
-                    <TextInput 
-                        style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} 
-                        multiline editable={false} 
-                        mode='flat' 
-                        underlineColor='transparent' 
+                    <TextInput
+                        style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                        multiline editable={false}
+                        mode='flat'
+                        underlineColor='transparent'
                         label='Location'
-                        textColor={theme.colors.secondary} 
-                        value={UnitData ? genericFormatter.formatAddress(UnitData) : ''} 
+                        textColor={theme.colors.secondary}
+                        value={UnitData ? genericFormatter.formatAddress(UnitData) : ''}
                     />
                     <Pressable
                         onPress={() => {
-                            if (UnitData){
+                            if (UnitData) {
                                 const address = genericFormatter.formatAddress(UnitData);
                                 if (address) {
                                     genericAppHelper.navigateToNativeMaps(address);
@@ -153,18 +156,18 @@ const MyUnit = ({ route, navigation }: props) => {
                     />
                     <TextInput style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} editable={false} mode='flat' underlineColor='transparent' label='Station' value={UnitData ? UnitData.Station : ''} />
                     <View>
-                        <TextInput 
-                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }} 
-                            editable={false} 
-                            mode='flat' 
-                            underlineColor='transparent' 
-                            label='Station Phone' 
-                            value={UnitData ? UnitData.StationPhone : ''} 
+                        <TextInput
+                            style={{ marginTop: 20, ...GlobalStyles.disabledTextInput }}
+                            editable={false}
+                            mode='flat'
+                            underlineColor='transparent'
+                            label='Station Phone'
+                            value={UnitData ? UnitData.StationPhone : ''}
                             textColor={theme.colors.secondary}
                         />
                         <Pressable
                             onPress={() => {
-                                let number= `tel:${UnitData.StationPhone }`;
+                                let number = `tel:${UnitData.StationPhone}`;
                                 genericAppHelper.navigateToPhone(number);
                             }}
                             style={{
@@ -196,7 +199,7 @@ const MyUnit = ({ route, navigation }: props) => {
 
                                 const url = `Z_CFU_DOCUMENTS_SRV/FileExports(Url='%2Fdocuments%2Fzfrnsw%2Fcfu%2Fmaps%2FMAP_2%2FCFUPortal_MAP2_${UnitData.Short}.pdf',FileType='application%2Fpdf')/$value`;
                                 const obj = {
-                                    cache : true,
+                                    cache: true,
                                     showSharing: false,
                                     displayName: 'Bushfire Risk Map (' + UnitData.Short + ")",
                                     filePath: url,
@@ -204,7 +207,8 @@ const MyUnit = ({ route, navigation }: props) => {
                                 }
                                 screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
                             }}
-                            title='Bushfire Risk Map'
+                            title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>Bushfire Risk Map</CustomText></View>}
+                            //title='Bushfire Risk Map'
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                         <Divider />
@@ -217,7 +221,7 @@ const MyUnit = ({ route, navigation }: props) => {
 
                                 const url = `Z_CFU_DOCUMENTS_SRV/FileExports(Url='%2Fdocuments%2Fzfrnsw%2Fcfu%2Fmaps%2FMAP_4%2FCFUPortal_MAP4_${UnitData.Short}.pdf',FileType='application%2Fpdf')/$value`;
                                 const obj = {
-                                    cache : true,
+                                    cache: true,
                                     showSharing: false,
                                     displayName: '(PIP) Map (' + UnitData.Short + ')',
                                     filePath: url,
@@ -225,7 +229,8 @@ const MyUnit = ({ route, navigation }: props) => {
                                 }
                                 screenFlowModule.onNavigateToScreen('PDFDisplayPage', obj);
                             }}
-                            title='Pre-incident Plan (PIP) Map'
+                            title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>Pre-incident Plan (PIP) Map</CustomText></View>}
+                            //title='Pre-incident Plan (PIP) Map'
                             right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
                         />
                     </List.Section>

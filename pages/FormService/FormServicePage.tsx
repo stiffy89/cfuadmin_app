@@ -94,7 +94,7 @@ const FormServicePage = ({ route, navigation }: props) => {
                 }
             </View>
             <View style={{position: "absolute", bottom: 10, width: "100%" }}>
-                <Button style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} onPress={navigate} >
+                <Button maxFontSizeMultiplier={1.5} style={{marginHorizontal: 20, borderRadius: 10}} contentStyle={{height: 50}} mode="contained" buttonColor={theme.colors.primary} onPress={navigate} >
                     <CustomText style={{marginLeft: 20, color: "#fff"}} variant='titleMediumBold'>{formsLauncherSet?.ButtonLabel}</CustomText>
                 </Button>
             </View>

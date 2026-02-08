@@ -88,48 +88,52 @@ const ContactsMyUnit = () => {
                                 </View>
                             </Pressable>
                             {(showDropDown) &&
-                                <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
-                                    {dataContext.rootOrgUnits.map((x, i) => {
-                                        return (
-                                            <React.Fragment key={'Fragment_' + i}>
-                                                <List.Item
-                                                    key={i}
-                                                    title={`${x.Short} ${x.Stext}`}
-                                                    style={{
-                                                        backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
-                                                    }}
-                                                    onPress={async () => {
-                                                        const plans = x.Plans;
-                                                        setSelectedOrgUnit(x);
+                                <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1, maxHeight: 450 }}>
+                                    <List.Section >
+                                        {dataContext.rootOrgUnits.map((x, i) => {
+                                            return (
+                                                <React.Fragment key={'Fragment_' + i}>
+                                                    <List.Item
+                                                        key={i}
+                                                        title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.Short} ${x.Stext}`}</CustomText></View>}
+                                                        //title={`${x.Short} ${x.Stext}`}
+                                                        style={{
+                                                            backgroundColor: (x.Plans === selectedOrgUnit.Plans) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                                        }}
+                                                        onPress={async () => {
+                                                            const plans = x.Plans;
+                                                            setSelectedOrgUnit(x);
 
-                                                        //when we set the selected org unit, we need to update the members list aswell
-                                                        setShowDropDown(!showDropDown);
+                                                            //when we set the selected org unit, we need to update the members list aswell
+                                                            setShowDropDown(!showDropDown);
 
-                                                        appContext.setShowBusyIndicator(true);
-                                                        appContext.setShowDialog(true);
+                                                            appContext.setShowBusyIndicator(true);
+                                                            appContext.setShowDialog(true);
 
-                                                        //read the org unit team members
-                                                        try {
-                                                            const contactsOrgUnit = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MEMBER_SRV', 'Contacts');
-                                                            const filteredList = filterAndFormatList(contactsOrgUnit.responseBody.d.results);
-                                                            setContactsList(filteredList);
+                                                            //read the org unit team members
+                                                            try {
+                                                                const contactsOrgUnit = await dataHandlerModule.batchGet(`Contacts?$filter=Zzplans%20eq%20%27${plans}%27`, 'Z_VOL_MEMBER_SRV', 'Contacts');
+                                                                const filteredList = filterAndFormatList(contactsOrgUnit.responseBody.d.results);
+                                                                setContactsList(filteredList);
 
-                                                            //set the selected org plan for printing
-                                                            dataContext.setContactsPrintPlans(plans);
+                                                                //set the selected org plan for printing
+                                                                dataContext.setContactsPrintPlans(plans);
 
-                                                            appContext.setShowDialog(false);
-                                                        }
-                                                        catch (error) {
-                                                            appContext.setShowDialog(false);
-                                                            screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                                                        }
-                                                    }}
-                                                />
-                                                <Divider key={'divider' + i} />
-                                            </React.Fragment>
-                                        )
-                                    })}
-                                </List.Section>
+                                                                appContext.setShowDialog(false);
+                                                            }
+                                                            catch (error) {
+                                                                appContext.setShowDialog(false);
+                                                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <Divider key={'divider' + i} />
+                                                </React.Fragment>
+                                            )
+                                        })}
+                                    </List.Section>
+                                </ScrollView>
+
                             }
                         </View>
                     </View>
@@ -146,22 +150,22 @@ const ContactsMyUnit = () => {
                                             <List.Subheader key={'subheader_' + i}><CustomText variant='bodyLargeBold'>{letter}</CustomText></List.Subheader>
                                             {
                                                 contactsList[letter].map((contact, ii) => {
-                                                   
+
                                                     const mod = Number(contact.Pernr) % PaletteData.length;
-                                                   
+
                                                     let iconColor = PaletteData.filter((x) => {
                                                         return x.PaletteId == mod;
                                                     })[0] || PaletteData[0];;
 
                                                     //if iconColor is null, then assign it to something so it wont crash. Just incase it NaN's
-                                                    if (!iconColor){
+                                                    if (!iconColor) {
                                                         iconColor = PaletteData[0]
                                                     }
-        
+
                                                     return (
                                                         <React.Fragment key={`contact_${letter}_${ii}`}>
                                                             <Divider />
-                                                            <List.Item 
+                                                            <List.Item
                                                                 onPress={() => {
                                                                     //next screen also needs the brigade information, so combine them into ones
                                                                     const contactInfo = {
@@ -170,27 +174,29 @@ const ContactsMyUnit = () => {
                                                                     }
 
                                                                     screenFlowModule.onNavigateToScreen('MyUnitContactDetail', contactInfo)
-                                                                }} 
-                                                                right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />} 
-                                                                left={() => 
-                                                                /*    <View 
-                                                                        style={{ 
-                                                                            backgroundColor: theme.colors.surfaceDisabled, 
-                                                                            padding: 5, 
-                                                                            borderRadius: 50 }}
-                                                                    >
-                                                                        <LucideIcons.User color={theme.colors.outline}/>
-                                                                    </View> */
-                                                                    <Avatar.Icon 
-                                                                        style={{backgroundColor: iconColor.HexCode}}
-                                                                        size={40} 
-                                                                        icon={() => <LucideIcons.User color={theme.colors.background}/>}
+                                                                }}
+                                                                right={() => <LucideIcons.ChevronRight color={theme.colors.primary} />}
+                                                                left={() =>
+                                                                    /*    <View 
+                                                                            style={{ 
+                                                                                backgroundColor: theme.colors.surfaceDisabled, 
+                                                                                padding: 5, 
+                                                                                borderRadius: 50 }}
+                                                                        >
+                                                                            <LucideIcons.User color={theme.colors.outline}/>
+                                                                        </View> */
+                                                                    <Avatar.Icon
+                                                                        style={{ backgroundColor: iconColor.HexCode }}
+                                                                        size={40}
+                                                                        icon={() => <LucideIcons.User color={theme.colors.background} />}
                                                                     />
-                                                                } 
-                                                                style={{ marginLeft: 20 }} 
-                                                                key={'item_' + ii} 
-                                                                title={<View style={{flexDirection: 'row'}}><CustomText variant='bodyLarge'>{contact.Vorna}</CustomText><CustomText style={{marginLeft: 4}} variant='bodyLargeBold'>{contact.Nachn}</CustomText></View>}  
-                                                                description={genericFormatter.formatRole(contact.Role)} />
+                                                                }
+                                                                style={{ marginLeft: 20 }}
+                                                                key={'item_' + ii}
+                                                                title={<View style={{ flexDirection: 'row' }}><CustomText variant='bodyLarge'>{contact.Vorna}</CustomText><CustomText style={{ marginLeft: 4 }} variant='bodyLargeBold'>{contact.Nachn}</CustomText></View>}
+                                                                //description={genericFormatter.formatRole(contact.Role)} 
+                                                                description={<CustomText variant='titleMedium'>{genericFormatter.formatRole(contact.Role)}</CustomText>}
+                                                            />
                                                             <Divider />
                                                         </React.Fragment>
                                                     )

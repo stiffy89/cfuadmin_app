@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, FlatList, Pressable } from 'react-native';
+import { View, FlatList, Pressable, ScrollView } from 'react-native';
 import { useTheme, IconButton, Divider, TextInput, List } from 'react-native-paper';
 import * as LucideIcons from 'lucide-react-native';
 import { screenFlowModule } from '../helper/ScreenFlowModule';
@@ -38,7 +38,7 @@ const PositionHistory = ({ route, navigation }: props) => {
                 <IconButton icon={() => <LucideIcons.ChevronLeft color={theme.colors.primary} size={25} />} size={20} onPress={() => screenFlowModule.onGoBack()} />
                 <CustomText style={{ marginLeft: 20 }} variant='titleLargeBold'>Position History</CustomText>
             </View>
-            <View style={{ paddingHorizontal: 20}}>
+            <View style={{ paddingHorizontal: 20 }}>
                 <Pressable
                     onPress={() => {
                         setShowDropDown(!showDropDown);
@@ -60,61 +60,64 @@ const PositionHistory = ({ route, navigation }: props) => {
                     </View>
                 </Pressable>
                 {(showDropDown) &&
-                    <List.Section style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1 }}>
-                        {helperDataContext.positionHistoryHelperValue.map((x, i) => {
-                            return (
-                                <React.Fragment key={'Fragment_' + i}>
-                                    <List.Item
-                                        key={i}
-                                        title={`${x.OptionText}`}
-                                        style={{
-                                            backgroundColor: (x.OptionId === selectedPositionFilter.OptionId) ? theme.colors.surfaceVariant : theme.colors.onPrimary
-                                        }}
-                                        onPress={async () => {
-                                            const optionId = x.OptionId;
+                    <ScrollView style={{ backgroundColor: theme.colors.onSecondary, position: 'absolute', width: '100%', top: 50, left: 20, zIndex: 100, borderColor: 'rgba(99, 99, 99, 1)', borderWidth: 1, maxHeight: 450 }}>
+                        <List.Section>
+                            {helperDataContext.positionHistoryHelperValue.map((x, i) => {
+                                return (
+                                    <React.Fragment key={'Fragment_' + i}>
+                                        <List.Item
+                                            key={i}
+                                            title={<View style={{ flex: 1 }}><CustomText variant='titleMedium'>{`${x.OptionText}`}</CustomText></View>}
+                                            //title={`${x.OptionText}`}
+                                            style={{
+                                                backgroundColor: (x.OptionId === selectedPositionFilter.OptionId) ? theme.colors.surfaceVariant : theme.colors.onPrimary
+                                            }}
+                                            onPress={async () => {
+                                                const optionId = x.OptionId;
 
-                                            setSelectedPositionFilter(x);
+                                                setSelectedPositionFilter(x);
 
-                                            //when we set the selected org unit, we need to update the members list aswell
-                                            setShowDropDown(!showDropDown);
+                                                //when we set the selected org unit, we need to update the members list aswell
+                                                setShowDropDown(!showDropDown);
 
 
-                                            appContext.setShowBusyIndicator(true);
-                                            appContext.setShowDialog(true);
+                                                appContext.setShowBusyIndicator(true);
+                                                appContext.setShowDialog(true);
 
-                                
-                                            //read the org unit team members
-                                            try {
-                                                //x.OptionId is 1,2,3 which causes errors, added a leading 0 because the back expects 01, 02, 03
-                                                const positionHistoryResults = await dataHandlerModule.batchGet(`PositionRecords?$filter=Mss%20eq%20true%20and%20PskeyPernr%20eq%20%27${pernr}%27%20and%20FilterOptionId%20eq%20${x.OptionId}`, 'Z_VOL_MEMBER_SRV', 'PositionRecords');
-                                                setPositionHistory(positionHistoryResults.responseBody.d.results);
-                                                appContext.setShowDialog(false);
-                                            }
-                                            catch (error) {
-                                                appContext.setShowDialog(false);
-                                                screenFlowModule.onNavigateToScreen('ErrorPage', error);
-                                            }
-                                        }}
-                                    />
-                                    <Divider key={'divider' + i} />
-                                </React.Fragment>
-                            )
-                        })}
-                    </List.Section>
+
+                                                //read the org unit team members
+                                                try {
+                                                    //x.OptionId is 1,2,3 which causes errors, added a leading 0 because the back expects 01, 02, 03
+                                                    const positionHistoryResults = await dataHandlerModule.batchGet(`PositionRecords?$filter=Mss%20eq%20true%20and%20PskeyPernr%20eq%20%27${pernr}%27%20and%20FilterOptionId%20eq%20${x.OptionId}`, 'Z_VOL_MEMBER_SRV', 'PositionRecords');
+                                                    setPositionHistory(positionHistoryResults.responseBody.d.results);
+                                                    appContext.setShowDialog(false);
+                                                }
+                                                catch (error) {
+                                                    appContext.setShowDialog(false);
+                                                    screenFlowModule.onNavigateToScreen('ErrorPage', error);
+                                                }
+                                            }}
+                                        />
+                                        <Divider key={'divider' + i} />
+                                    </React.Fragment>
+                                )
+                            })}
+                        </List.Section>
+                    </ScrollView>
                 }
             </View>
             <View
-                style={{flex: 1, paddingBottom: 50}}
+                style={{ flex: 1, paddingBottom: 50 }}
             >
                 {
                     (positionHistory.length == 0) && (
-                        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                             <CustomText variant='bodyLargeBold'>No position history found</CustomText>
                         </View>
                     )
                 }
                 <FlatList
-                    style={{ marginTop: 20}}
+                    style={{ marginTop: 20 }}
                     data={positionHistory}
                     renderItem={({ item }) => {
                         return (
