@@ -26,8 +26,8 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
 
   const categoryIcons : CategoryIcons = {
     "Guidelines and Recommended Practices": "FolderCog",
-    "Info/Training Documents": "Info",
-    "Policies & Procedures": "BookCheck",
+    "General Information": "Info",
+    "Policies": "BookCheck",
     "Skills Maintenance": "UserStar",
     "Test your CFU Knowledge" : "BookOpenCheck",
     "CFU Engage": "FolderHeart"
@@ -39,11 +39,11 @@ const ResourceCategoriesPage = ({ route, navigation }: props) => {
       Path: "/documents/zfrnsw/cfu/resources/Guidelines and Recommended Practices",
     },
     {
-      ParentRid: "Info/Training Documents",
+      ParentRid: "General Information",
       Path: "/documents/zfrnsw/cfu/resources/Info Sheets",
     },
     {
-      ParentRid: "Policies & Procedures",
+      ParentRid: "Policies",
       Path: "/documents/zfrnsw/cfu/resources/Policies and Procedures",
     },
     {
